@@ -212,8 +212,7 @@ class FREQLawEnforcer:
             # Insert into BigQuery
             table_ref = f"{self.project_id}.{self.dataset_id}.{self.table_id}"
             
-            # Note: In production, use streaming inserts or batch inserts
-            # For now, we'll just log the audit
+            # Log the audit event
             logger.info(
                 "audit_event_logged",
                 table=table_ref,
@@ -221,10 +220,13 @@ class FREQLawEnforcer:
                 session_id=session_id
             )
             
-            # Actual BigQuery insert (simplified)
+            # TODO: Implement actual BigQuery insert for production
+            # In production, use streaming inserts or batch inserts:
+            # table = self.bq_client.get_table(table_ref)
             # errors = self.bq_client.insert_rows_json(table_ref, [audit_record])
             # if errors:
             #     logger.error("bigquery_insert_error", errors=errors)
+            # For now, audit events are logged to structured logs for testing
             
         except Exception as e:
             logger.error("audit_event_failed", error=str(e), event_type=event_type)

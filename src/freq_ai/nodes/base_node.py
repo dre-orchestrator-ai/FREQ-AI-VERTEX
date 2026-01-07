@@ -4,9 +4,14 @@ from typing import Optional, Dict, Any
 from abc import ABC, abstractmethod
 import structlog
 from google.cloud import aiplatform
-from vertexai.generative_models import GenerativeModel
 
 logger = structlog.get_logger(__name__)
+
+# Import GenerativeModel only if available (requires google-cloud-aiplatform)
+try:
+    from vertexai.generative_models import GenerativeModel
+except ImportError:
+    GenerativeModel = None
 
 
 class GeminiNode(ABC):
@@ -45,8 +50,8 @@ class GeminiNode(ABC):
         self.location = location
         
         # Initialize Vertex AI if credentials available
-        self.model: Optional[GenerativeModel] = None
-        if project_id:
+        self.model = None
+        if project_id and GenerativeModel is not None:
             try:
                 aiplatform.init(project=project_id, location=location)
                 self.model = GenerativeModel(model_name)
