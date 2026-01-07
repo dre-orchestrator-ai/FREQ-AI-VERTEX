@@ -1,8 +1,11 @@
 """Tests for SOL - Sophisticated Operational Lattice"""
 
+import os
 import sys
 import time
-sys.path.insert(0, '/home/runner/work/FREQ-AI-VERTEX/FREQ-AI-VERTEX/src')
+
+# Add src directory to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'src'))
 
 import pytest
 
