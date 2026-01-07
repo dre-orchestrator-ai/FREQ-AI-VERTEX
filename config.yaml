@@ -1,0 +1,104 @@
+# FREQ AI Vertex Configuration
+project:
+  name: "freq-ai-vertex"
+  version: "0.1.0"
+
+# Google Cloud Configuration
+gcp:
+  project_id: "${GCP_PROJECT_ID}"
+  location: "us-central1"
+  
+# Vertex AI Configuration
+vertex_ai:
+  model: "gemini-1.5-pro"
+  temperature: 0.7
+  max_output_tokens: 2048
+  top_p: 0.95
+  top_k: 40
+
+# FREQ LAW Parameters
+freq_law:
+  max_response_time_ms: 2000
+  consensus_k: 3
+  audit_enabled: true
+  bigquery_dataset: "freq_audit_logs"
+  bigquery_table: "orchestration_events"
+
+# FSM Configuration
+fsm:
+  initial_state: "IDLE"
+  states:
+    - IDLE
+    - DIRECTIVE
+    - VALIDATION
+    - QUORUM
+    - EXECUTION
+    - AUDIT
+    - COMPLETE
+    - VETO
+  timeout_ms: 30000
+
+# Node Configuration
+nodes:
+  strategic_operations:
+    name: "Strategic Operations"
+    role: "High-level strategic planning and decision coordination"
+    enabled: true
+  
+  supply_chain_intelligence:
+    name: "Supply Chain Intelligence (SPCI)"
+    role: "Supply chain optimization and logistics intelligence"
+    enabled: true
+  
+  legacy_architect:
+    name: "Legacy Architect"
+    role: "Legacy system modernization and architecture"
+    enabled: true
+  
+  governance_engine:
+    name: "Governance Engine"
+    role: "Compliance, regulatory, and governance oversight"
+    enabled: true
+  
+  executive_automation:
+    name: "Executive Automation"
+    role: "Automated execution of approved directives"
+    enabled: true
+  
+  optimal_intelligence:
+    name: "Optimal Intelligence"
+    role: "Data analytics and optimization recommendations"
+    enabled: true
+  
+  element_design:
+    name: "Element Design"
+    role: "System and component design engineering"
+    enabled: true
+
+# Vertical Domains
+verticals:
+  maritime:
+    enabled: true
+    description: "Maritime operations and logistics"
+  
+  agriculture:
+    enabled: true
+    description: "Agricultural operations and supply chain"
+  
+  manufacturing:
+    enabled: true
+    description: "Manufacturing processes and optimization"
+  
+  healthcare:
+    enabled: true
+    description: "Healthcare systems and compliance"
+  
+  construction:
+    enabled: true
+    description: "Construction project management and safety"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
