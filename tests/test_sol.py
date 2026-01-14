@@ -422,5 +422,140 @@ class TestIntegration:
         assert audit.get_buffer_size() == 1
 
 
+class TestBlueprintModule:
+    """Tests for FREQ Blueprint module."""
+
+    def test_blueprint_import(self):
+        """Test that blueprint can be imported."""
+        from sol.blueprint import FREQ_BLUEPRINT, SSC_SYSTEM_PROMPT
+        assert FREQ_BLUEPRINT is not None
+        assert SSC_SYSTEM_PROMPT is not None
+
+    def test_blueprint_metadata(self):
+        """Test blueprint metadata."""
+        from sol.blueprint import FREQ_BLUEPRINT
+        meta = FREQ_BLUEPRINT.get("metadata", {})
+        assert meta.get("name") == "FREQ AI Sophisticated Operational Lattice"
+        assert meta.get("version") == "2.0"
+        assert meta.get("sovereign_intent_originator") == "Chief Dre"
+        assert meta.get("governance_framework") == "FREQ Law"
+
+    def test_blueprint_architecture(self):
+        """Test blueprint architecture configuration."""
+        from sol.blueprint import get_architecture
+        arch = get_architecture()
+        assert arch.get("topology") == "K4_HYPER_CONNECTED"
+        assert arch.get("network_diameter") == 1
+        assert arch.get("communication_bus") == "SEMANTIC_BUS"
+        assert arch.get("protocol") == "A2A_PROTOCOL"
+
+    def test_blueprint_hierarchy_levels(self):
+        """Test blueprint hierarchy levels."""
+        from sol.blueprint import get_hierarchy_level
+
+        # Level 0: Sovereign Intent Originator
+        level0 = get_hierarchy_level(0)
+        assert level0.get("name") == "Sovereign Intent Originator"
+        assert level0.get("designation") == "Chief Dre"
+
+        # Level 1: SSC
+        level1 = get_hierarchy_level(1)
+        assert level1.get("name") == "Strategic Synthesis Core"
+        assert level1.get("abbreviation") == "SSC"
+
+        # Level 2: CGE
+        level2 = get_hierarchy_level(2)
+        assert level2.get("name") == "Cognitive Governance Engine"
+        assert level2.get("abbreviation") == "CGE"
+
+    def test_blueprint_freq_law_principles(self):
+        """Test FREQ Law principles."""
+        from sol.blueprint import get_freq_law_principles
+        principles = get_freq_law_principles()
+
+        assert principles.get("FAST", {}).get("target_latency_ms") == 2000
+        assert principles.get("ROBUST", {}).get("fault_tolerance") == "BFT"
+        assert principles.get("ROBUST", {}).get("quorum_threshold") == 0.75
+        assert principles.get("EVOLUTIONARY", {}).get("max_retry_attempts") == 3
+        assert principles.get("QUANTIFIED", {}).get("trust_score_target") == 0.95
+
+    def test_blueprint_validation(self):
+        """Test blueprint validation."""
+        from sol.blueprint import validate_blueprint
+        validation = validate_blueprint()
+
+        assert validation["is_valid"] is True
+        assert validation["hierarchy_levels"] == 6
+        assert validation["mission_vectors_count"] == 2
+        assert "metadata" in validation["sections_present"]
+        assert "freq_law" in validation["sections_present"]
+
+    def test_ssc_system_prompt_content(self):
+        """Test SSC System Prompt content."""
+        from sol.blueprint import SSC_SYSTEM_PROMPT
+
+        assert "Strategic Synthesis Core" in SSC_SYSTEM_PROMPT
+        assert "FREQ Law" in SSC_SYSTEM_PROMPT
+        assert "Chief Dre" in SSC_SYSTEM_PROMPT
+        assert "A2A Protocol" in SSC_SYSTEM_PROMPT
+        assert "RESPONSIBILITIES" in SSC_SYSTEM_PROMPT
+
+    def test_mission_vectors(self):
+        """Test mission vectors configuration."""
+        from sol.blueprint import get_mission_vector
+
+        alpha = get_mission_vector("vector_alpha")
+        assert alpha.get("name") == "Heritage Transmutation"
+
+        gamma = get_mission_vector("vector_gamma")
+        assert gamma.get("name") == "Maritime Barge Drafting"
+        assert gamma.get("target_accuracy") == 0.998
+
+    def test_deployment_phases(self):
+        """Test deployment phases."""
+        from sol.blueprint import get_deployment_phase
+
+        assert get_deployment_phase(1) == "Latticework Development"
+        assert get_deployment_phase(2) == "Testing, Integration, Intelligence"
+        assert get_deployment_phase(3) == "First Mission Simulation & Deployment"
+
+
+class TestPhase2Verification:
+    """Tests for Phase 2 verification protocol."""
+
+    def test_phase2_verifier_import(self):
+        """Test Phase2Verifier can be imported."""
+        from sol.activation import Phase2Verifier
+        verifier = Phase2Verifier()
+        assert verifier is not None
+        assert verifier.verification_results == {}
+
+    def test_phase2_verification_results(self):
+        """Test Phase 2 verification returns valid results."""
+        from sol.activation import Phase2Verifier
+        import io
+        import sys
+
+        # Capture output to suppress print statements in test
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+
+        verifier = Phase2Verifier()
+        report = verifier.run_full_verification()
+
+        # Restore stdout
+        sys.stdout = sys.__stdout__
+
+        assert report["overall_status"] == "PHASE 2 ACTIVE"
+        assert report["checks_passed"] == 6
+        assert report["checks_total"] == 6
+        assert "blueprint" in report["results"]
+        assert "architecture" in report["results"]
+        assert "hierarchy" in report["results"]
+        assert "freq_law" in report["results"]
+        assert "ssc_prompt" in report["results"]
+        assert "mission_vectors" in report["results"]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
