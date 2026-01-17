@@ -1,25 +1,92 @@
-# FREQ AI Platform Configuration
-# Multi-provider AI platform settings for SOL deployment
-
 # =============================================================================
-# PROVIDER CONFIGURATIONS
+# FREQ AI Platform Configuration - UPDATED January 2026
+# =============================================================================
+# CHANGE LOG:
+# - Switched PRIMARY to Anthropic Direct API (Bedrock quota issues)
+# - Added Google AI Studio for Gemini 3.0 models
+# - AWS Bedrock DISABLED until quota resolves
 # =============================================================================
 
 providers:
-  # PRIMARY: AWS Bedrock (Claude Opus 4.5)
-  # Recommended for SSC (L1) and CGE (L2) operations
-  aws_bedrock:
+  # PRIMARY: Anthropic Direct API (Opus 4.5)
+  # Most reliable access - no quota issues, same pricing as Bedrock
+  # Get API key: https://console.anthropic.com/
+  anthropic_direct:
     enabled: true
-    priority: 1  # Primary
-    region: us-east-1
-    inference_profile: global
+    priority: 1  # PRIMARY
+    base_url: https://api.anthropic.com
+    api_key_env: ANTHROPIC_API_KEY  # export ANTHROPIC_API_KEY="sk-ant-..."
     timeout_seconds: 120
     max_retries: 3
     retry_delay_base: 1.0
     health_check_interval: 60
     max_consecutive_failures: 3
 
-    # Model mappings
+    models:
+      opus-4.5:
+        model_id: "claude-opus-4-5-20251101"
+        max_tokens: 8192
+        context_window: 200000
+        cost_input_per_million: 5.0
+        cost_output_per_million: 25.0
+      sonnet-4.5:
+        model_id: "claude-sonnet-4-5-20251101"
+        max_tokens: 8192
+        context_window: 200000
+        cost_input_per_million: 3.0
+        cost_output_per_million: 15.0
+      haiku-4.5:
+        model_id: "claude-haiku-4-5-20251101"
+        max_tokens: 8192
+        context_window: 200000
+        cost_input_per_million: 0.25
+        cost_output_per_million: 1.25
+
+  # SECONDARY: Google AI Studio (Gemini 3.0)
+  # Cost-efficient for high-volume operations (SIL, SA, TOM)
+  # Get API key: https://aistudio.google.com/apikey
+  google_ai_studio:
+    enabled: true
+    priority: 2  # SECONDARY
+    base_url: https://generativelanguage.googleapis.com
+    api_key_env: GOOGLE_AI_API_KEY  # export GOOGLE_AI_API_KEY="AIza..."
+    timeout_seconds: 120
+    max_retries: 3
+
+    models:
+      gemini-3-pro:
+        model_id: "gemini-3.0-pro-preview"
+        max_tokens: 8192
+        context_window: 1000000
+        cost_input_per_million: 2.0
+        cost_output_per_million: 12.0
+      gemini-3-flash:
+        model_id: "gemini-3.0-flash"
+        max_tokens: 8192
+        context_window: 1000000
+        cost_input_per_million: 0.50
+        cost_output_per_million: 3.0
+      gemini-3-thinking:
+        model_id: "gemini-3.0-thinking-preview"
+        max_tokens: 8192
+        context_window: 1000000
+        cost_input_per_million: 2.0
+        cost_output_per_million: 12.0
+
+  # DISABLED: AWS Bedrock (quota issues - ThrottlingException)
+  # Status: Daily token quota exceeded/set to 0
+  # To re-enable:
+  #   1. Open AWS Support case to request quota increase (~48hrs)
+  #   2. Try different region (us-west-2 may have higher quota)
+  #   3. Consider Provisioned Throughput for guaranteed capacity
+  aws_bedrock:
+    enabled: false  # DISABLED - quota issues
+    priority: 3  # FALLBACK when fixed
+    region: us-east-1
+    inference_profile: global
+    timeout_seconds: 120
+    max_retries: 3
+
     models:
       opus-4.5:
         model_id: "global.anthropic.claude-opus-4-5-20251101-v1:0"
@@ -34,7 +101,7 @@ providers:
         max_tokens: 8192
         context_window: 200000
 
-    # Enterprise features (Bedrock AgentCore)
+    # Enterprise features (available when re-enabled)
     features:
       tool_search: true
       tool_use_examples: true
@@ -42,31 +109,13 @@ providers:
       persistent_memory: true
       session_isolation: true
 
-  # SECONDARY: Anthropic Direct API
-  # Fallback when Bedrock is unavailable
-  anthropic_direct:
-    enabled: true
-    priority: 2  # Secondary
-    base_url: https://api.anthropic.com
-    # api_key: ${ANTHROPIC_API_KEY}  # Use environment variable
-    timeout_seconds: 120
-    max_retries: 3
-
-    models:
-      opus-4.5:
-        model_id: "claude-opus-4-5-20251101"
-        max_tokens: 8192
-      sonnet-4.5:
-        model_id: "claude-sonnet-4-5-20251101"
-        max_tokens: 8192
-
-  # TERTIARY: Google Cloud Vertex AI (Gemini)
-  # Used for SIL (L3), SA (L4), and TOM (L5) operations
+  # TERTIARY: Google Cloud Vertex AI
+  # Alternative to AI Studio with GCP integration
   vertex_ai:
-    enabled: true
-    priority: 3  # Tertiary
+    enabled: false  # Use google_ai_studio instead (simpler setup)
+    priority: 4
     region: us-central1
-    # project_id: ${GCP_PROJECT_ID}  # Use environment variable
+    project_id_env: GCP_PROJECT_ID
     timeout_seconds: 120
     max_retries: 3
 
@@ -84,47 +133,46 @@ providers:
         max_tokens: 8192
         context_window: 1000000
 
-  # FALLBACK: Azure Foundry
-  # For compliance scenarios requiring Azure
+  # LAST RESORT: Azure Foundry
   azure_foundry:
-    enabled: false  # Disabled by default due to Opus 4.5 restrictions
-    priority: 4  # Fallback
-    # endpoint: ${AZURE_ENDPOINT}
-    # api_key: ${AZURE_API_KEY}
+    enabled: false
+    priority: 5
     timeout_seconds: 120
     max_retries: 3
 
 # =============================================================================
-# SUBSTRATE MAPPINGS (Lattice Level to Provider/Model)
+# SUBSTRATE MAPPINGS - UPDATED
 # =============================================================================
+# SSC/CGE: Opus 4.5 (Anthropic Direct) - maximum cognitive capability
+# SIL/SA/TOM: Gemini 3.0 Flash (Google AI) - cost efficient, fast
 
 substrate_mappings:
   # Level 1: Strategic Synthesis Core
-  # Requires maximum cognitive capability for strategic reasoning
+  # Maximum cognitive capability - Opus 4.5 via Anthropic Direct
   L1_SSC:
-    primary_provider: aws_bedrock
+    primary_provider: anthropic_direct
     primary_model: opus-4.5
-    fallback_provider: vertex_ai
+    fallback_provider: google_ai_studio
     fallback_model: gemini-3-thinking
     temperature: 0.7
     max_tokens: 8192
     strict_mode: false
 
   # Level 2: Cognitive Governance Engine
-  # Requires deterministic output for governance decisions
+  # Deterministic governance - Opus 4.5 STRICT MODE
   L2_CGE:
-    primary_provider: aws_bedrock
+    primary_provider: anthropic_direct
     primary_model: opus-4.5
-    fallback_provider: vertex_ai
+    fallback_provider: google_ai_studio
     fallback_model: gemini-3-pro
-    temperature: 0.0  # Deterministic
+    temperature: 0.0  # STRICT MODE for deterministic decisions
     max_tokens: 4096
     strict_mode: true
 
   # Level 3: Strategic Intelligence Lead
-  # Knowledge retrieval and RAG - speed prioritized
+  # Knowledge retrieval - Flash for speed and cost
   L3_SIL:
-    primary_provider: vertex_ai
+    primary_provider: google_ai_studio
     primary_model: gemini-3-flash
     fallback_provider: anthropic_direct
     fallback_model: sonnet-4.5
@@ -133,9 +181,9 @@ substrate_mappings:
     strict_mode: false
 
   # Level 4: System Architect
-  # Technical design - balance of capability and speed
+  # Technical design - Pro for capability
   L4_SA:
-    primary_provider: vertex_ai
+    primary_provider: google_ai_studio
     primary_model: gemini-3-pro
     fallback_provider: anthropic_direct
     fallback_model: sonnet-4.5
@@ -144,15 +192,29 @@ substrate_mappings:
     strict_mode: false
 
   # Level 5: Runtime Realization Node (TOM)
-  # Execution layer - speed critical (<2000ms)
+  # Execution layer - Flash for speed (<2000ms FREQ LAW)
   L5_TOM:
-    primary_provider: vertex_ai
+    primary_provider: google_ai_studio
     primary_model: gemini-3-flash
-    fallback_provider: aws_bedrock
+    fallback_provider: anthropic_direct
     fallback_model: haiku-4.5
     temperature: 0.3
     max_tokens: 2048
     strict_mode: false
+
+# =============================================================================
+# ESTIMATED MONTHLY COSTS (Hybrid Approach)
+# =============================================================================
+# Assuming 1M tokens/day for SSC/CGE (Opus), 5M tokens/day for SIL/SA/TOM (Gemini)
+#
+# Opus 4.5 (SSC/CGE):     1M × 30 days × ($5 + $25) / 1M = $900/month
+# Gemini 3 Flash (others): 5M × 30 days × ($0.50 + $3) / 1M = $525/month
+# ----------------------------------------------------------------
+# TOTAL ESTIMATED:                                         ~$1,425/month
+#
+# vs. Pure Opus 4.5:      6M × 30 days × $30 / 1M =         $5,400/month
+# SAVINGS:                                                  ~74%
+# =============================================================================
 
 # =============================================================================
 # FAILOVER SETTINGS
@@ -160,13 +222,13 @@ substrate_mappings:
 
 failover:
   enabled: true
-  timeout_ms: 5000  # Time before triggering failover
-  max_attempts: 3   # Max failover attempts per request
+  timeout_ms: 5000
+  max_attempts: 3
   circuit_breaker:
     enabled: true
-    failure_threshold: 5      # Failures before opening circuit
-    reset_timeout_seconds: 60  # Time before attempting reset
-    half_open_max_calls: 3    # Calls allowed in half-open state
+    failure_threshold: 5
+    reset_timeout_seconds: 60
+    half_open_max_calls: 3
 
 # =============================================================================
 # FREQ LAW COMPLIANCE TARGETS
@@ -195,8 +257,8 @@ freq_law:
 
 ui:
   theme:
-    default_mode: dark  # light, dark, system
-    design_system: carbon  # carbon, fluent, hybrid
+    default_mode: dark
+    design_system: carbon
 
   dashboard:
     refresh_interval_seconds: 5
@@ -232,5 +294,22 @@ observability:
 
   tracing:
     enabled: true
-    sample_rate: 1.0  # 100% in development
-    exporter: otlp    # OpenTelemetry Protocol
+    sample_rate: 1.0
+    exporter: otlp
+
+# =============================================================================
+# REQUIRED ENVIRONMENT VARIABLES
+# =============================================================================
+# Set these before running:
+#
+# # Anthropic Direct API (PRIMARY)
+# export ANTHROPIC_API_KEY="sk-ant-api03-..."
+#
+# # Google AI Studio (SECONDARY)
+# export GOOGLE_AI_API_KEY="AIzaSy..."
+#
+# # AWS (OPTIONAL - when Bedrock quota resolves)
+# export AWS_ACCESS_KEY_ID="AKIA..."
+# export AWS_SECRET_ACCESS_KEY="..."
+# export AWS_REGION="us-east-1"
+# =============================================================================
