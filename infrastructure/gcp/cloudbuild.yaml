@@ -1,0 +1,37 @@
+# FREQ AI Lattice - Cloud Build Configuration
+# Builds the Docker image for Cloud Run deployment
+
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_IMAGE_NAME}:${SHORT_SHA}'
+      - '-t'
+      - '${_IMAGE_NAME}:latest'
+      - '-f'
+      - 'infrastructure/gcp/Dockerfile'
+      - '.'
+
+  # Push with commit SHA tag
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_IMAGE_NAME}:${SHORT_SHA}'
+
+  # Push with latest tag
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_IMAGE_NAME}:latest'
+
+substitutions:
+  _IMAGE_NAME: 'gcr.io/${PROJECT_ID}/freq-ai-lattice'
+
+images:
+  - '${_IMAGE_NAME}:${SHORT_SHA}'
+  - '${_IMAGE_NAME}:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
