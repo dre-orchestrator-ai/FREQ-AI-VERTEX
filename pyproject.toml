@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "freq-ai-sol"
-version = "0.1.0"
-description = "Sophisticated Operational Lattice (SOL) - Multi-node AI orchestration system for legacy modernization"
+version = "0.2.0"
+description = "FREQ AI Sophisticated Operational Lattice (SOL) - Multi-provider AI orchestration with enterprise UX"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"
@@ -21,23 +21,64 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: System :: Distributed Computing",
 ]
-keywords = ["ai", "orchestration", "vertex-ai", "gemini", "distributed-systems"]
+keywords = ["ai", "orchestration", "vertex-ai", "gemini", "claude", "bedrock", "multi-agent", "distributed-systems", "maritime"]
 
 dependencies = [
     "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
+# AWS Bedrock (Primary provider for Opus 4.5)
+aws = [
+    "boto3>=1.34.0",
+    "botocore>=1.34.0",
+]
+# Anthropic Direct API (Fallback)
+anthropic = [
+    "anthropic>=0.40.0",
+]
+# Google Cloud (Vertex AI + BigQuery)
 gcp = [
     "google-cloud-bigquery>=3.0.0",
     "google-cloud-aiplatform>=1.38.0",
 ]
+# Azure Foundry
+azure = [
+    "azure-ai-inference>=1.0.0",
+]
+# Full platform support
+platform = [
+    "boto3>=1.34.0",
+    "anthropic>=0.40.0",
+    "google-cloud-bigquery>=3.0.0",
+    "google-cloud-aiplatform>=1.38.0",
+]
+# API/Web dependencies
+api = [
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "websockets>=12.0",
+    "pydantic>=2.5.0",
+]
+# Development dependencies
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.23.0",
     "black>=23.0.0",
     "ruff>=0.1.0",
     "mypy>=1.0.0",
+]
+# All dependencies
+all = [
+    "boto3>=1.34.0",
+    "anthropic>=0.40.0",
+    "google-cloud-bigquery>=3.0.0",
+    "google-cloud-aiplatform>=1.38.0",
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "websockets>=12.0",
+    "pydantic>=2.5.0",
 ]
 
 [project.urls]

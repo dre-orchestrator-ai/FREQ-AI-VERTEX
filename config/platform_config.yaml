@@ -1,0 +1,236 @@
+# FREQ AI Platform Configuration
+# Multi-provider AI platform settings for SOL deployment
+
+# =============================================================================
+# PROVIDER CONFIGURATIONS
+# =============================================================================
+
+providers:
+  # PRIMARY: AWS Bedrock (Claude Opus 4.5)
+  # Recommended for SSC (L1) and CGE (L2) operations
+  aws_bedrock:
+    enabled: true
+    priority: 1  # Primary
+    region: us-east-1
+    inference_profile: global
+    timeout_seconds: 120
+    max_retries: 3
+    retry_delay_base: 1.0
+    health_check_interval: 60
+    max_consecutive_failures: 3
+
+    # Model mappings
+    models:
+      opus-4.5:
+        model_id: "global.anthropic.claude-opus-4-5-20251101-v1:0"
+        max_tokens: 8192
+        context_window: 200000
+      sonnet-4.5:
+        model_id: "global.anthropic.claude-sonnet-4-5-20251101-v1:0"
+        max_tokens: 8192
+        context_window: 200000
+      haiku-4.5:
+        model_id: "global.anthropic.claude-haiku-4-5-20251101-v1:0"
+        max_tokens: 8192
+        context_window: 200000
+
+    # Enterprise features (Bedrock AgentCore)
+    features:
+      tool_search: true
+      tool_use_examples: true
+      effort_parameter: high
+      persistent_memory: true
+      session_isolation: true
+
+  # SECONDARY: Anthropic Direct API
+  # Fallback when Bedrock is unavailable
+  anthropic_direct:
+    enabled: true
+    priority: 2  # Secondary
+    base_url: https://api.anthropic.com
+    # api_key: ${ANTHROPIC_API_KEY}  # Use environment variable
+    timeout_seconds: 120
+    max_retries: 3
+
+    models:
+      opus-4.5:
+        model_id: "claude-opus-4-5-20251101"
+        max_tokens: 8192
+      sonnet-4.5:
+        model_id: "claude-sonnet-4-5-20251101"
+        max_tokens: 8192
+
+  # TERTIARY: Google Cloud Vertex AI (Gemini)
+  # Used for SIL (L3), SA (L4), and TOM (L5) operations
+  vertex_ai:
+    enabled: true
+    priority: 3  # Tertiary
+    region: us-central1
+    # project_id: ${GCP_PROJECT_ID}  # Use environment variable
+    timeout_seconds: 120
+    max_retries: 3
+
+    models:
+      gemini-3-thinking:
+        model_id: "gemini-3.0-thinking-preview"
+        max_tokens: 8192
+        context_window: 1000000
+      gemini-3-pro:
+        model_id: "gemini-3.0-pro-preview"
+        max_tokens: 8192
+        context_window: 1000000
+      gemini-3-flash:
+        model_id: "gemini-3.0-flash-preview"
+        max_tokens: 8192
+        context_window: 1000000
+
+  # FALLBACK: Azure Foundry
+  # For compliance scenarios requiring Azure
+  azure_foundry:
+    enabled: false  # Disabled by default due to Opus 4.5 restrictions
+    priority: 4  # Fallback
+    # endpoint: ${AZURE_ENDPOINT}
+    # api_key: ${AZURE_API_KEY}
+    timeout_seconds: 120
+    max_retries: 3
+
+# =============================================================================
+# SUBSTRATE MAPPINGS (Lattice Level to Provider/Model)
+# =============================================================================
+
+substrate_mappings:
+  # Level 1: Strategic Synthesis Core
+  # Requires maximum cognitive capability for strategic reasoning
+  L1_SSC:
+    primary_provider: aws_bedrock
+    primary_model: opus-4.5
+    fallback_provider: vertex_ai
+    fallback_model: gemini-3-thinking
+    temperature: 0.7
+    max_tokens: 8192
+    strict_mode: false
+
+  # Level 2: Cognitive Governance Engine
+  # Requires deterministic output for governance decisions
+  L2_CGE:
+    primary_provider: aws_bedrock
+    primary_model: opus-4.5
+    fallback_provider: vertex_ai
+    fallback_model: gemini-3-pro
+    temperature: 0.0  # Deterministic
+    max_tokens: 4096
+    strict_mode: true
+
+  # Level 3: Strategic Intelligence Lead
+  # Knowledge retrieval and RAG - speed prioritized
+  L3_SIL:
+    primary_provider: vertex_ai
+    primary_model: gemini-3-flash
+    fallback_provider: anthropic_direct
+    fallback_model: sonnet-4.5
+    temperature: 0.3
+    max_tokens: 4096
+    strict_mode: false
+
+  # Level 4: System Architect
+  # Technical design - balance of capability and speed
+  L4_SA:
+    primary_provider: vertex_ai
+    primary_model: gemini-3-pro
+    fallback_provider: anthropic_direct
+    fallback_model: sonnet-4.5
+    temperature: 0.5
+    max_tokens: 8192
+    strict_mode: false
+
+  # Level 5: Runtime Realization Node (TOM)
+  # Execution layer - speed critical (<2000ms)
+  L5_TOM:
+    primary_provider: vertex_ai
+    primary_model: gemini-3-flash
+    fallback_provider: aws_bedrock
+    fallback_model: haiku-4.5
+    temperature: 0.3
+    max_tokens: 2048
+    strict_mode: false
+
+# =============================================================================
+# FAILOVER SETTINGS
+# =============================================================================
+
+failover:
+  enabled: true
+  timeout_ms: 5000  # Time before triggering failover
+  max_attempts: 3   # Max failover attempts per request
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 5      # Failures before opening circuit
+    reset_timeout_seconds: 60  # Time before attempting reset
+    half_open_max_calls: 3    # Calls allowed in half-open state
+
+# =============================================================================
+# FREQ LAW COMPLIANCE TARGETS
+# =============================================================================
+
+freq_law:
+  fast:
+    target_latency_ms: 2000
+    warning_threshold_ms: 1500
+  robust:
+    quorum_threshold: 0.75
+    min_healthy_providers: 2
+    bft_enabled: true
+  evolutionary:
+    max_retry_attempts: 3
+    deviation_threshold_percent: 2
+    reflexion_enabled: true
+  quantified:
+    trust_score_target: 0.95
+    audit_all_operations: true
+    provenance_format: json-ld
+
+# =============================================================================
+# UI/UX SETTINGS
+# =============================================================================
+
+ui:
+  theme:
+    default_mode: dark  # light, dark, system
+    design_system: carbon  # carbon, fluent, hybrid
+
+  dashboard:
+    refresh_interval_seconds: 5
+    max_audit_entries: 100
+    show_latency_chart: true
+    show_topology_graph: true
+
+  accessibility:
+    wcag_level: AA
+    high_contrast_available: true
+    keyboard_navigation: true
+    screen_reader_support: true
+
+# =============================================================================
+# OBSERVABILITY
+# =============================================================================
+
+observability:
+  logging:
+    level: INFO
+    format: json
+    include_timestamps: true
+    include_trace_ids: true
+
+  metrics:
+    enabled: true
+    export_interval_seconds: 30
+    labels:
+      - provider
+      - model
+      - node_type
+      - operation
+
+  tracing:
+    enabled: true
+    sample_rate: 1.0  # 100% in development
+    exporter: otlp    # OpenTelemetry Protocol
