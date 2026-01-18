@@ -67,7 +67,33 @@ All SOL operations are governed by **FREQ LAW**:
 
 ## Installation
 
+### Quick Install (Recommended)
+
 ```bash
+# One-line installation
+curl -fsSL https://raw.githubusercontent.com/dre-orchestrator-ai/FREQ-AI-VERTEX/main/install.sh | bash
+
+# With GCP support and virtual environment
+curl -fsSL https://raw.githubusercontent.com/dre-orchestrator-ai/FREQ-AI-VERTEX/main/install.sh | bash -s -- --gcp --venv
+
+# Development environment
+curl -fsSL https://raw.githubusercontent.com/dre-orchestrator-ai/FREQ-AI-VERTEX/main/install.sh | bash -s -- --dev --venv
+```
+
+**Installation Options:**
+- `--gcp` - Install with Google Cloud Platform dependencies
+- `--dev` - Install development dependencies (pytest, black, ruff, mypy)
+- `--venv` - Create and use a virtual environment
+- `--skip-clone` - Skip repository cloning (use if already cloned)
+- `--help` - Show all available options
+
+### Manual Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/dre-orchestrator-ai/FREQ-AI-VERTEX.git
+cd FREQ-AI-VERTEX
+
 # Install base package
 pip install -e .
 
