@@ -77,3 +77,11 @@ dmypy.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Streamlit secrets (NEVER commit)
+.streamlit/secrets.toml
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+.terraform/

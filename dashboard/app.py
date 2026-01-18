@@ -18,6 +18,25 @@ from typing import Dict, Any, List, Optional
 import random
 
 # =============================================================================
+# SECRETS HELPER (Streamlit Cloud + Local Support)
+# =============================================================================
+
+def get_secret(key: str, default: str = "") -> str:
+    """Get secret from Streamlit secrets or environment variables."""
+    # Try Streamlit secrets first (for Streamlit Cloud)
+    try:
+        if hasattr(st, 'secrets') and key in st.secrets:
+            return st.secrets[key]
+    except Exception:
+        pass
+    # Fall back to environment variables (for local/Docker)
+    return os.environ.get(key, default)
+
+# Set environment variables from Streamlit secrets for lattice module
+os.environ.setdefault("ANTHROPIC_API_KEY", get_secret("ANTHROPIC_API_KEY"))
+os.environ.setdefault("GOOGLE_AI_API_KEY", get_secret("GOOGLE_AI_API_KEY"))
+
+# =============================================================================
 # PAGE CONFIGURATION
 # =============================================================================
 
@@ -327,9 +346,9 @@ st.markdown("""
 with st.sidebar:
     st.markdown("### ⚙️ System Status")
 
-    # Provider status
-    anthropic_key = bool(os.environ.get("ANTHROPIC_API_KEY"))
-    google_key = bool(os.environ.get("GOOGLE_AI_API_KEY"))
+    # Provider status (check both Streamlit secrets and env vars)
+    anthropic_key = bool(get_secret("ANTHROPIC_API_KEY"))
+    google_key = bool(get_secret("GOOGLE_AI_API_KEY"))
 
     col1, col2 = st.columns(2)
     with col1:
