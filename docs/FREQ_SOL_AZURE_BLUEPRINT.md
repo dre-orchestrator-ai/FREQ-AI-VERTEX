@@ -155,67 +155,47 @@ All operations in the SOL must comply with the four pillars of FREQ LAW:
 
 ## Lattice Nodes
 
-### Node 1: CGE (Cognitive Governance Engine)
+| Node | Platform | Model | Level | Status |
+|------|----------|-------|-------|--------|
+| **CGE** - Cognitive Governance Engine | Copilot Studio | Claude Opus 4.5 | 2 (VETO) | ✅ Configured |
+| **SSC** - Strategic Synthesis Core | Azure Foundry | GPT 5.2 Chat | 1 (Coordination) | ✅ Published v7 |
+| **TOM** - Tactical Optimization Module | Azure Foundry | GPT 5.2 | 5 (Execution) | ⏳ In Progress |
 
-**Platform:** Microsoft Copilot Studio
-**Model:** Claude Opus 4.5 (Experimental)
-**Created:** January 15, 2026
-**Status:** Configured and tested
+### Node Details
 
-**Purpose:**
-- Enforce FREQ LAW compliance on all operations
-- VETO authority over non-compliant operations
-- Generate audit entries for all decisions
+<details>
+<summary><strong>CGE - Cognitive Governance Engine</strong></summary>
 
-**Configuration:**
-```
-Name: Cognitive Governance Engine
-Model: Claude Opus 4.5 (Experimental)
-Knowledge: FREQ_LAW_Governance.txt
-Web Search: Disabled (deterministic decisions)
-```
+| Property | Value |
+|----------|-------|
+| Platform | Microsoft Copilot Studio |
+| Model | Claude Opus 4.5 (Experimental) |
+| Created | January 15, 2026 |
+| Knowledge | FREQ_LAW_Governance.txt |
+| Web Search | Disabled (deterministic decisions) |
 
-**Decision Protocol:**
-1. Receive operation details
-2. Validate against all four FREQ LAW pillars
-3. Return APPROVED or VETOED with reasoning
-4. Generate audit entry
+**Purpose:** Enforce FREQ LAW compliance, VETO authority over non-compliant operations, generate audit entries.
 
-**Test Results:**
-- ✅ Test 1 (Should Approve): PASSED
-- ✅ Test 2 (FAST Violation): Correctly VETOED
-- ✅ Test 3 (ROBUST Violation): Correctly VETOED
+**Decision Protocol:** Receive operation → Validate against FREQ LAW pillars → Return APPROVED/VETOED → Generate audit entry
 
----
+**Test Results:** ✅ All 3 tests passed (Approval, FAST Violation VETO, ROBUST Violation VETO)
+</details>
 
-### Node 2: SSC (Strategic Synthesis Core)
+<details>
+<summary><strong>SSC - Strategic Synthesis Core</strong></summary>
 
-**Platform:** Microsoft Azure Foundry
-**Project:** freq-ontology-v2
-**Model:** GPT 5.2 Chat
-**Created:** January 22, 2026
-**Status:** PUBLISHED (Version 7)
+| Property | Value |
+|----------|-------|
+| Platform | Microsoft Azure Foundry |
+| Project | freq-ontology-v2 |
+| Model | GPT 5.2 Chat |
+| Created | January 22, 2026 |
+| Status | PUBLISHED (Version 7) |
+| API | `https://freq-ontology-v2.services.ai.azure.com/...` |
+| Knowledge | index_freq_governance_knowledge (9.51 KB) |
+| Tools | File search, tactical_runtime (pending) |
 
-**API Endpoints:**
-```
-Activity Protocol: https://freq-ontology-v2.services.ai.azure.com/a...
-Responses API:     https://freq-ontology-v2.services.ai.azure.com/a...
-```
-
-**Purpose:**
-- Central coordinator for all SOL operations
-- Decompose missions into actionable tasks
-- Route requests to appropriate nodes
-- Synthesize multi-node outputs
-
-**Configuration:**
-```
-Display Name: SSC
-Model: gpt-5.2-chat
-Knowledge: index_freq_governance_knowledge (9.51 KB)
-Tools: File search, tactical_runtime (pending)
-Memory: Auto-create memory store
-```
+**Purpose:** Central coordinator for all SOL operations. Decompose missions, route to nodes, synthesize outputs.
 
 **Responsibilities:**
 1. Mission Coordination - Receive and decompose objectives
@@ -223,52 +203,24 @@ Memory: Auto-create memory store
 3. Governance Integration - All ops require CGE approval
 4. Strategic Planning - Track progress, escalate blockers
 
-**Test Results:**
-- ✅ Test 1 (Ambiguous Mission): Correctly escalated for clarification
-- ✅ Test 2 (VECTOR GAMMA Mission): Successfully decomposed into 5 tasks, routed appropriately
+**Test Results:** ✅ All 2 tests passed (Ambiguous Mission escalation, VECTOR GAMMA decomposition)
+</details>
 
-**Sample Output (Test 2):**
-```
-Mission: VECTOR GAMMA – Maritime Barge Draft Analysis
-Status: Planning
-Governance: Pending CGE Approval
+<details>
+<summary><strong>TOM - Tactical Optimization Module</strong></summary>
 
-Actions:
-1. Governance Validation → CGE
-2. Data Intake & Preprocessing → TOM
-3. Draft Measurement Analysis → Optimal Intel
-4. Schema Definition → Schema Authority
-5. Reporting & Audit Logging → TOM
-```
+| Property | Value |
+|----------|-------|
+| Platform | Microsoft Azure Foundry |
+| Project | freq-ontology-v2 |
+| Model | GPT 5.2 |
+| Status | Configuration in progress |
+| Constraints | FAST (≤2000ms), full audit logging |
 
----
+**Purpose:** Execute operations dispatched by SSC, enforce FAST constraint, generate audit logs, handle data processing and reporting.
 
-### Node 3: TOM (Tactical Optimization Module)
-
-**Platform:** Microsoft Azure Foundry
-**Project:** freq-ontology-v2
-**Model:** GPT 5.2
-**Status:** Configuration in progress
-
-**Purpose:**
-- Execute operations dispatched by SSC
-- Enforce FAST constraint (≤2000ms per operation)
-- Generate audit logs for every action
-- Handle data processing and report generation
-
-**Planned Configuration:**
-```
-Display Name: TOM
-Model: GPT 5.2
-Role: Level 5 Runtime Execution
-Constraints: FAST (2000ms), full audit logging
-```
-
-**Capabilities:**
-- Data ingestion and preprocessing
-- Pipeline execution (batch processing)
-- Report generation (JSON, structured output)
-- Audit logging with timestamps
+**Capabilities:** Data ingestion/preprocessing, pipeline execution (batch), report generation (JSON), audit logging with timestamps
+</details>
 
 ---
 
