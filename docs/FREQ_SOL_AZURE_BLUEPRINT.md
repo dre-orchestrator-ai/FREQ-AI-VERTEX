@@ -1,6 +1,6 @@
 # FREQ AI - Sophisticated Operational Lattice (SOL)
 ## Azure AI Infrastructure Blueprint
-### Version 3.0 | January 2026 | Phase 3 Active
+### Version 3.1 | January 2026 | Phase 3 Active
 
 ---
 
@@ -13,6 +13,7 @@
 6. [API Connections](#api-connections)
 7. [Current Status](#current-status)
 8. [Next Steps](#next-steps)
+9. [Azure Digital Twins Integration](#azure-digital-twins-integration)
 
 ---
 
@@ -27,6 +28,7 @@ Organization FREQ has successfully transitioned from a prototype AI infrastructu
 - ✅ Established FREQ LAW governance framework
 - ✅ Agent-to-agent connections operational
 - ✅ **Phase 3 Active**: Databricks Workspace integrated for mission simulation
+- ✅ Azure Digital Twins `lidar-twins` instance provisioned for spatial intelligence
 
 ---
 
@@ -334,6 +336,7 @@ Region: (configured)
 | Databricks Workspace | ✅ Provisioned and configured |
 | Unity Catalog | ✅ Data governance enabled |
 | Delta Lake | ✅ Mission data storage active |
+| Azure Digital Twins | ✅ `lidar-twins` instance provisioned |
 
 ### In Progress ⏳
 
@@ -342,6 +345,8 @@ Region: (configured)
 | VECTOR GAMMA Mission | Full end-to-end simulation in Databricks |
 | MLflow Integration | Model versioning for lattice nodes |
 | Real-time Dashboards | FREQ LAW compliance monitoring |
+| Digital Twins DTDL Models | Define maritime asset models for lidar-twins |
+| Digital Twins Event Routes | Configure data flow to Databricks and TOM |
 
 ### Pending 📋
 
@@ -398,6 +403,97 @@ Region: (configured)
 
 ---
 
+## Azure Digital Twins Integration
+
+### lidar-twins Instance
+
+Azure Digital Twins provides a digital representation of physical environments and assets for the SOL lattice, enabling real-time modeling, simulation, and analytics for mission operations.
+
+| Property | Value |
+|----------|-------|
+| **Instance Name** | lidar-twins |
+| **Host Name** | `lidar-twins.api.eus2.digitaltwins.azure.net` |
+| **Subscription** | FREQ |
+| **Provisioning State** | Active |
+| **Region** | East US 2 |
+
+### Tags
+
+| Tag | Value |
+|-----|-------|
+| project | lidar |
+| owner | chief dre |
+| deployment | lattice core |
+
+### Purpose
+
+The `lidar-twins` Digital Twins instance serves as the spatial intelligence layer for SOL operations:
+
+1. **Asset Modeling** - Digital representation of physical assets for VECTOR GAMMA maritime operations
+2. **Real-time Telemetry** - Ingestion of sensor data (LiDAR, GPS, environmental) for barge drafting calculations
+3. **Simulation** - Pre-mission scenario modeling and validation
+4. **Lattice Integration** - Provides spatial context to TOM for tactical optimization
+
+### Architecture Integration
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    AZURE DIGITAL TWINS                           │
+│                    Instance: lidar-twins                         │
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  DTDL Models (pending)                                   │    │
+│  │  - Maritime vessels                                      │    │
+│  │  - Cargo containers                                      │    │
+│  │  - Sensor arrays (LiDAR)                                │    │
+│  │  - Environmental conditions                              │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                              │                                   │
+│                              │ Twin Graph                        │
+│                              ▼                                   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  Event Routes                                            │    │
+│  │  → Event Hub → Databricks (Delta Lake)                  │    │
+│  │  → Service Bus → TOM (real-time processing)             │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              │ Spatial Intelligence
+                              ▼
+                    ┌─────────────────┐
+                    │       TOM       │
+                    │  (Execution)    │
+                    └─────────────────┘
+```
+
+### Configuration Status
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Instance Provisioning | ✅ Active | Fully deployed |
+| DTDL Models | 📋 Pending | Define maritime asset models |
+| Event Routes | 📋 Pending | Configure data flow to Databricks |
+| Data History | 📋 Pending | Enable historical query support |
+| TOM Integration | 📋 Pending | Connect to tactical module |
+
+### API Endpoint
+
+```
+Host: lidar-twins.api.eus2.digitaltwins.azure.net
+Protocol: HTTPS
+Authentication: Azure AD (Managed Identity recommended)
+SDK: @azure/digital-twins-core
+```
+
+### Next Steps for Digital Twins
+
+1. **Define DTDL Models** - Create Digital Twin Definition Language models for maritime assets
+2. **Configure Event Routes** - Set up event routing to Databricks and TOM
+3. **Enable Data History** - Configure Azure Data Explorer connection for historical queries
+4. **Integrate with TOM** - Connect spatial data to tactical optimization workflows
+
+---
+
 ## Appendix: Key Files
 
 ### Knowledge Sources
@@ -436,6 +532,7 @@ FREQ-AI-VERTEX/
 | 1.0 | 2026-01-22 | SSC/Claude | Initial blueprint |
 | 2.0 | 2026-01-22 | SSC/Claude | Added Azure deployment details |
 | 3.0 | 2026-01-28 | SSC/Claude | Phase 3 activation - Databricks workspace integration |
+| 3.1 | 2026-01-31 | SSC/Claude | Added Azure Digital Twins `lidar-twins` configuration |
 
 ---
 
