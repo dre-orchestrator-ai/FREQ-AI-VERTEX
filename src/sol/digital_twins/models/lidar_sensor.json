@@ -1,0 +1,206 @@
+{
+  "@context": "dtmi:dtdl:context;3",
+  "@id": "dtmi:freq:lattice:LidarSensor;1",
+  "@type": "Interface",
+  "displayName": "LiDAR Sensor",
+  "description": "LiDAR sensor array for maritime draft measurements in VECTOR GAMMA",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "sensorId",
+      "displayName": "Sensor ID",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "sensorModel",
+      "displayName": "Sensor Model",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "manufacturer",
+      "displayName": "Manufacturer",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "sensorType",
+      "displayName": "Sensor Type",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "fixed", "enumValue": "FIXED"},
+          {"name": "drone_mounted", "enumValue": "DRONE_MOUNTED"},
+          {"name": "vessel_mounted", "enumValue": "VESSEL_MOUNTED"},
+          {"name": "shore_based", "enumValue": "SHORE_BASED"}
+        ]
+      }
+    },
+    {
+      "@type": "Property",
+      "name": "maxRangeMeters",
+      "displayName": "Maximum Range (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "accuracyMillimeters",
+      "displayName": "Accuracy (mm)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "scanRateHz",
+      "displayName": "Scan Rate (Hz)",
+      "schema": "integer"
+    },
+    {
+      "@type": "Property",
+      "name": "fieldOfViewDegrees",
+      "displayName": "Field of View (degrees)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "pointsPerSecond",
+      "displayName": "Points Per Second",
+      "schema": "integer"
+    },
+    {
+      "@type": "Property",
+      "name": "calibrationDate",
+      "displayName": "Last Calibration Date",
+      "schema": "dateTime"
+    },
+    {
+      "@type": "Property",
+      "name": "firmwareVersion",
+      "displayName": "Firmware Version",
+      "schema": "string"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "operationalStatus",
+      "displayName": "Operational Status",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "online", "enumValue": "ONLINE"},
+          {"name": "scanning", "enumValue": "SCANNING"},
+          {"name": "processing", "enumValue": "PROCESSING"},
+          {"name": "offline", "enumValue": "OFFLINE"},
+          {"name": "error", "enumValue": "ERROR"},
+          {"name": "calibrating", "enumValue": "CALIBRATING"}
+        ]
+      }
+    },
+    {
+      "@type": "Telemetry",
+      "name": "temperatureCelsius",
+      "displayName": "Temperature (C)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "batteryPercent",
+      "displayName": "Battery Level (%)",
+      "description": "Battery level for drone-mounted sensors",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "signalStrength",
+      "displayName": "Signal Strength",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "currentScanId",
+      "displayName": "Current Scan ID",
+      "schema": "string"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "pointCloudSize",
+      "displayName": "Point Cloud Size",
+      "description": "Number of points in current scan",
+      "schema": "long"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "gpsLatitude",
+      "displayName": "GPS Latitude",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "gpsLongitude",
+      "displayName": "GPS Longitude",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "altitudeMeters",
+      "displayName": "Altitude (m)",
+      "description": "Altitude for drone-mounted sensors",
+      "schema": "double"
+    },
+    {
+      "@type": "Command",
+      "name": "startScan",
+      "displayName": "Start Scan",
+      "request": {
+        "name": "scanConfig",
+        "schema": {
+          "@type": "Object",
+          "fields": [
+            {"name": "resolution", "schema": "string"},
+            {"name": "durationSeconds", "schema": "integer"},
+            {"name": "targetVesselId", "schema": "string"}
+          ]
+        }
+      }
+    },
+    {
+      "@type": "Command",
+      "name": "stopScan",
+      "displayName": "Stop Scan"
+    },
+    {
+      "@type": "Command",
+      "name": "calibrate",
+      "displayName": "Calibrate Sensor"
+    },
+    {
+      "@type": "Command",
+      "name": "exportPointCloud",
+      "displayName": "Export Point Cloud",
+      "request": {
+        "name": "exportConfig",
+        "schema": {
+          "@type": "Object",
+          "fields": [
+            {"name": "format", "schema": "string"},
+            {"name": "scanId", "schema": "string"}
+          ]
+        }
+      }
+    },
+    {
+      "@type": "Relationship",
+      "name": "mountedOn",
+      "displayName": "Mounted On",
+      "description": "Drone or vessel the sensor is mounted on",
+      "target": "dtmi:freq:lattice:LidarDrone;1"
+    },
+    {
+      "@type": "Relationship",
+      "name": "scanning",
+      "displayName": "Currently Scanning",
+      "target": "dtmi:freq:lattice:MaritimeVessel;1"
+    }
+  ]
+}
