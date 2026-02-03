@@ -45,6 +45,19 @@ nodes:
     description: "Schema and artifact generation"
     priority: 3
 
+  exec_scouter:
+    enabled: true
+    description: "Autonomous partnership development (VECTOR DELTA)"
+    priority: 2
+    config_file: "config/scouter_config.yaml"
+    mcp_server: "config/mcp/linkedin_mcp.json"
+    capabilities:
+      - linkedin_automation
+      - investor_outreach
+      - warm_intro_mapping
+      - pitch_generation
+      - mfsin_scouting
+
 # Consensus Settings
 consensus:
   required_votes: 3  # k=3 quorum
@@ -57,6 +70,7 @@ consensus:
     - exec_automate
     - optimal_intel
     - element_design
+    - exec_scouter
 
 # Audit Configuration
 audit:
