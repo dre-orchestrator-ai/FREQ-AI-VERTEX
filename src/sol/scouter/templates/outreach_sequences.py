@@ -243,6 +243,77 @@ Saw the news about {achievement} - congratulations! That's a huge milestone for 
 Keep crushing it!
 
 Dre""",
+
+    # === CONNECTION ACCEPTED - WARM FIRST MESSAGE ===
+    # These trigger when a connection request is ACCEPTED (not sent)
+
+    "connection_accepted_vc_leadership": """Hi {first_name},
+
+Thanks for connecting. I've been following {firm_name}'s thesis on {thesis_area} - your point about {specific_insight} stuck with me.
+
+Building something at the intersection: FREQ is governed AI agent infrastructure. We're solving the "autonomous but compliant" problem that's blocking enterprise AI adoption.
+
+Curious how you're thinking about multi-agent governance as a category. Seeing any other approaches?
+
+Dre""",
+
+    "connection_accepted_enterprise_leadership": """Hi {first_name},
+
+Appreciate the connection. Noticed {company}'s work in {domain} - specifically {specific_initiative}.
+
+We're building AI agent infrastructure at FREQ that might be relevant. Our first deployment is maritime logistics (LiDAR + Digital Twins for automated cargo measurement).
+
+What's driving {company}'s AI/automation priorities right now? Always curious to learn from operators.
+
+Dre""",
+
+    "connection_accepted_ecosystem": """Hi {first_name},
+
+Thanks for connecting. We're building FREQ on {platform} - multi-agent orchestration with enterprise governance.
+
+Already integrated with {integration_1} and {integration_2}. Looking to deepen our {platform} relationship.
+
+Would love to learn about {program_name} and how startups like us can get more involved in the ecosystem.
+
+Dre""",
+
+    "connection_accepted_general_leadership": """Hi {first_name},
+
+Thanks for the connection. Quick context on what I'm building:
+
+FREQ is AI agent infrastructure - the governance layer that makes autonomous systems production-ready for enterprise.
+
+{personalized_hook}
+
+Would love to hear what you're seeing in {their_domain}. Always learning.
+
+Dre""",
+
+    # === CONNECTION ACCEPTED - FOLLOW-UP (Day 5-7) ===
+
+    "connection_accepted_followup_value": """Hi {first_name},
+
+Quick share - thought you'd find this relevant:
+
+{value_share}
+
+Ties back to {connection_to_their_work}.
+
+If you're ever curious about the agent infrastructure space, happy to share what we're learning. No pitch, just perspective.
+
+Dre""",
+
+    "connection_accepted_followup_ask": """Hi {first_name},
+
+Following up - I know your time is limited.
+
+{recent_update}
+
+Would a 15-min call make sense? I'm specifically interested in your perspective on {their_expertise_area}.
+
+If now isn't the right time, no worries. Appreciate the connection either way.
+
+Dre""",
 }
 
 

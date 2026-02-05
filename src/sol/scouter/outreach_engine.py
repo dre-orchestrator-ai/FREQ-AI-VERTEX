@@ -290,8 +290,113 @@ class OutreachEngine:
             tags=["mfsin", "microsoft", "application"],
         )
 
+        # Connection Accepted - VC Leadership
+        connection_accepted_vc = OutreachSequence(
+            name="connection_accepted_vc",
+            description="Warm follow-up when VC/investor accepts connection request",
+            touchpoints=[
+                Touchpoint(
+                    day=0,  # Same day, but delay 4-8 hours in execution
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_vc_leadership",
+                ),
+                Touchpoint(
+                    day=5,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_followup_value",
+                    requires_response_to_previous=False,
+                ),
+                Touchpoint(
+                    day=10,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_followup_ask",
+                    requires_response_to_previous=False,
+                    max_wait_days=7,
+                ),
+            ],
+            success_criteria="Positive response, referral, or meeting scheduled",
+            abort_criteria="Explicit decline or no response after touchpoint 3",
+            tags=["warm", "connection_accepted", "vc", "leadership"],
+        )
+
+        # Connection Accepted - Enterprise Leadership
+        connection_accepted_enterprise = OutreachSequence(
+            name="connection_accepted_enterprise",
+            description="Warm follow-up when enterprise leader accepts connection request",
+            touchpoints=[
+                Touchpoint(
+                    day=0,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_enterprise_leadership",
+                ),
+                Touchpoint(
+                    day=5,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_followup_value",
+                    requires_response_to_previous=False,
+                ),
+                Touchpoint(
+                    day=12,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_followup_ask",
+                    requires_response_to_previous=False,
+                ),
+            ],
+            success_criteria="Demo scheduled or referral to decision maker",
+            abort_criteria="Explicit decline or no response",
+            tags=["warm", "connection_accepted", "enterprise", "leadership"],
+        )
+
+        # Connection Accepted - Ecosystem (Google/Microsoft)
+        connection_accepted_ecosystem = OutreachSequence(
+            name="connection_accepted_ecosystem",
+            description="Warm follow-up when ecosystem contact accepts",
+            touchpoints=[
+                Touchpoint(
+                    day=0,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_ecosystem",
+                ),
+                Touchpoint(
+                    day=7,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_followup_ask",
+                    requires_response_to_previous=False,
+                ),
+            ],
+            success_criteria="Program referral or partnership conversation",
+            abort_criteria="No response after 2 touchpoints",
+            tags=["warm", "connection_accepted", "ecosystem", "google", "microsoft"],
+        )
+
+        # Connection Accepted - General Leadership
+        connection_accepted_general = OutreachSequence(
+            name="connection_accepted_general",
+            description="Warm follow-up for general leadership connections",
+            touchpoints=[
+                Touchpoint(
+                    day=0,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_general_leadership",
+                ),
+                Touchpoint(
+                    day=7,
+                    channel=TouchpointChannel.LINKEDIN_MESSAGE,
+                    template_key="connection_accepted_followup_value",
+                    requires_response_to_previous=False,
+                ),
+            ],
+            success_criteria="Engagement or conversation started",
+            abort_criteria="No response after 2 touchpoints",
+            tags=["warm", "connection_accepted", "general"],
+        )
+
         # Register all sequences
-        for seq in [cold_vc, cold_enterprise, warm_intro, post_meeting, mfsin_followup]:
+        for seq in [
+            cold_vc, cold_enterprise, warm_intro, post_meeting, mfsin_followup,
+            connection_accepted_vc, connection_accepted_enterprise,
+            connection_accepted_ecosystem, connection_accepted_general
+        ]:
             self._sequences[seq.name] = seq
 
     def register_callback(self, event: str, callback: Callable) -> None:
@@ -545,6 +650,61 @@ class OutreachEngine:
         instance.completed_at = datetime.utcnow().isoformat()
         instance.notes = f"Stopped: {reason}"
         return {"instance_id": instance_id, "status": "stopped", "reason": reason}
+
+    def select_connection_accepted_sequence(
+        self,
+        prospect_segment: str,
+        prospect_title: Optional[str] = None,
+        prospect_company: Optional[str] = None
+    ) -> str:
+        """
+        Select the appropriate connection_accepted sequence based on prospect segment.
+
+        Args:
+            prospect_segment: One of 'vc', 'enterprise', 'ecosystem', 'general'
+            prospect_title: Optional title for better matching
+            prospect_company: Optional company for better matching
+
+        Returns:
+            Name of the sequence to use
+        """
+        # Direct segment mapping
+        segment_map = {
+            "vc": "connection_accepted_vc",
+            "investor": "connection_accepted_vc",
+            "partner_vc": "connection_accepted_vc",
+            "enterprise": "connection_accepted_enterprise",
+            "enterprise_leader": "connection_accepted_enterprise",
+            "ecosystem": "connection_accepted_ecosystem",
+            "google": "connection_accepted_ecosystem",
+            "microsoft": "connection_accepted_ecosystem",
+            "general": "connection_accepted_general",
+        }
+
+        # Check direct mapping
+        if prospect_segment.lower() in segment_map:
+            return segment_map[prospect_segment.lower()]
+
+        # Title-based inference
+        if prospect_title:
+            title_lower = prospect_title.lower()
+            if any(t in title_lower for t in ["partner", "principal", "investor", "vc", "venture"]):
+                return "connection_accepted_vc"
+            if any(t in title_lower for t in ["vp", "director", "head", "chief", "cto", "ceo", "coo"]):
+                return "connection_accepted_enterprise"
+            if any(t in title_lower for t in ["program", "startup", "advocate", "ecosystem"]):
+                return "connection_accepted_ecosystem"
+
+        # Company-based inference
+        if prospect_company:
+            company_lower = prospect_company.lower()
+            if any(c in company_lower for c in ["venture", "capital", "partners", "a16z", "sequoia", "greylock"]):
+                return "connection_accepted_vc"
+            if any(c in company_lower for c in ["google", "microsoft", "azure", "gcp"]):
+                return "connection_accepted_ecosystem"
+
+        # Default to general
+        return "connection_accepted_general"
 
     def get_metrics(self) -> Dict[str, Any]:
         """Get outreach engine metrics."""
