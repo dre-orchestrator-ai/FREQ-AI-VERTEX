@@ -1,0 +1,159 @@
+{
+  "@context": "dtmi:dtdl:context;3",
+  "@id": "dtmi:freq:lattice:CargoBarge;1",
+  "@type": "Interface",
+  "displayName": "Cargo Barge",
+  "description": "Cargo barge with draft measurements for VECTOR GAMMA operations",
+  "extends": "dtmi:freq:lattice:MaritimeVessel;1",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "cargoCapacityTons",
+      "displayName": "Cargo Capacity (tons)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "currentCargoTons",
+      "displayName": "Current Cargo (tons)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "cargoType",
+      "displayName": "Cargo Type",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "dry_bulk", "enumValue": "DRY_BULK"},
+          {"name": "liquid", "enumValue": "LIQUID"},
+          {"name": "container", "enumValue": "CONTAINER"},
+          {"name": "mixed", "enumValue": "MIXED"},
+          {"name": "empty", "enumValue": "EMPTY"}
+        ]
+      }
+    },
+    {
+      "@type": "Property",
+      "name": "numberOfHolds",
+      "displayName": "Number of Cargo Holds",
+      "schema": "integer"
+    },
+    {
+      "@type": "Property",
+      "name": "lightDraftMeters",
+      "displayName": "Light Draft (m)",
+      "description": "Draft when vessel is empty",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "loadedDraftMeters",
+      "displayName": "Loaded Draft (m)",
+      "description": "Draft when vessel is fully loaded",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "forwardDraftMeters",
+      "displayName": "Forward Draft (m)",
+      "description": "Draft at bow measured by LiDAR",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "aftDraftMeters",
+      "displayName": "Aft Draft (m)",
+      "description": "Draft at stern measured by LiDAR",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "midshipDraftMeters",
+      "displayName": "Midship Draft (m)",
+      "description": "Draft at midship measured by LiDAR",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "trimMeters",
+      "displayName": "Trim (m)",
+      "description": "Difference between forward and aft draft",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "listDegrees",
+      "displayName": "List (degrees)",
+      "description": "Port/starboard tilt angle",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "estimatedCargoTons",
+      "displayName": "Estimated Cargo (tons)",
+      "description": "Cargo weight estimated from draft measurements",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "draftAccuracyPercent",
+      "displayName": "Draft Accuracy (%)",
+      "description": "Confidence level of draft measurement (target: 99.8%)",
+      "schema": "double"
+    },
+    {
+      "@type": "Command",
+      "name": "initiateBargeScn",
+      "displayName": "Initiate Barge Scan",
+      "description": "Trigger LiDAR scan for draft measurement",
+      "request": {
+        "name": "scanParameters",
+        "schema": {
+          "@type": "Object",
+          "fields": [
+            {"name": "scanResolution", "schema": "string"},
+            {"name": "scanDurationSeconds", "schema": "integer"},
+            {"name": "includePointCloud", "schema": "boolean"}
+          ]
+        }
+      },
+      "response": {
+        "name": "scanResult",
+        "schema": {
+          "@type": "Object",
+          "fields": [
+            {"name": "scanId", "schema": "string"},
+            {"name": "status", "schema": "string"},
+            {"name": "estimatedCompletionTime", "schema": "dateTime"}
+          ]
+        }
+      }
+    },
+    {
+      "@type": "Command",
+      "name": "generateDraftReport",
+      "displayName": "Generate Draft Report",
+      "description": "Generate VECTOR GAMMA draft report",
+      "request": {
+        "name": "reportParameters",
+        "schema": {
+          "@type": "Object",
+          "fields": [
+            {"name": "reportFormat", "schema": "string"},
+            {"name": "includeHistory", "schema": "boolean"}
+          ]
+        }
+      }
+    },
+    {
+      "@type": "Relationship",
+      "name": "hasCargoHolds",
+      "displayName": "Has Cargo Holds",
+      "target": "dtmi:freq:lattice:CargoHold;1",
+      "minMultiplicity": 1,
+      "maxMultiplicity": 10
+    }
+  ]
+}

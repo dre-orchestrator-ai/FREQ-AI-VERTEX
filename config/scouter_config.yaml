@@ -1,0 +1,271 @@
+# Executor Scouter Configuration
+# VECTOR DELTA - Autonomous Partnership Development Agent
+
+# Agent Identity
+identity:
+  name: "Executor Scouter"
+  codename: "VECTOR DELTA"
+  role: "Autonomous Partnership Development Agent"
+  version: "1.0.0"
+
+# FREQ LAW Compliance
+freq_law:
+  max_response_time_ms: 2000
+  require_audit_trail: true
+  gov_engine_veto_enabled: true
+  high_impact_requires_approval: true
+
+# Target Segments
+targets:
+  venture_capital:
+    priority: high
+    focus_areas:
+      - AI/ML Infrastructure
+      - Enterprise SaaS
+      - Maritime Tech
+      - Digital Twins
+    target_firms:
+      - a]6z Crypto (AI Infrastructure)
+      - Lux Capital (Deep Tech)
+      - First Round Capital (Enterprise)
+      - Costanoa Ventures (Enterprise AI)
+      - Primary Venture Partners
+      - Activate Capital
+    search_criteria:
+      titles:
+        - "Partner"
+        - "Principal"
+        - "Associate"
+        - "Investor"
+      keywords:
+        - "AI infrastructure"
+        - "enterprise AI"
+        - "multi-agent systems"
+        - "maritime logistics"
+        - "digital twins"
+
+  accelerators:
+    priority: high
+    programs:
+      - name: "Microsoft for Startups Founders Hub"
+        code: "MFSIN"
+        deadline: "rolling"
+        benefits:
+          - "$150K Azure credits"
+          - "GitHub Enterprise"
+          - "LinkedIn premium"
+          - "Technical mentorship"
+      - name: "Y Combinator"
+        code: "YC"
+        deadline: "quarterly"
+      - name: "Techstars"
+        code: "TS"
+        deadline: "varies"
+      - name: "NVIDIA Inception"
+        code: "NVI"
+        deadline: "rolling"
+
+  enterprise_partners:
+    priority: medium
+    verticals:
+      - Maritime/Logistics
+      - Energy/Utilities
+      - Government/Defense
+    target_roles:
+      - "VP Engineering"
+      - "CTO"
+      - "Head of Innovation"
+      - "Digital Transformation Lead"
+    design_partner_ask:
+      - Early access to platform
+      - Feedback on enterprise features
+      - Case study collaboration
+
+  strategic_partners:
+    priority: medium
+    types:
+      - Cloud Providers (Azure, AWS, GCP)
+      - LiDAR Hardware (Ouster, Velodyne)
+      - Drone Platforms (DJI Enterprise)
+      - Maritime Software Vendors
+
+# Outreach Configuration
+outreach:
+  sequences:
+    cold_vc:
+      steps:
+        - type: "post_comment"
+          delay_days: 0
+          template: "vc_post_comment"
+        - type: "connection_request"
+          delay_days: 2
+          template: "vc_connection_request"
+        - type: "intro_message"
+          delay_days: 3
+          template: "vc_intro_message"
+          requires_connection: true
+        - type: "followup"
+          delay_days: 7
+          template: "vc_followup_message"
+          requires_connection: true
+
+    cold_enterprise:
+      steps:
+        - type: "post_comment"
+          delay_days: 0
+          template: "enterprise_post_comment"
+        - type: "connection_request"
+          delay_days: 1
+          template: "enterprise_connection_request"
+        - type: "intro_message"
+          delay_days: 2
+          template: "enterprise_intro_message"
+          requires_connection: true
+
+    warm_intro:
+      steps:
+        - type: "message"
+          delay_days: 0
+          template: "warm_intro_request"
+        - type: "followup"
+          delay_days: 5
+          template: "warm_intro_followup"
+
+    post_meeting:
+      steps:
+        - type: "email"
+          delay_days: 0
+          template: "meeting_recap_email"
+        - type: "linkedin_message"
+          delay_days: 4
+          template: "meeting_followup_linkedin"
+        - type: "email"
+          delay_days: 10
+          template: "meeting_second_followup"
+
+    mfsin_followup:
+      steps:
+        - type: "email"
+          delay_days: 7
+          template: "mfsin_application_followup"
+        - type: "linkedin"
+          delay_days: 3
+          template: "mfsin_linkedin_followup"
+
+# Rate Limits (LinkedIn ToS Compliance)
+rate_limits:
+  daily:
+    connection_requests: 10
+    messages: 25
+    posts: 2
+    comments: 15
+    profile_views: 100
+  hourly:
+    connection_requests: 3
+    messages: 8
+    comments: 5
+  minimum_delay_between_actions_seconds: 30
+
+# Content Strategy
+content:
+  posting_schedule:
+    # Times in UTC
+    monday: ["14:00", "18:00"]
+    tuesday: ["14:00"]
+    wednesday: ["14:00", "18:00"]
+    thursday: ["14:00"]
+    friday: ["14:00"]
+
+  content_pillars:
+    - name: "Technical Insights"
+      frequency: "2x/week"
+      templates:
+        - "lattice_architecture"
+        - "freq_law_explainer"
+        - "multi_agent_insight"
+        - "digital_twins_maritime"
+
+    - name: "Founder Journey"
+      frequency: "1x/week"
+      templates:
+        - "bootstrap_reality"
+        - "azure_learning"
+        - "founder_lesson"
+
+    - name: "Milestones"
+      frequency: "as_achieved"
+      templates:
+        - "feature_launch"
+        - "partnership_announcement"
+        - "milestone_celebration"
+
+# Personalization Requirements
+personalization:
+  required_fields:
+    - first_name
+    - company
+    - recent_activity
+
+  research_sources:
+    - linkedin_profile
+    - company_website
+    - recent_posts
+    - mutual_connections
+
+  banned_generic_phrases:
+    - "Hope this finds you well"
+    - "I came across your profile"
+    - "I'd love to pick your brain"
+    - "Can I have 15 minutes"
+
+# Metrics & Tracking
+metrics:
+  track:
+    - connection_acceptance_rate
+    - response_rate
+    - meeting_conversion_rate
+    - post_engagement_rate
+    - follower_growth
+
+  goals:
+    weekly:
+      connections_sent: 50
+      responses_received: 10
+      meetings_booked: 2
+      posts_published: 5
+    monthly:
+      new_connections: 150
+      qualified_leads: 20
+      partnerships_initiated: 5
+
+# Audit Trail
+audit:
+  log_all_actions: true
+  destination: "bigquery://sol_audit.scouter_actions"
+  include:
+    - timestamp
+    - action_type
+    - target_profile
+    - content_hash
+    - outcome
+    - latency_ms
+
+# Safety & Compliance
+safety:
+  require_approval_for:
+    - first_message_to_enterprise_exec
+    - investor_meeting_request
+    - partnership_proposal
+
+  auto_approve:
+    - post_comments
+    - post_likes
+    - follow_up_messages
+    - content_posts
+
+  content_guidelines:
+    - Never guarantee specific outcomes
+    - Always disclose AI-assisted communication
+    - Maintain professional tone
+    - Respect opt-out requests immediately
+    - No aggressive follow-ups (max 2 per prospect)

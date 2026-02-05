@@ -1,0 +1,37 @@
+{
+  "name": "FREQ Executor Scouter",
+  "description": "Strategic Router for autonomous business development and venture capital scouting",
+  "owner": {
+    "name": "FREQ / Chief Dre",
+    "url": "https://github.com/dre-orchestrator-ai"
+  },
+  "plugins": [
+    {
+      "name": "executor-scouter",
+      "description": "VECTOR DELTA - Autonomous Partnership Development Agent for investor outreach, LinkedIn automation, relationship mapping, and dynamic pitch generation",
+      "version": "1.1.0",
+      "author": "FREQ / SOL Lattice",
+      "category": "Business Development",
+      "tags": ["vc-scouting", "linkedin", "outreach", "partnership", "investor-relations"],
+      "capabilities": [
+        "Autonomous Data Scouting (MFSIN Partner Discovery)",
+        "Profile Optimization & Engagement (LinkedIn)",
+        "Relationship Mapping & Outreach (Warm Intros)",
+        "Targeted Communication to Industry Connections",
+        "Dynamic Pitch Generation"
+      ],
+      "source": {
+        "source": "github",
+        "repo": "dre-orchestrator-ai/FREQ-AI-VERTEX",
+        "ref": "main"
+      },
+      "skill_file": ".claude/SKILL.md",
+      "config_file": "config/scouter_config.yaml",
+      "assets": [
+        "assets/linkedin_posts_ready.md",
+        "assets/target_contacts.md",
+        "assets/executor_scouter_workflow.md"
+      ]
+    }
+  ]
+}

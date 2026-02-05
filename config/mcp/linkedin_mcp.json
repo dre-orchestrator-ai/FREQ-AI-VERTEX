@@ -1,0 +1,184 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/server.json",
+  "name": "linkedin-mcp",
+  "version": "1.0.0",
+  "description": "LinkedIn MCP Server for FREQ Executor Scouter (VECTOR DELTA)",
+
+  "server": {
+    "command": "npx",
+    "args": ["-y", "@anthropic/linkedin-mcp-server"],
+    "env": {
+      "LINKEDIN_ACCESS_TOKEN": "${LINKEDIN_ACCESS_TOKEN}",
+      "LINKEDIN_CLIENT_ID": "${LINKEDIN_CLIENT_ID}",
+      "LINKEDIN_CLIENT_SECRET": "${LINKEDIN_CLIENT_SECRET}"
+    }
+  },
+
+  "capabilities": {
+    "tools": true,
+    "resources": false,
+    "prompts": false
+  },
+
+  "tools": [
+    {
+      "name": "linkedin_send_connection",
+      "description": "Send a connection request with optional note",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "profile_url": {
+            "type": "string",
+            "description": "LinkedIn profile URL or URN"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "Connection request note (max 300 chars)"
+          }
+        },
+        "required": ["profile_url"]
+      }
+    },
+    {
+      "name": "linkedin_send_message",
+      "description": "Send a direct message to a connection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "recipient_urn": {
+            "type": "string",
+            "description": "Recipient LinkedIn URN"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message content"
+          }
+        },
+        "required": ["recipient_urn", "message"]
+      }
+    },
+    {
+      "name": "linkedin_create_post",
+      "description": "Create a LinkedIn post",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "maxLength": 3000,
+            "description": "Post content"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": ["PUBLIC", "CONNECTIONS"],
+            "default": "PUBLIC"
+          }
+        },
+        "required": ["content"]
+      }
+    },
+    {
+      "name": "linkedin_engage_post",
+      "description": "Like or comment on a post",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "post_urn": {
+            "type": "string",
+            "description": "Post URN to engage with"
+          },
+          "action": {
+            "type": "string",
+            "enum": ["like", "comment"]
+          },
+          "comment_text": {
+            "type": "string",
+            "description": "Comment text (required if action is comment)"
+          }
+        },
+        "required": ["post_urn", "action"]
+      }
+    },
+    {
+      "name": "linkedin_get_profile",
+      "description": "Get profile information",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "profile_url": {
+            "type": "string",
+            "description": "LinkedIn profile URL"
+          }
+        },
+        "required": ["profile_url"]
+      }
+    },
+    {
+      "name": "linkedin_search_people",
+      "description": "Search for people on LinkedIn",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Search keywords"
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "company": {"type": "string"},
+              "title": {"type": "string"},
+              "location": {"type": "string"},
+              "industry": {"type": "string"}
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "default": 10,
+            "maximum": 25
+          }
+        },
+        "required": ["keywords"]
+      }
+    }
+  ],
+
+  "rate_limits": {
+    "connections_per_day": 10,
+    "messages_per_day": 25,
+    "posts_per_day": 2,
+    "comments_per_day": 10,
+    "searches_per_day": 50,
+    "cooldown_between_actions_ms": 5000
+  },
+
+  "freq_law_compliance": {
+    "max_response_time_ms": 2000,
+    "require_audit_trail": true,
+    "audit_destination": "bigquery://sol_audit.scouter_actions",
+    "require_personalization": true,
+    "banned_patterns": [
+      "guaranteed returns",
+      "investment opportunity",
+      "limited time offer",
+      "act now"
+    ]
+  },
+
+  "safety": {
+    "require_human_approval_for": [
+      "enterprise_outreach",
+      "investor_first_contact"
+    ],
+    "auto_approve": [
+      "post_engagement",
+      "follow_up_messages"
+    ],
+    "content_review": {
+      "enabled": true,
+      "block_spam_patterns": true,
+      "ensure_professional_tone": true
+    }
+  }
+}

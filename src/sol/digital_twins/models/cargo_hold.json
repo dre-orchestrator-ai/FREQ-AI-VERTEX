@@ -1,0 +1,77 @@
+{
+  "@context": "dtmi:dtdl:context;3",
+  "@id": "dtmi:freq:lattice:CargoHold;1",
+  "@type": "Interface",
+  "displayName": "Cargo Hold",
+  "description": "Individual cargo hold within a barge for granular draft analysis",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "holdId",
+      "displayName": "Hold ID",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "holdNumber",
+      "displayName": "Hold Number",
+      "schema": "integer"
+    },
+    {
+      "@type": "Property",
+      "name": "position",
+      "displayName": "Position",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "forward", "enumValue": "FORWARD"},
+          {"name": "midship", "enumValue": "MIDSHIP"},
+          {"name": "aft", "enumValue": "AFT"}
+        ]
+      }
+    },
+    {
+      "@type": "Property",
+      "name": "volumeCubicMeters",
+      "displayName": "Volume (m3)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "maxCapacityTons",
+      "displayName": "Max Capacity (tons)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "currentLoadTons",
+      "displayName": "Current Load (tons)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "fillPercent",
+      "displayName": "Fill Level (%)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "cargoType",
+      "displayName": "Current Cargo Type",
+      "schema": "string"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "temperatureCelsius",
+      "displayName": "Hold Temperature (C)",
+      "schema": "double"
+    },
+    {
+      "@type": "Relationship",
+      "name": "belongsTo",
+      "displayName": "Belongs to Barge",
+      "target": "dtmi:freq:lattice:CargoBarge;1"
+    }
+  ]
+}
