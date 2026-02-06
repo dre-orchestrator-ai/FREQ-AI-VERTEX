@@ -61,7 +61,7 @@ venv.bak/
 
 # IDEs
 .idea/
-.vscode/
+# .vscode/ tracked for Mission Control (Agent-First workspace)
 *.swp
 *.swo
 *~
