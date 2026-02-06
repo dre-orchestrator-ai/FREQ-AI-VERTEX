@@ -1,0 +1,166 @@
+{
+  "schema_version": "1.2.0",
+  "legacy_system": "Azure Digital Twin (lidar-twins)",
+  "migration_target": "Google Cloud Supply Chain Twin",
+  "fleet_registry": {
+    "BARGE-DELTA-001": {
+      "vessel_name": "Delta Pioneer",
+      "vessel_type": "CARGO_BARGE",
+      "dimensions": {
+        "length_m": 76.2,
+        "beam_m": 10.7,
+        "depth_m": 4.5,
+        "max_draft_m": 3.8
+      },
+      "displacement": {
+        "light_displacement_tons": 850,
+        "deadweight_tons": 2500,
+        "max_cargo_tons": 2200
+      },
+      "hull_coefficients": {
+        "block_coefficient": 0.85,
+        "prismatic_coefficient": 0.82,
+        "midship_coefficient": 0.98
+      },
+      "draft_marks": {
+        "forward_position_m": 5.0,
+        "midship_position_m": 38.1,
+        "aft_position_m": 71.2
+      },
+      "home_port": "Port of Houston",
+      "registration": "US-TX-2019-0847"
+    },
+    "BARGE-DELTA-002": {
+      "vessel_name": "Delta Voyager",
+      "vessel_type": "CARGO_BARGE",
+      "dimensions": {
+        "length_m": 76.2,
+        "beam_m": 10.7,
+        "depth_m": 4.5,
+        "max_draft_m": 3.8
+      },
+      "displacement": {
+        "light_displacement_tons": 855,
+        "deadweight_tons": 2480,
+        "max_cargo_tons": 2180
+      },
+      "hull_coefficients": {
+        "block_coefficient": 0.85,
+        "prismatic_coefficient": 0.82,
+        "midship_coefficient": 0.98
+      },
+      "draft_marks": {
+        "forward_position_m": 5.0,
+        "midship_position_m": 38.1,
+        "aft_position_m": 71.2
+      },
+      "home_port": "Port of Houston",
+      "registration": "US-TX-2019-0848"
+    },
+    "BARGE-DELTA-003": {
+      "vessel_name": "Delta Ranger",
+      "vessel_type": "CARGO_BARGE",
+      "dimensions": {
+        "length_m": 76.2,
+        "beam_m": 10.7,
+        "depth_m": 4.5,
+        "max_draft_m": 3.8
+      },
+      "displacement": {
+        "light_displacement_tons": 860,
+        "deadweight_tons": 2470,
+        "max_cargo_tons": 2160
+      },
+      "hull_coefficients": {
+        "block_coefficient": 0.85,
+        "prismatic_coefficient": 0.82,
+        "midship_coefficient": 0.98
+      },
+      "draft_marks": {
+        "forward_position_m": 5.0,
+        "midship_position_m": 38.1,
+        "aft_position_m": 71.2
+      },
+      "home_port": "Port of New Orleans",
+      "registration": "US-LA-2020-0312"
+    },
+    "BARGE-GAMMA-001": {
+      "vessel_name": "Gamma Titan",
+      "vessel_type": "HEAVY_CARGO_BARGE",
+      "dimensions": {
+        "length_m": 91.4,
+        "beam_m": 13.7,
+        "depth_m": 5.5,
+        "max_draft_m": 4.2
+      },
+      "displacement": {
+        "light_displacement_tons": 1250,
+        "deadweight_tons": 3500,
+        "max_cargo_tons": 3100
+      },
+      "hull_coefficients": {
+        "block_coefficient": 0.88,
+        "prismatic_coefficient": 0.84,
+        "midship_coefficient": 0.99
+      },
+      "draft_marks": {
+        "forward_position_m": 6.0,
+        "midship_position_m": 45.7,
+        "aft_position_m": 85.4
+      },
+      "home_port": "Port of Houston",
+      "registration": "US-TX-2021-0155"
+    },
+    "BARGE-GAMMA-002": {
+      "vessel_name": "Gamma Atlas",
+      "vessel_type": "HEAVY_CARGO_BARGE",
+      "dimensions": {
+        "length_m": 91.4,
+        "beam_m": 13.7,
+        "depth_m": 5.5,
+        "max_draft_m": 4.2
+      },
+      "displacement": {
+        "light_displacement_tons": 1260,
+        "deadweight_tons": 3480,
+        "max_cargo_tons": 3080
+      },
+      "hull_coefficients": {
+        "block_coefficient": 0.88,
+        "prismatic_coefficient": 0.84,
+        "midship_coefficient": 0.99
+      },
+      "draft_marks": {
+        "forward_position_m": 6.0,
+        "midship_position_m": 45.7,
+        "aft_position_m": 85.4
+      },
+      "home_port": "Port of Mobile",
+      "registration": "US-AL-2021-0289"
+    }
+  },
+  "sensor_calibration": {
+    "measurement_accuracy_target_pct": 99.8,
+    "draft_tolerance_mm": 10,
+    "list_tolerance_deg": 0.1,
+    "trim_tolerance_mm": 15
+  },
+  "environmental_corrections": {
+    "seawater_density_kg_m3": 1025,
+    "freshwater_density_kg_m3": 1000,
+    "temperature_correction_factor": 0.0002,
+    "salinity_correction_factor": 0.0008
+  },
+  "variable_mapping": {
+    "legacy_to_supply_chain_twin": {
+      "forward_draft_m": "measurements.draft.forward.value",
+      "midship_draft_m": "measurements.draft.midship.value",
+      "aft_draft_m": "measurements.draft.aft.value",
+      "trim_m": "measurements.trim.value",
+      "list_deg": "measurements.list.value",
+      "cargo_tons": "cargo.weight.value",
+      "water_temp_c": "environment.waterTemperature.value",
+      "salinity_ppt": "environment.salinity.value"
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "telemetry_stream_id": "LATTICE-STREAM-001",
+  "source_system": "IoT Core Ingestion",
+  "sample_records": [
+    {
+      "device_id": "SENSOR-FWDRAFT-001",
+      "barge_id": "BARGE-DELTA-001",
+      "timestamp": "2025-01-25T14:30:00.123Z",
+      "sensor_type": "ULTRASONIC_DRAFT",
+      "position": "FORWARD",
+      "raw_value": 2.847,
+      "unit": "meters",
+      "quality_score": 0.995,
+      "temperature_compensated": true
+    },
+    {
+      "device_id": "SENSOR-MIDDRAFT-001",
+      "barge_id": "BARGE-DELTA-001",
+      "timestamp": "2025-01-25T14:30:00.145Z",
+      "sensor_type": "ULTRASONIC_DRAFT",
+      "position": "MIDSHIP",
+      "raw_value": 2.923,
+      "unit": "meters",
+      "quality_score": 0.998,
+      "temperature_compensated": true
+    },
+    {
+      "device_id": "SENSOR-AFTDRAFT-001",
+      "barge_id": "BARGE-DELTA-001",
+      "timestamp": "2025-01-25T14:30:00.167Z",
+      "sensor_type": "ULTRASONIC_DRAFT",
+      "position": "AFT",
+      "raw_value": 2.998,
+      "unit": "meters",
+      "quality_score": 0.996,
+      "temperature_compensated": true
+    },
+    {
+      "device_id": "SENSOR-INCLINE-001",
+      "barge_id": "BARGE-DELTA-001",
+      "timestamp": "2025-01-25T14:30:00.189Z",
+      "sensor_type": "INCLINOMETER",
+      "position": "CENTER",
+      "raw_value": 0.35,
+      "unit": "degrees",
+      "quality_score": 0.999,
+      "temperature_compensated": false
+    },
+    {
+      "device_id": "SENSOR-LOAD-001",
+      "barge_id": "BARGE-DELTA-001",
+      "timestamp": "2025-01-25T14:30:00.211Z",
+      "sensor_type": "LOAD_CELL",
+      "position": "HOLD_1",
+      "raw_value": 485.2,
+      "unit": "tons",
+      "quality_score": 0.992,
+      "temperature_compensated": true
+    },
+    {
+      "device_id": "SENSOR-LOAD-002",
+      "barge_id": "BARGE-DELTA-001",
+      "timestamp": "2025-01-25T14:30:00.233Z",
+      "sensor_type": "LOAD_CELL",
+      "position": "HOLD_2",
+      "raw_value": 512.8,
+      "unit": "tons",
+      "quality_score": 0.994,
+      "temperature_compensated": true
+    },
+    {
+      "device_id": "SENSOR-LOAD-003",
+      "barge_id": "BARGE-DELTA-001",
+      "timestamp": "2025-01-25T14:30:00.255Z",
+      "sensor_type": "LOAD_CELL",
+      "position": "HOLD_3",
+      "raw_value": 498.5,
+      "unit": "tons",
+      "quality_score": 0.991,
+      "temperature_compensated": true
+    },
+    {
+      "device_id": "SENSOR-LOAD-004",
+      "barge_id": "BARGE-DELTA-001",
+      "timestamp": "2025-01-25T14:30:00.277Z",
+      "sensor_type": "LOAD_CELL",
+      "position": "HOLD_4",
+      "raw_value": 468.3,
+      "unit": "tons",
+      "quality_score": 0.993,
+      "temperature_compensated": true
+    }
+  ],
+  "bigquery_schema_mapping": {
+    "table": "barge_intelligence.sensor_telemetry",
+    "fields": [
+      {"name": "device_id", "type": "STRING", "mode": "REQUIRED"},
+      {"name": "barge_id", "type": "STRING", "mode": "REQUIRED"},
+      {"name": "timestamp", "type": "TIMESTAMP", "mode": "REQUIRED"},
+      {"name": "sensor_type", "type": "STRING", "mode": "REQUIRED"},
+      {"name": "position", "type": "STRING", "mode": "NULLABLE"},
+      {"name": "raw_value", "type": "FLOAT64", "mode": "REQUIRED"},
+      {"name": "unit", "type": "STRING", "mode": "REQUIRED"},
+      {"name": "quality_score", "type": "FLOAT64", "mode": "NULLABLE"},
+      {"name": "temperature_compensated", "type": "BOOL", "mode": "NULLABLE"}
+    ]
+  }
+}

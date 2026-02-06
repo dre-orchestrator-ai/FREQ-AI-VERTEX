@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lattice Core - Maritime Digital Mirror</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --border-color: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 span {
+            color: var(--accent-blue);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-badge.healthy {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .status-badge.degraded {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-yellow);
+        }
+
+        .status-badge.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.healthy { background: var(--accent-green); }
+        .status-dot.degraded { background: var(--accent-yellow); }
+        .status-dot.critical { background: var(--accent-red); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main {
+            padding: 24px;
+            display: grid;
+            gap: 24px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .metric-card .label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .metric-card .value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .metric-card .unit {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-left: 4px;
+        }
+
+        .metric-card.highlight {
+            border-color: var(--accent-blue);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .status-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .status-item .count {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .status-item .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .status-item.stable .count { color: var(--accent-green); }
+        .status-item.caution .count { color: var(--accent-yellow); }
+        .status-item.warning .count { color: var(--accent-yellow); }
+        .status-item.critical .count { color: var(--accent-red); }
+
+        .vessel-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .vessel-section h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vessel-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .vessel-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .vessel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .vessel-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .vessel-id {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .vessel-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .vessel-status.stable {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .vessel-status.caution {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-yellow);
+        }
+
+        .vessel-status.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-yellow);
+        }
+
+        .vessel-status.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
+        .vessel-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .vessel-metric {
+            background: var(--bg-primary);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .vessel-metric .label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .vessel-metric .value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .draft-visual {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+        }
+
+        .draft-bar {
+            flex: 1;
+            height: 20px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .draft-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+            transition: width 0.5s ease;
+        }
+
+        .draft-fill.warning {
+            background: linear-gradient(90deg, var(--accent-yellow), var(--accent-yellow));
+        }
+
+        .draft-fill.critical {
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-red));
+        }
+
+        .draft-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            min-width: 80px;
+        }
+
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .system-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .system-item .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .system-item .dot.connected { background: var(--accent-green); }
+        .system-item .dot.disconnected { background: var(--accent-red); }
+
+        .footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .simulation-info {
+            display: flex;
+            gap: 24px;
+        }
+
+        .simulation-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .vessel-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+            </svg>
+            <span>Lattice Core</span> / Maritime Digital Mirror
+        </h1>
+        <div id="systemHealth" class="status-badge healthy">
+            <div class="status-dot healthy"></div>
+            <span>HEALTHY</span>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Fleet Metrics -->
+        <section class="metrics-grid">
+            <div class="metric-card highlight">
+                <div class="label">Fleet Health Score</div>
+                <div class="value"><span id="avgHealthScore">98.5</span><span class="unit">%</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Total Vessels</div>
+                <div class="value" id="totalVessels">1</div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Total Cargo</div>
+                <div class="value"><span id="totalCargo">0</span><span class="unit">tons</span></div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Capacity Utilization</div>
+                <div class="value"><span id="capacityUtil">0</span><span class="unit">%</span></div>
+            </div>
+        </section>
+
+        <!-- Status Distribution -->
+        <section class="status-grid">
+            <div class="status-item stable">
+                <div class="count" id="stableCount">1</div>
+                <div class="label">Stable</div>
+            </div>
+            <div class="status-item caution">
+                <div class="count" id="cautionCount">0</div>
+                <div class="label">Caution</div>
+            </div>
+            <div class="status-item warning">
+                <div class="count" id="warningCount">0</div>
+                <div class="label">Warning</div>
+            </div>
+            <div class="status-item critical">
+                <div class="count" id="criticalCount">0</div>
+                <div class="label">Critical</div>
+            </div>
+        </section>
+
+        <!-- Vessel Detail -->
+        <section class="vessel-section">
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+                    <line x1="6" y1="1" x2="6" y2="4"/>
+                    <line x1="10" y1="1" x2="10" y2="4"/>
+                    <line x1="14" y1="1" x2="14" y2="4"/>
+                </svg>
+                Active Vessels
+            </h2>
+
+            <div id="vesselContainer">
+                <!-- Vessel cards will be injected here -->
+            </div>
+        </section>
+
+        <!-- System Status -->
+        <section class="vessel-section">
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+                System Components
+            </h2>
+            <div class="system-status">
+                <div class="system-item">
+                    <div id="bqDot" class="dot connected"></div>
+                    <span>BigQuery Pipeline</span>
+                </div>
+                <div class="system-item">
+                    <div id="sctDot" class="dot connected"></div>
+                    <span>Supply Chain Twin</span>
+                </div>
+                <div class="system-item">
+                    <div id="iotDot" class="dot connected"></div>
+                    <span>IoT Core Ingestion</span>
+                </div>
+                <div class="system-item">
+                    <div id="simDot" class="dot connected"></div>
+                    <span>Simulation Engine</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div>Lattice Core v1.0.0 | Google Cloud Supply Chain Twin</div>
+        <div class="simulation-info">
+            <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12,6 12,12 16,14"/>
+                </svg>
+                Uptime: <span id="uptime">0:00</span>
+            </span>
+            <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+                </svg>
+                Telemetry: <span id="telemetryRate">0</span>/sec
+            </span>
+            <span>
+                Last Update: <span id="lastUpdate">--</span>
+            </span>
+        </div>
+    </footer>
+
+    <script>
+        // Lattice Core Dashboard Controller
+        class LatticeCoreDashboard {
+            constructor() {
+                this.startTime = Date.now();
+                this.updateCount = 0;
+
+                // Initialize simulation
+                this.initSimulation();
+
+                // Start update loop
+                this.startUpdateLoop();
+            }
+
+            initSimulation() {
+                this.simulation = {
+                    barge: {
+                        id: 'BARGE-DELTA-001',
+                        name: 'Delta Pioneer',
+                        maxDraft: 3.8,
+                        maxCargo: 2200,
+                        lightDraft: 1.8
+                    },
+                    mode: 'LOADING',
+                    progress: 0,
+                    targetCargo: 1800,
+                    currentCargo: 0
+                };
+            }
+
+            startUpdateLoop() {
+                setInterval(() => this.update(), 1000);
+            }
+
+            update() {
+                this.updateCount++;
+                const elapsed = (Date.now() - this.startTime) / 1000;
+
+                // Update simulation progress (10-minute cycle = 600 seconds)
+                this.simulation.progress = Math.min(1, elapsed / 600);
+
+                // Calculate current cargo based on loading progress
+                this.simulation.currentCargo = this.simulation.targetCargo * this.simulation.progress;
+
+                // Calculate draft based on cargo
+                const draftPerTon = (this.simulation.barge.maxDraft - this.simulation.barge.lightDraft) /
+                                    this.simulation.barge.maxCargo;
+                const draftIncrease = this.simulation.currentCargo * draftPerTon;
+                const baseDraft = this.simulation.barge.lightDraft + draftIncrease;
+
+                // Add some realistic variation
+                const noise = () => (Math.random() - 0.5) * 0.02;
+                const wavePhase = (elapsed / 8) * Math.PI * 2;
+                const waveEffect = Math.sin(wavePhase) * 0.01;
+
+                const forwardDraft = baseDraft - 0.05 + noise() + waveEffect;
+                const midshipDraft = baseDraft + noise();
+                const aftDraft = baseDraft + 0.08 + noise() - waveEffect;
+                const trim = forwardDraft - aftDraft;
+                const list = (Math.random() - 0.5) * 0.6;
+
+                // Calculate health score
+                const draftPct = (midshipDraft / this.simulation.barge.maxDraft) * 100;
+                let healthScore = 100;
+                if (draftPct > 90) healthScore -= (draftPct - 90) * 2;
+                if (Math.abs(trim) > 0.2) healthScore -= (Math.abs(trim) - 0.2) * 50;
+                if (Math.abs(list) > 1.0) healthScore -= (Math.abs(list) - 1.0) * 20;
+                healthScore = Math.max(0, Math.min(100, healthScore));
+
+                // Determine status
+                let status = 'STABLE';
+                if (healthScore < 85) status = 'CAUTION';
+                if (healthScore < 70) status = 'WARNING';
+                if (healthScore < 50) status = 'CRITICAL';
+
+                // Update UI
+                this.updateMetrics({
+                    avgHealthScore: healthScore.toFixed(1),
+                    totalVessels: 1,
+                    totalCargo: Math.round(this.simulation.currentCargo),
+                    capacityUtil: ((this.simulation.currentCargo / this.simulation.barge.maxCargo) * 100).toFixed(1),
+                    stableCount: status === 'STABLE' ? 1 : 0,
+                    cautionCount: status === 'CAUTION' ? 1 : 0,
+                    warningCount: status === 'WARNING' ? 1 : 0,
+                    criticalCount: status === 'CRITICAL' ? 1 : 0
+                });
+
+                this.updateVessel({
+                    id: this.simulation.barge.id,
+                    name: this.simulation.barge.name,
+                    forwardDraft: forwardDraft.toFixed(3),
+                    midshipDraft: midshipDraft.toFixed(3),
+                    aftDraft: aftDraft.toFixed(3),
+                    trim: trim.toFixed(3),
+                    list: list.toFixed(2),
+                    cargo: Math.round(this.simulation.currentCargo),
+                    draftPct: draftPct.toFixed(1),
+                    cargoPct: ((this.simulation.currentCargo / this.simulation.barge.maxCargo) * 100).toFixed(1),
+                    healthScore: healthScore.toFixed(1),
+                    status: status,
+                    mode: this.simulation.progress < 0.95 ? 'LOADING' : 'LOADED'
+                });
+
+                this.updateSystemStatus(elapsed);
+                this.updateHealthBadge(status);
+            }
+
+            updateMetrics(data) {
+                document.getElementById('avgHealthScore').textContent = data.avgHealthScore;
+                document.getElementById('totalVessels').textContent = data.totalVessels;
+                document.getElementById('totalCargo').textContent = data.totalCargo;
+                document.getElementById('capacityUtil').textContent = data.capacityUtil;
+                document.getElementById('stableCount').textContent = data.stableCount;
+                document.getElementById('cautionCount').textContent = data.cautionCount;
+                document.getElementById('warningCount').textContent = data.warningCount;
+                document.getElementById('criticalCount').textContent = data.criticalCount;
+            }
+
+            updateVessel(vessel) {
+                const container = document.getElementById('vesselContainer');
+                const statusClass = vessel.status.toLowerCase();
+                const draftClass = vessel.draftPct > 95 ? 'critical' : vessel.draftPct > 85 ? 'warning' : '';
+
+                container.innerHTML = `
+                    <div class="vessel-card">
+                        <div class="vessel-header">
+                            <div>
+                                <div class="vessel-name">${vessel.name}</div>
+                                <div class="vessel-id">${vessel.id}</div>
+                            </div>
+                            <div class="vessel-status ${statusClass}">${vessel.status}</div>
+                        </div>
+                        <div class="vessel-metrics">
+                            <div class="vessel-metric">
+                                <div class="label">Forward Draft</div>
+                                <div class="value">${vessel.forwardDraft}m</div>
+                            </div>
+                            <div class="vessel-metric">
+                                <div class="label">Midship Draft</div>
+                                <div class="value">${vessel.midshipDraft}m</div>
+                            </div>
+                            <div class="vessel-metric">
+                                <div class="label">Aft Draft</div>
+                                <div class="value">${vessel.aftDraft}m</div>
+                            </div>
+                            <div class="vessel-metric">
+                                <div class="label">Trim</div>
+                                <div class="value">${vessel.trim}m</div>
+                            </div>
+                            <div class="vessel-metric">
+                                <div class="label">List</div>
+                                <div class="value">${vessel.list}°</div>
+                            </div>
+                            <div class="vessel-metric">
+                                <div class="label">Cargo</div>
+                                <div class="value">${vessel.cargo}t</div>
+                            </div>
+                            <div class="vessel-metric">
+                                <div class="label">Health Score</div>
+                                <div class="value">${vessel.healthScore}%</div>
+                            </div>
+                            <div class="vessel-metric">
+                                <div class="label">Mode</div>
+                                <div class="value">${vessel.mode}</div>
+                            </div>
+                        </div>
+                        <div class="draft-visual">
+                            <div class="draft-label">Draft: ${vessel.draftPct}%</div>
+                            <div class="draft-bar">
+                                <div class="draft-fill ${draftClass}" style="width: ${vessel.draftPct}%"></div>
+                            </div>
+                        </div>
+                        <div class="draft-visual">
+                            <div class="draft-label">Cargo: ${vessel.cargoPct}%</div>
+                            <div class="draft-bar">
+                                <div class="draft-fill" style="width: ${vessel.cargoPct}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            updateSystemStatus(elapsed) {
+                const mins = Math.floor(elapsed / 60);
+                const secs = Math.floor(elapsed % 60);
+                document.getElementById('uptime').textContent =
+                    `${mins}:${secs.toString().padStart(2, '0')}`;
+
+                document.getElementById('telemetryRate').textContent =
+                    (this.updateCount / Math.max(1, elapsed)).toFixed(1);
+
+                document.getElementById('lastUpdate').textContent =
+                    new Date().toLocaleTimeString();
+
+                // All systems connected for demo
+                ['bqDot', 'sctDot', 'iotDot', 'simDot'].forEach(id => {
+                    document.getElementById(id).className = 'dot connected';
+                });
+            }
+
+            updateHealthBadge(status) {
+                const badge = document.getElementById('systemHealth');
+                const statusClass = status === 'STABLE' ? 'healthy' :
+                                   status === 'CRITICAL' ? 'critical' : 'degraded';
+
+                badge.className = `status-badge ${statusClass}`;
+                badge.innerHTML = `
+                    <div class="status-dot ${statusClass}"></div>
+                    <span>${status === 'STABLE' ? 'HEALTHY' : status}</span>
+                `;
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            new LatticeCoreDashboard();
+        });
+    </script>
+</body>
+</html>
