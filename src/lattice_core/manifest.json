@@ -5,6 +5,85 @@
   "codename": "Antigravity",
   "description": "Data-Driven Digital Mirror for Maritime Operations",
 
+  "tools": {
+    "bash": {
+      "name": "Bash",
+      "description": "Execute shell commands for build, test, and automation tasks",
+      "permissions": ["builder", "auditor"],
+      "constraints": {
+        "timeout_ms": 120000,
+        "sandboxed": true,
+        "allowed_commands": ["python", "pip", "npm", "git", "pytest", "make", "echo", "ls", "cat"]
+      }
+    },
+    "pull_request": {
+      "name": "PullRequest",
+      "description": "GitHub pull request operations - view, create, review, merge",
+      "permissions": ["architect", "builder", "auditor"],
+      "operations": {
+        "view": {
+          "description": "View pull request details, diff, and comments",
+          "command": "gh pr view"
+        },
+        "list": {
+          "description": "List open pull requests",
+          "command": "gh pr list"
+        },
+        "create": {
+          "description": "Create a new pull request",
+          "command": "gh pr create"
+        },
+        "review": {
+          "description": "Review a pull request with comments or approval",
+          "command": "gh pr review"
+        },
+        "diff": {
+          "description": "View pull request diff",
+          "command": "gh pr diff"
+        },
+        "checks": {
+          "description": "View CI/CD check status",
+          "command": "gh pr checks"
+        }
+      }
+    },
+    "git": {
+      "name": "Git",
+      "description": "Git version control operations",
+      "permissions": ["builder"],
+      "operations": {
+        "status": "git status",
+        "diff": "git diff",
+        "log": "git log",
+        "commit": "git commit",
+        "push": "git push",
+        "pull": "git pull",
+        "branch": "git branch",
+        "checkout": "git checkout"
+      }
+    },
+    "read": {
+      "name": "Read",
+      "description": "Read file contents from the workspace",
+      "permissions": ["architect", "builder", "auditor", "sentinel"]
+    },
+    "write": {
+      "name": "Write",
+      "description": "Write or create files in the workspace",
+      "permissions": ["builder"]
+    },
+    "edit": {
+      "name": "Edit",
+      "description": "Edit existing files with precise replacements",
+      "permissions": ["builder"]
+    },
+    "search": {
+      "name": "Search",
+      "description": "Search codebase using glob patterns and grep",
+      "permissions": ["architect", "builder", "auditor", "sentinel"]
+    }
+  },
+
   "capabilities": {
     "digitalMirror": {
       "enabled": true,
@@ -40,17 +119,26 @@
         "architect": {
           "role": "Strategic planning and system design",
           "permissions": ["read", "plan", "approve"],
+          "tools": ["read", "search", "pull_request"],
           "model": "claude-opus-4-5"
         },
         "builder": {
           "role": "Implementation and code generation",
           "permissions": ["read", "write", "execute"],
+          "tools": ["read", "write", "edit", "search", "bash", "git", "pull_request"],
           "model": "claude-sonnet-4-5"
         },
         "auditor": {
           "role": "Compliance verification and quality assurance",
           "permissions": ["read", "validate", "report"],
+          "tools": ["read", "search", "bash", "pull_request"],
           "model": "claude-haiku-3-5"
+        },
+        "sentinel": {
+          "role": "Background monitoring and anomaly detection",
+          "permissions": ["read", "alert", "log"],
+          "tools": ["read", "search"],
+          "model": "lightweight"
         }
       }
     },

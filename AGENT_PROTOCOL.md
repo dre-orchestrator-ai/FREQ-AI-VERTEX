@@ -34,6 +34,7 @@ This document defines the operational protocol for autonomous agents within the 
 **Role:** Strategic Orchestrator
 **Model:** `claude-opus-4-5`
 **Permissions:** `read`, `plan`, `approve`, `delegate`
+**Tools:** `Read`, `Search`, `PullRequest`
 
 #### Responsibilities
 - Design system architecture and implementation plans
@@ -64,6 +65,7 @@ architect = invoke_agent(
 **Role:** Implementation Specialist
 **Model:** `claude-sonnet-4-5`
 **Permissions:** `read`, `write`, `execute`, `test`
+**Tools:** `Read`, `Write`, `Edit`, `Search`, `Bash`, `Git`, `PullRequest`
 
 #### Responsibilities
 - Implement features according to Architect specifications
@@ -93,6 +95,7 @@ architect = invoke_agent(
 **Role:** Compliance Guardian
 **Model:** `claude-haiku-3-5`
 **Permissions:** `read`, `validate`, `report`, `veto`
+**Tools:** `Read`, `Search`, `Bash`, `PullRequest`
 
 #### Responsibilities
 - Validate all changes against governance rules (FREQ Law)
@@ -119,6 +122,7 @@ python -m src.sol.audit.bigquery --compliance-check
 **Role:** Continuous Monitor
 **Model:** Lightweight / Event-Driven
 **Permissions:** `read`, `alert`, `log`
+**Tools:** `Read`, `Search`
 
 #### Responsibilities
 - Monitor file changes in real-time
@@ -134,6 +138,81 @@ python -m src.sol.audit.bigquery --compliance-check
   "runOptions": { "runOn": "folderOpen" }
 }
 ```
+
+---
+
+## Available Tools
+
+All agents have access to specific tools based on their role. Tools are defined in `src/lattice_core/manifest.json`.
+
+### Bash
+
+**Description:** Execute shell commands for build, test, and automation tasks.
+**Available to:** Builder, Auditor
+**Constraints:**
+- Timeout: 120 seconds
+- Sandboxed execution
+- Allowed commands: `python`, `pip`, `npm`, `git`, `pytest`, `make`, `echo`, `ls`, `cat`
+
+```bash
+# Example: Run tests
+pytest tests/ -v
+
+# Example: Check Python version
+python --version
+```
+
+### PullRequest
+
+**Description:** GitHub pull request operations using the `gh` CLI.
+**Available to:** Architect, Builder, Auditor
+
+| Operation | Command | Description |
+|-----------|---------|-------------|
+| View | `gh pr view [number]` | View PR details, diff, and comments |
+| List | `gh pr list` | List open pull requests |
+| Create | `gh pr create` | Create a new pull request |
+| Review | `gh pr review [number]` | Review with comments or approval |
+| Diff | `gh pr diff [number]` | View pull request diff |
+| Checks | `gh pr checks [number]` | View CI/CD check status |
+
+```bash
+# Example: View current PR
+gh pr view
+
+# Example: List open PRs
+gh pr list --state open
+
+# Example: Review a PR
+gh pr review 5 --approve
+```
+
+### Git
+
+**Description:** Git version control operations.
+**Available to:** Builder
+
+| Operation | Command |
+|-----------|---------|
+| Status | `git status` |
+| Diff | `git diff` |
+| Log | `git log` |
+| Commit | `git commit` |
+| Push | `git push` |
+| Pull | `git pull` |
+| Branch | `git branch` |
+| Checkout | `git checkout` |
+
+### Read / Write / Edit
+
+**Description:** File operations for the workspace.
+**Read available to:** All agents
+**Write/Edit available to:** Builder only
+
+### Search
+
+**Description:** Search codebase using glob patterns and grep.
+**Available to:** All agents
 
 ---
 
