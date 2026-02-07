@@ -45,6 +45,14 @@ nodes:
     description: "Schema and artifact generation"
     priority: 3
 
+  maritime_barge_ops:
+    enabled: true
+    description: "Autonomous maritime barge drafting operations via IoT sensor fusion"
+    priority: 1  # Safety-critical — same priority as Strategic OP
+    vector: vector_gamma
+    sensor_type: ultrasonic_pressure_iot
+    target_accuracy: 0.998
+
 # Consensus Settings
 consensus:
   required_votes: 3  # k=3 quorum
@@ -57,6 +65,7 @@ consensus:
     - exec_automate
     - optimal_intel
     - element_design
+    - maritime_barge_ops
 
 # Audit Configuration
 audit:
