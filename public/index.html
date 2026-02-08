@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOL Lattice — Maritime Barge Drafting Operations</title>
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-alt: #1a2332;
+    --border: #1e2d3d;
+    --text: #e2e8f0;
+    --text-dim: #8892a4;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --green: #34d399;
+    --red: #f87171;
+    --orange: #fb923c;
+    --gold: #fbbf24;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0 40px;
+    text-align: center;
+  }
+  header .codename {
+    font-size: 11px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  header .subtitle {
+    font-size: 16px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+  .badge-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+  .badge-blue { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.25); }
+  .badge-purple { background: rgba(129,140,248,0.12); color: var(--accent2); border: 1px solid rgba(129,140,248,0.25); }
+  .badge-gold { background: rgba(251,191,36,0.12); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); }
+
+  /* Sections */
+  section { padding: 40px 0; }
+  section + section { border-top: 1px solid var(--border); }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  /* Cards */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .card-alt { background: var(--bg-card-alt); }
+  .card h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .card .value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .card .unit { font-size: 14px; color: var(--text-dim); font-weight: 400; }
+  .card .note { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+  /* KV Table */
+  .kv-table { width: 100%; border-collapse: collapse; }
+  .kv-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .kv-table td:first-child { color: var(--text-dim); width: 45%; }
+  .kv-table td:last-child { font-weight: 600; text-align: right; }
+  .kv-table tr:last-child td { border-bottom: none; }
+
+  /* Progress bars */
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .bar-label { width: 80px; font-size: 13px; color: var(--text-dim); text-align: right; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 24px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 600; transition: width 1.5s ease; }
+  .bar-value { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--text-dim); }
+
+  /* Cost comparison */
+  .cost-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding: 16px; background: var(--bg-card-alt); border-radius: 10px; border: 1px solid var(--border); }
+  .cost-row .cost-label { width: 140px; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+  .cost-row .cost-bar { flex: 1; height: 32px; background: rgba(255,255,255,0.03); border-radius: 6px; overflow: hidden; }
+  .cost-row .cost-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 13px; font-weight: 700; }
+  .cost-row .cost-amount { width: 140px; text-align: right; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+
+  /* Compliance list */
+  .check-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .check-dot.pass { background: var(--green); box-shadow: 0 0 8px rgba(52,211,153,0.4); }
+  .check-dot.fail { background: var(--red); box-shadow: 0 0 8px rgba(248,113,113,0.4); }
+  .check-regulation { font-size: 13px; color: var(--text-dim); }
+  .check-detail { font-size: 14px; font-weight: 600; margin-left: auto; }
+
+  /* Tank diagram */
+  .tank-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tank {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .tank-name { font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
+  .tank-pct { font-size: 20px; font-weight: 700; }
+  .tank-bg {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(56,189,248,0.1);
+    border-top: 2px solid rgba(56,189,248,0.3);
+    transition: height 1.5s ease;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    text-align: center;
+    padding: 60px 0;
+    background: linear-gradient(135deg, rgba(56,189,248,0.05), rgba(129,140,248,0.05));
+  }
+  .cta-amount {
+    font-size: 56px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--gold), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cta-label { font-size: 18px; color: var(--text-dim); margin-top: 4px; }
+  .gcp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; max-width: 700px; margin-left: auto; margin-right: auto; }
+  .gcp-item {
+    padding: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .gcp-item span { display: block; font-weight: 400; font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  /* Run Simulation Button */
+  .run-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 16px;
+  }
+  .run-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(56,189,248,0.25); }
+  .run-btn:active { transform: translateY(0); }
+  .run-btn.running { opacity: 0.7; cursor: wait; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  /* Pulse animation for live indicator */
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; margin-right: 6px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .gcp-grid { grid-template-columns: 1fr 1fr; }
+    header h1 { font-size: 26px; }
+    .cta-amount { font-size: 40px; }
+    .cost-row { flex-direction: column; align-items: stretch; }
+    .cost-row .cost-label, .cost-row .cost-amount { width: auto; text-align: left; }
+    .tank-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="codename">Codename: Antigravity</div>
+    <h1>SOL Lattice</h1>
+    <div class="subtitle">Sophisticated Operational Lattice — Maritime Barge Drafting Operations</div>
+    <div class="badge-row">
+      <span class="badge badge-green"><span class="live-dot"></span> Simulation Live</span>
+      <span class="badge badge-blue">Google Cloud Vertex AI</span>
+      <span class="badge badge-purple">FREQ LAW Governance</span>
+      <span class="badge badge-gold">vector_gamma</span>
+    </div>
+  </div>
+</header>
+
+<!-- Overview Metrics -->
+<section>
+  <div class="container">
+    <div class="section-label">Overview</div>
+    <div class="section-title">Simulation Results</div>
+    <div class="grid-4" id="overview-metrics">
+      <div class="card">
+        <h3>Execution Time</h3>
+        <div class="value" style="color:var(--green)">< 2 <span class="unit">ms</span></div>
+        <div class="note">FREQ LAW compliant</div>
+      </div>
+      <div class="card">
+        <h3>Cargo Weight</h3>
+        <div class="value">1,572.5 <span class="unit">MT</span></div>
+        <div class="note">Calculated from displacement</div>
+      </div>
+      <div class="card">
+        <h3>Compliance</h3>
+        <div class="value" style="color:var(--green)">PASS</div>
+        <div class="note">USCG / IMO verified</div>
+      </div>
+      <div class="card">
+        <h3>Governance</h3>
+        <div class="value" style="color:var(--green)">APPROVED</div>
+        <div class="note">k=3 consensus quorum</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Vessel Info + Draft Survey -->
+<section>
+  <div class="container">
+    <div class="section-label">Phase 1 — Scan &amp; Process</div>
+    <div class="section-title">Vessel &amp; Draft Survey</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Vessel Specifications</h3>
+        <table class="kv-table">
+          <tr><td>Vessel ID</td><td>BARGE-GOM-2026-001</td></tr>
+          <tr><td>Name</td><td>Gulf Runner 1</td></tr>
+          <tr><td>Length Overall (LOA)</td><td>60.96 m (200 ft)</td></tr>
+          <tr><td>Beam</td><td>18.29 m (60 ft)</td></tr>
+          <tr><td>Depth</td><td>3.66 m (12 ft)</td></tr>
+          <tr><td>Max Draft</td><td>3.05 m</td></tr>
+          <tr><td>Deadweight</td><td>3,200 MT</td></tr>
+          <tr><td>IoT Sensors</td><td>6x Ultrasonic</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Draft Survey Results</h3>
+        <table class="kv-table">
+          <tr><td>Fore Draft</td><td>2.160 m</td></tr>
+          <tr><td>Midship Draft</td><td>2.410 m</td></tr>
+          <tr><td>Aft Draft</td><td>2.690 m</td></tr>
+          <tr><td>Mean Draft (Simpson)</td><td style="color:var(--accent);font-size:16px">2.414 m</td></tr>
+          <tr><td>Trim</td><td>0.530 m (by stern)</td></tr>
+          <tr><td>Displacement</td><td>2,422.5 MT</td></tr>
+          <tr><td>Water Density</td><td>1,022.90 kg/m3</td></tr>
+          <tr><td>Block Coefficient</td><td>0.8800</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stability + Ballast -->
+<section>
+  <div class="container">
+    <div class="section-label">Phase 2 — Stability &amp; Ballast</div>
+    <div class="section-title">Stability Assessment &amp; Ballast Optimization</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Stability Metrics</h3>
+        <table class="kv-table">
+          <tr><td>Metacentric Height (GM)</td><td style="color:var(--green)">11.573 m</td></tr>
+          <tr><td>Risk Level</td><td><span class="badge badge-green" style="padding:3px 10px;font-size:11px">LOW</span></td></tr>
+          <tr><td>GZ at 10 deg</td><td>2.0097 m</td></tr>
+          <tr><td>Vanishing Stability</td><td>70.0 deg</td></tr>
+          <tr><td>Freeboard</td><td>1.246 m</td></tr>
+          <tr><td>Under-Keel Clearance</td><td>6.726 m</td></tr>
+        </table>
+        <div style="margin-top:16px;padding:12px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:8px;font-size:13px;color:var(--green)">
+          Vessel stability within acceptable range
+        </div>
+      </div>
+      <div class="card">
+        <h3>Ballast Tank Distribution</h3>
+        <div style="margin-bottom:16px">
+          <table class="kv-table">
+            <tr><td>Target Trim</td><td>0.000 m</td></tr>
+            <tr><td>Achieved Trim</td><td>0.020 m</td></tr>
+            <tr><td>Total Ballast</td><td>225.0 m3</td></tr>
+            <tr><td>Pumping Cost</td><td>$33.75</td></tr>
+          </table>
+        </div>
+        <div class="tank-grid" id="tank-grid">
+          <div class="tank"><div class="tank-bg" style="height:30%"></div><div style="position:relative"><div class="tank-name">FP Tank</div><div class="tank-pct">30%</div></div></div>
+          <div class="tank"><div class="tank-bg" style="height:70%"></div><div style="position:relative"><div class="tank-name">AP Tank</div><div class="tank-pct">70%</div></div></div>
+          <div class="tank"><div class="tank-bg" style="height:30%"></div><div style="position:relative"><div class="tank-name">PS Fwd</div><div class="tank-pct">30%</div></div></div>
+          <div class="tank"><div class="tank-bg" style="height:30%"></div><div style="position:relative"><div class="tank-name">SB Fwd</div><div class="tank-pct">30%</div></div></div>
+          <div class="tank"><div class="tank-bg" style="height:70%"></div><div style="position:relative"><div class="tank-name">PS Aft</div><div class="tank-pct">70%</div></div></div>
+          <div class="tank"><div class="tank-bg" style="height:70%"></div><div style="position:relative"><div class="tank-name">SB Aft</div><div class="tank-pct">70%</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Compliance -->
+<section>
+  <div class="container">
+    <div class="section-label">Phase 3 — Regulatory</div>
+    <div class="section-title">Maritime Compliance Verification</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Regulatory Checks</h3>
+        <div class="check-item">
+          <div class="check-dot pass"></div>
+          <div><div style="font-weight:600;font-size:14px">Draft within load line marks</div><div class="check-regulation">IMO Load Line Convention</div></div>
+          <div class="check-detail" style="color:var(--green)">PASS</div>
+        </div>
+        <div class="check-item">
+          <div class="check-dot pass"></div>
+          <div><div style="font-weight:600;font-size:14px">Minimum freeboard</div><div class="check-regulation">USCG 46 CFR Subchapter S</div></div>
+          <div class="check-detail" style="color:var(--green)">PASS</div>
+        </div>
+        <div class="check-item">
+          <div class="check-dot pass"></div>
+          <div><div style="font-weight:600;font-size:14px">Minimum metacentric height</div><div class="check-regulation">IMO Resolution A.749(18)</div></div>
+          <div class="check-detail" style="color:var(--green)">PASS</div>
+        </div>
+        <div class="check-item">
+          <div class="check-dot pass"></div>
+          <div><div style="font-weight:600;font-size:14px">Trim within operational range</div><div class="check-regulation">Operational Trim Limits</div></div>
+          <div class="check-detail" style="color:var(--green)">PASS</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Governance Validation</h3>
+        <table class="kv-table">
+          <tr><td>Consensus Quorum (k=3)</td><td><span class="badge badge-green" style="padding:3px 10px;font-size:11px">3/3 APPROVED</span></td></tr>
+          <tr><td>GOVEngine VETO</td><td style="color:var(--green)">CLEAR</td></tr>
+          <tr><td>FREQ LAW</td><td style="color:var(--green)">COMPLIANT</td></tr>
+          <tr><td>Audit Trail</td><td>4 entries (BigQuery)</td></tr>
+          <tr><td>Events Logged</td><td>9</td></tr>
+          <tr><td>Nodes Active</td><td>5 / 8</td></tr>
+        </table>
+        <div style="margin-top:16px;padding:14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:8px;text-align:center;font-size:16px;font-weight:700;color:var(--green)">
+          GOVERNANCE APPROVED
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cost Comparison -->
+<section>
+  <div class="container">
+    <div class="section-label">Phase 4 — Report</div>
+    <div class="section-title">Cost Analysis: SOL vs Traditional Methods</div>
+    <div style="margin-bottom:16px;font-size:14px;color:var(--text-dim)">Annual cost based on 30 surveys/month for 12 months (360 total)</div>
+
+    <div class="cost-row">
+      <div class="cost-label" style="color:var(--red)">Manual Surveyor</div>
+      <div class="cost-bar"><div class="cost-fill" style="width:16.07%;background:linear-gradient(90deg,rgba(248,113,113,0.3),rgba(248,113,113,0.6))"></div></div>
+      <div class="cost-amount" style="color:var(--red)">$162,000</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-label" style="color:var(--orange)">Drone Survey</div>
+      <div class="cost-bar"><div class="cost-fill" style="width:100%;background:linear-gradient(90deg,rgba(251,146,60,0.3),rgba(251,146,60,0.6))"></div></div>
+      <div class="cost-amount" style="color:var(--orange)">$1,008,000</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-label" style="color:var(--green)">SOL Autonomous</div>
+      <div class="cost-bar"><div class="cost-fill" style="width:0.5%;background:linear-gradient(90deg,rgba(52,211,153,0.4),rgba(52,211,153,0.7));min-width:4px"></div></div>
+      <div class="cost-amount" style="color:var(--green)">$2,113</div>
+    </div>
+
+    <div class="grid-2" style="margin-top:24px">
+      <div class="card" style="text-align:center;border-color:rgba(52,211,153,0.3)">
+        <h3>Savings vs Manual</h3>
+        <div class="value" style="color:var(--green);font-size:48px">98.7%</div>
+        <div class="note">$159,887 saved annually</div>
+      </div>
+      <div class="card" style="text-align:center;border-color:rgba(52,211,153,0.3)">
+        <h3>Savings vs Drone</h3>
+        <div class="value" style="color:var(--green);font-size:48px">99.8%</div>
+        <div class="note">$1,005,887 saved annually</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:20px">
+      <div class="card card-alt">
+        <h3 style="color:var(--red)">Manual Surveyor Limitations</h3>
+        <ul style="list-style:none;padding:0;margin-top:8px;font-size:13px;color:var(--text-dim)">
+          <li style="padding:4px 0">Weather dependent — cannot operate in high seas</li>
+          <li style="padding:4px 0">Requires 2-4 hour mobilization per survey</li>
+          <li style="padding:4px 0">Human error rate ~2-5% on draft readings</li>
+          <li style="padding:4px 0">No real-time continuous monitoring</li>
+          <li style="padding:4px 0">Scheduling bottleneck — surveyor availability</li>
+        </ul>
+      </div>
+      <div class="card card-alt">
+        <h3 style="color:var(--green)">SOL Autonomous Advantages</h3>
+        <ul style="list-style:none;padding:0;margin-top:8px;font-size:13px;color:var(--text-dim)">
+          <li style="padding:4px 0">24/7 continuous monitoring — no weather dependency</li>
+          <li style="padding:4px 0">Sub-2-second draft calculations (FREQ LAW)</li>
+          <li style="padding:4px 0">0.998 target accuracy via sensor fusion + AI</li>
+          <li style="padding:4px 0">Full audit trail in BigQuery — zero paperwork</li>
+          <li style="padding:4px 0">Autonomous ballast optimization reduces fuel</li>
+          <li style="padding:4px 0">Byzantine fault tolerant lattice architecture</li>
+          <li style="padding:4px 0">GOVEngine VETO authority for governance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section>
+  <div class="container">
+    <div class="section-label">Architecture</div>
+    <div class="section-title">SOL Lattice — K4 Hyper-Connected Topology</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Active Lattice Nodes</h3>
+        <div style="margin-top:8px">
+          <div class="bar-row"><div class="bar-label">Strategic</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent2)">StrategicOP</div></div></div>
+          <div class="bar-row"><div class="bar-label">Maritime</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent)">MaritimeBargeOps</div></div></div>
+          <div class="bar-row"><div class="bar-label">GOV</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)">GOVEngine</div></div></div>
+          <div class="bar-row"><div class="bar-label">Intel</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--gold)">OptimalIntel</div></div></div>
+          <div class="bar-row"><div class="bar-label">Exec</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--orange)">ExecAutomate</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Workflow Pipeline</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <div style="padding:12px 16px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:8px;font-size:14px"><strong style="color:var(--accent)">SCAN</strong> <span style="color:var(--text-dim)">— IoT sensor ingestion (6 ultrasonic draft sensors)</span></div>
+          <div style="text-align:center;color:var(--text-dim);font-size:18px">&darr;</div>
+          <div style="padding:12px 16px;background:rgba(129,140,248,0.08);border:1px solid rgba(129,140,248,0.2);border-radius:8px;font-size:14px"><strong style="color:var(--accent2)">PROCESS</strong> <span style="color:var(--text-dim)">— Draft survey + Ballast optimization + Stability</span></div>
+          <div style="text-align:center;color:var(--text-dim);font-size:18px">&darr;</div>
+          <div style="padding:12px 16px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:8px;font-size:14px"><strong style="color:var(--green)">GOVERNANCE</strong> <span style="color:var(--text-dim)">— FREQ LAW + k=3 Consensus + VETO check</span></div>
+          <div style="text-align:center;color:var(--text-dim);font-size:18px">&darr;</div>
+          <div style="padding:12px 16px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;font-size:14px"><strong style="color:var(--gold)">REPORT</strong> <span style="color:var(--text-dim)">— Operational report + Cost analysis + Audit trail</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Credit Request CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-label">Google Cloud Startup Program</div>
+    <div class="cta-amount">$350,000</div>
+    <div class="cta-label">GCP Credit Request — Phase 3: Simulation to Hardware</div>
+    <div class="gcp-grid">
+      <div class="gcp-item">Vertex AI<span>Multi-agent lattice orchestration</span></div>
+      <div class="gcp-item">BigQuery<span>Audit trail + analytics warehouse</span></div>
+      <div class="gcp-item">Cloud Run<span>IoT sensor ingestion service</span></div>
+      <div class="gcp-item">Cloud Logging<span>Real-time JSON observability</span></div>
+      <div class="gcp-item">Dialogflow CX<span>Agent playbook execution</span></div>
+      <div class="gcp-item">Cloud IoT<span>Sensor device management</span></div>
+    </div>
+    <div style="margin-top:32px;font-size:14px;color:var(--text-dim)">
+      Target Market: Gulf of Mexico inland barge operators<br>
+      Unit Economics: <strong style="color:var(--green)">$2,113/yr</strong> vs <strong style="color:var(--red)">$162,000/yr</strong> manual
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div style="margin-bottom:8px;font-weight:600;color:var(--text)">SOL Lattice — Sophisticated Operational Lattice</div>
+    <div>Replacing physical surveys with intelligence.</div>
+    <div style="margin-top:8px">Sovereign Intent Originator: Chief Dre | Codename: Antigravity | FREQ-AI-VERTEX</div>
+  </div>
+</footer>
+
+</body>
+</html>
