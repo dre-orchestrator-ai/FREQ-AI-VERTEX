@@ -1,0 +1,161 @@
+{
+  "@context": "dtmi:dtdl:context;3",
+  "@id": "dtmi:freq:lattice:EnvironmentalZone;1",
+  "@type": "Interface",
+  "displayName": "Environmental Zone",
+  "description": "Environmental conditions zone for maritime operations",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "zoneId",
+      "displayName": "Zone ID",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "zoneName",
+      "displayName": "Zone Name",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "zoneType",
+      "displayName": "Zone Type",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "harbor", "enumValue": "HARBOR"},
+          {"name": "channel", "enumValue": "CHANNEL"},
+          {"name": "anchorage", "enumValue": "ANCHORAGE"},
+          {"name": "terminal", "enumValue": "TERMINAL"},
+          {"name": "open_water", "enumValue": "OPEN_WATER"}
+        ]
+      }
+    },
+    {
+      "@type": "Property",
+      "name": "boundaryPolygon",
+      "displayName": "Boundary Polygon",
+      "description": "GeoJSON polygon defining zone boundaries",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "minDepthMeters",
+      "displayName": "Minimum Depth (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "maxDepthMeters",
+      "displayName": "Maximum Depth (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "tidalRangeMeters",
+      "displayName": "Tidal Range (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "currentTideMeters",
+      "displayName": "Current Tide Level (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "tideState",
+      "displayName": "Tide State",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "rising", "enumValue": "RISING"},
+          {"name": "falling", "enumValue": "FALLING"},
+          {"name": "high", "enumValue": "HIGH"},
+          {"name": "low", "enumValue": "LOW"},
+          {"name": "slack", "enumValue": "SLACK"}
+        ]
+      }
+    },
+    {
+      "@type": "Telemetry",
+      "name": "waterTemperatureCelsius",
+      "displayName": "Water Temperature (C)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "currentSpeedKnots",
+      "displayName": "Current Speed (knots)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "currentDirectionDegrees",
+      "displayName": "Current Direction (degrees)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "windSpeedKnots",
+      "displayName": "Wind Speed (knots)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "windDirectionDegrees",
+      "displayName": "Wind Direction (degrees)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "waveHeightMeters",
+      "displayName": "Wave Height (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "visibilityMeters",
+      "displayName": "Visibility (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "weatherCondition",
+      "displayName": "Weather Condition",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "clear", "enumValue": "CLEAR"},
+          {"name": "cloudy", "enumValue": "CLOUDY"},
+          {"name": "rain", "enumValue": "RAIN"},
+          {"name": "fog", "enumValue": "FOG"},
+          {"name": "storm", "enumValue": "STORM"}
+        ]
+      }
+    },
+    {
+      "@type": "Telemetry",
+      "name": "operationalClearance",
+      "displayName": "Operational Clearance",
+      "description": "Whether conditions permit LiDAR operations",
+      "schema": "boolean"
+    },
+    {
+      "@type": "Relationship",
+      "name": "containsVessels",
+      "displayName": "Contains Vessels",
+      "target": "dtmi:freq:lattice:MaritimeVessel;1"
+    },
+    {
+      "@type": "Relationship",
+      "name": "hasSensors",
+      "displayName": "Zone Sensors",
+      "target": "dtmi:freq:lattice:LidarSensor;1"
+    }
+  ]
+}

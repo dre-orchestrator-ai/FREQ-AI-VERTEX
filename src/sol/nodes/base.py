@@ -16,7 +16,7 @@ import uuid
 
 class NodeType(Enum):
     """Types of nodes in the Sophisticated Operational Lattice."""
-    
+
     STRATEGIC_OP = "strategic_op"          # Mission-level coordination
     SPCI = "spci"                          # Continuous improvement cycles
     LEGACY_ARCHITECT = "legacy_architect"  # Legacy system translation
@@ -24,6 +24,7 @@ class NodeType(Enum):
     EXEC_AUTOMATE = "exec_automate"        # Workflow execution
     OPTIMAL_INTEL = "optimal_intel"        # Analytics and decision support
     ELEMENT_DESIGN = "element_design"      # Schema and artifact generation
+    EXEC_SCOUTER = "exec_scouter"          # Partnership scouting and outreach (VECTOR DELTA)
 
 
 @dataclass

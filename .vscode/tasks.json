@@ -1,0 +1,111 @@
+{
+  "version": "2.0.0",
+  "// MISSION CONTROL": "Agent-First Task Orchestration for Lattice Core",
+
+  "tasks": [
+    {
+      "label": "Agent: Initialize Lattice Core",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "src.lattice_core.init"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Agent: Digital Mirror Sync",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "src.lattice_core.mirror", "--sync"],
+      "group": "build",
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Watcher: Lattice Core Monitor",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "src.lattice_core.watcher", "--mode=continuous"],
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated"
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^\\[LATTICE\\]\\s+(ERROR|WARN):\\s+(.*)$",
+          "severity": 1,
+          "message": 2
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\[LATTICE\\] Watcher initialized",
+          "endsPattern": "^\\[LATTICE\\] Watcher stopped"
+        }
+      }
+    },
+    {
+      "label": "Auditor: Run Compliance Check",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "src.sol.audit.bigquery", "--compliance-check"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Auditor: Governance Validation",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "src.sol.governance.freq_law", "--validate"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Builder: Package Artifacts",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "build", "--outdir", "artifacts/dist"],
+      "group": "build",
+      "dependsOn": ["Auditor: Run Compliance Check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Architect: Generate Protocol",
+      "type": "shell",
+      "command": "python",
+      "args": ["-m", "src.lattice_core.protocol", "--generate"],
+      "group": "none",
+      "problemMatcher": []
+    },
+    {
+      "label": "Mission Control: Full Pipeline",
+      "type": "shell",
+      "command": "echo",
+      "args": ["[MISSION CONTROL] Full pipeline complete"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Agent: Initialize Lattice Core",
+        "Auditor: Run Compliance Check",
+        "Auditor: Governance Validation",
+        "Builder: Package Artifacts"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

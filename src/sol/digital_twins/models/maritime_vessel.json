@@ -1,0 +1,116 @@
+{
+  "@context": "dtmi:dtdl:context;3",
+  "@id": "dtmi:freq:lattice:MaritimeVessel;1",
+  "@type": "Interface",
+  "displayName": "Maritime Vessel",
+  "description": "Base interface for all maritime vessels in the FREQ SOL lattice",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "vesselId",
+      "displayName": "Vessel ID",
+      "description": "Unique identifier for the vessel",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "vesselName",
+      "displayName": "Vessel Name",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "vesselType",
+      "displayName": "Vessel Type",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "barge", "enumValue": "BARGE"},
+          {"name": "tanker", "enumValue": "TANKER"},
+          {"name": "container", "enumValue": "CONTAINER"},
+          {"name": "bulk_carrier", "enumValue": "BULK_CARRIER"}
+        ]
+      }
+    },
+    {
+      "@type": "Property",
+      "name": "lengthMeters",
+      "displayName": "Length (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "beamMeters",
+      "displayName": "Beam Width (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "maxDraftMeters",
+      "displayName": "Maximum Draft (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "operationalStatus",
+      "displayName": "Operational Status",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "active", "enumValue": "ACTIVE"},
+          {"name": "idle", "enumValue": "IDLE"},
+          {"name": "maintenance", "enumValue": "MAINTENANCE"},
+          {"name": "loading", "enumValue": "LOADING"},
+          {"name": "unloading", "enumValue": "UNLOADING"}
+        ]
+      }
+    },
+    {
+      "@type": "Telemetry",
+      "name": "currentDraftMeters",
+      "displayName": "Current Draft (m)",
+      "description": "Real-time draft measurement from LiDAR",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "gpsLatitude",
+      "displayName": "GPS Latitude",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "gpsLongitude",
+      "displayName": "GPS Longitude",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "headingDegrees",
+      "displayName": "Heading (degrees)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "speedKnots",
+      "displayName": "Speed (knots)",
+      "schema": "double"
+    },
+    {
+      "@type": "Relationship",
+      "name": "hasSensors",
+      "displayName": "Has Sensors",
+      "description": "LiDAR and other sensors attached to the vessel",
+      "target": "dtmi:freq:lattice:LidarSensor;1"
+    },
+    {
+      "@type": "Relationship",
+      "name": "operatesIn",
+      "displayName": "Operates In",
+      "description": "Environmental zone where vessel operates",
+      "target": "dtmi:freq:lattice:EnvironmentalZone;1"
+    }
+  ]
+}

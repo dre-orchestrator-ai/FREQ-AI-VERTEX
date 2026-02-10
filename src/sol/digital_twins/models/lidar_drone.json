@@ -1,0 +1,227 @@
+{
+  "@context": "dtmi:dtdl:context;3",
+  "@id": "dtmi:freq:lattice:LidarDrone;1",
+  "@type": "Interface",
+  "displayName": "LiDAR Drone",
+  "description": "Autonomous drone equipped with LiDAR for maritime scanning operations",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "droneId",
+      "displayName": "Drone ID",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "droneName",
+      "displayName": "Drone Name",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "droneModel",
+      "displayName": "Drone Model",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "manufacturer",
+      "displayName": "Manufacturer",
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "maxFlightTimeMinutes",
+      "displayName": "Max Flight Time (min)",
+      "schema": "integer"
+    },
+    {
+      "@type": "Property",
+      "name": "maxRangeKilometers",
+      "displayName": "Max Range (km)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "maxAltitudeMeters",
+      "displayName": "Max Altitude (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "maxSpeedKph",
+      "displayName": "Max Speed (km/h)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "payloadCapacityKg",
+      "displayName": "Payload Capacity (kg)",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "homeBaseLatitude",
+      "displayName": "Home Base Latitude",
+      "schema": "double"
+    },
+    {
+      "@type": "Property",
+      "name": "homeBaseLongitude",
+      "displayName": "Home Base Longitude",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "flightStatus",
+      "displayName": "Flight Status",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {"name": "grounded", "enumValue": "GROUNDED"},
+          {"name": "preflight", "enumValue": "PREFLIGHT"},
+          {"name": "takeoff", "enumValue": "TAKEOFF"},
+          {"name": "in_flight", "enumValue": "IN_FLIGHT"},
+          {"name": "scanning", "enumValue": "SCANNING"},
+          {"name": "returning", "enumValue": "RETURNING"},
+          {"name": "landing", "enumValue": "LANDING"},
+          {"name": "emergency", "enumValue": "EMERGENCY"}
+        ]
+      }
+    },
+    {
+      "@type": "Telemetry",
+      "name": "gpsLatitude",
+      "displayName": "GPS Latitude",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "gpsLongitude",
+      "displayName": "GPS Longitude",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "altitudeMeters",
+      "displayName": "Current Altitude (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "headingDegrees",
+      "displayName": "Heading (degrees)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "groundSpeedKph",
+      "displayName": "Ground Speed (km/h)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "batteryPercent",
+      "displayName": "Battery Level (%)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "batteryVoltage",
+      "displayName": "Battery Voltage (V)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "flightTimeRemainingMinutes",
+      "displayName": "Flight Time Remaining (min)",
+      "schema": "integer"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "distanceFromHomeMeters",
+      "displayName": "Distance from Home (m)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "signalStrength",
+      "displayName": "Signal Strength (%)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "windSpeedKph",
+      "displayName": "Local Wind Speed (km/h)",
+      "schema": "double"
+    },
+    {
+      "@type": "Telemetry",
+      "name": "currentMissionId",
+      "displayName": "Current Mission ID",
+      "schema": "string"
+    },
+    {
+      "@type": "Command",
+      "name": "launchMission",
+      "displayName": "Launch Mission",
+      "request": {
+        "name": "missionConfig",
+        "schema": {
+          "@type": "Object",
+          "fields": [
+            {"name": "missionId", "schema": "string"},
+            {"name": "targetVesselId", "schema": "string"},
+            {"name": "scanParameters", "schema": "string"},
+            {"name": "returnToHomeOnComplete", "schema": "boolean"}
+          ]
+        }
+      }
+    },
+    {
+      "@type": "Command",
+      "name": "returnToHome",
+      "displayName": "Return to Home"
+    },
+    {
+      "@type": "Command",
+      "name": "emergencyLand",
+      "displayName": "Emergency Land"
+    },
+    {
+      "@type": "Command",
+      "name": "hover",
+      "displayName": "Hover in Place"
+    },
+    {
+      "@type": "Command",
+      "name": "adjustAltitude",
+      "displayName": "Adjust Altitude",
+      "request": {
+        "name": "targetAltitude",
+        "schema": "double"
+      }
+    },
+    {
+      "@type": "Relationship",
+      "name": "hasSensor",
+      "displayName": "Equipped Sensor",
+      "target": "dtmi:freq:lattice:LidarSensor;1",
+      "minMultiplicity": 1,
+      "maxMultiplicity": 2
+    },
+    {
+      "@type": "Relationship",
+      "name": "currentlyScanning",
+      "displayName": "Currently Scanning",
+      "target": "dtmi:freq:lattice:MaritimeVessel;1"
+    },
+    {
+      "@type": "Relationship",
+      "name": "operatesIn",
+      "displayName": "Operates In Zone",
+      "target": "dtmi:freq:lattice:EnvironmentalZone;1"
+    }
+  ]
+}
