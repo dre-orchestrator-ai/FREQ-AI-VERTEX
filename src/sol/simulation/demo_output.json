@@ -1,6 +1,6 @@
 {
   "mission": {
-    "mission_id": "1651959c-07be-4b4a-acf7-bbb6fd23740e",
+    "mission_id": "341521cb-47b5-43cb-9b2e-4a9259ddb5dc",
     "status": "created"
   },
   "vessel": {
@@ -27,10 +27,10 @@
     "status": "scan_complete"
   },
   "draft_survey": {
-    "survey_id": "1abb3bf8-ba0f-4f24-917a-57d45a1ef76e",
+    "survey_id": "839ae048-2453-4a68-860a-76fea186eb30",
     "status": "process_complete",
     "survey": {
-      "survey_id": "1abb3bf8-ba0f-4f24-917a-57d45a1ef76e",
+      "survey_id": "839ae048-2453-4a68-860a-76fea186eb30",
       "vessel_id": "BARGE-GOM-2026-001",
       "fore_draft_m": 2.16,
       "mid_draft_m": 2.41,
@@ -49,14 +49,14 @@
       "compliance_notes": [
         "ALL CHECKS PASSED \u2014 Vessel within operational limits"
       ],
-      "timestamp": "2026-02-07T18:24:35.986574"
+      "timestamp": "2026-02-10T14:12:16.311575"
     }
   },
   "ballast": {
-    "plan_id": "9449353c-ae70-472b-b454-7e3bb3a0f9f5",
+    "plan_id": "1a472747-1b6b-4842-8ee8-3e90800e5c2b",
     "status": "optimized",
     "plan": {
-      "plan_id": "9449353c-ae70-472b-b454-7e3bb3a0f9f5",
+      "plan_id": "1a472747-1b6b-4842-8ee8-3e90800e5c2b",
       "vessel_id": "BARGE-GOM-2026-001",
       "tank_levels": {
         "FP_Tank": 0.3,
@@ -72,11 +72,11 @@
       "achieved_list_deg": 0.1,
       "total_ballast_m3": 225.0,
       "estimated_cost_usd": 33.75,
-      "timestamp": "2026-02-07T18:24:35.986761"
+      "timestamp": "2026-02-10T14:12:16.311716"
     }
   },
   "stability": {
-    "survey_id": "1abb3bf8-ba0f-4f24-917a-57d45a1ef76e",
+    "survey_id": "839ae048-2453-4a68-860a-76fea186eb30",
     "vessel_id": "BARGE-GOM-2026-001",
     "metacentric_height_m": 11.573,
     "is_stable": true,
@@ -88,9 +88,9 @@
   },
   "governance": {
     "consensus": {
-      "round_id": "50fba2ca-bfac-4176-b595-c12c3315fb5b",
+      "round_id": "abd137b4-85c2-428d-b543-2ec582b5b0dd",
       "votes": {
-        "round_id": "50fba2ca-bfac-4176-b595-c12c3315fb5b",
+        "round_id": "abd137b4-85c2-428d-b543-2ec582b5b0dd",
         "vote_recorded": true,
         "current_votes": 3,
         "approvals": 3,
@@ -110,7 +110,7 @@
       "approvals": 3,
       "required": 3,
       "has_quorum": true,
-      "timestamp": "2026-02-07T18:24:35.986875"
+      "timestamp": "2026-02-10T14:12:16.311814"
     },
     "overall_status": "GOVERNANCE APPROVED"
   },
@@ -133,15 +133,15 @@
     "sensor_summary": {
       "total_readings": 6,
       "positions_covered": [
-        "fore",
+        "aft",
         "midship",
-        "aft"
+        "fore"
       ],
       "avg_water_temp_c": 24.1,
       "avg_salinity_ppt": 33.5
     },
     "draft_survey": {
-      "survey_id": "1abb3bf8-ba0f-4f24-917a-57d45a1ef76e",
+      "survey_id": "839ae048-2453-4a68-860a-76fea186eb30",
       "vessel_id": "BARGE-GOM-2026-001",
       "fore_draft_m": 2.16,
       "mid_draft_m": 2.41,
@@ -160,10 +160,10 @@
       "compliance_notes": [
         "ALL CHECKS PASSED \u2014 Vessel within operational limits"
       ],
-      "timestamp": "2026-02-07T18:24:35.986574"
+      "timestamp": "2026-02-10T14:12:16.311575"
     },
     "ballast_plan": {
-      "plan_id": "9449353c-ae70-472b-b454-7e3bb3a0f9f5",
+      "plan_id": "1a472747-1b6b-4842-8ee8-3e90800e5c2b",
       "vessel_id": "BARGE-GOM-2026-001",
       "tank_levels": {
         "FP_Tank": 0.3,
@@ -179,10 +179,10 @@
       "achieved_list_deg": 0.1,
       "total_ballast_m3": 225.0,
       "estimated_cost_usd": 33.75,
-      "timestamp": "2026-02-07T18:24:35.986761"
+      "timestamp": "2026-02-10T14:12:16.311716"
     },
     "surveys_conducted": 1,
-    "timestamp": "2026-02-07T18:24:35.986959"
+    "timestamp": "2026-02-10T14:12:16.311877"
   },
   "cost_analysis": {
     "analysis_period_months": 12,
@@ -232,13 +232,13 @@
     "savings_vs_drone_pct": 99.8
   },
   "simulation_summary": {
-    "simulation_id": "95da8a1e-c9e9-4698-9eb2-d52addefe65e",
-    "total_execution_time_ms": 1.0,
+    "simulation_id": "47dfb3ad-1dbd-4e1e-ab9b-fc9f84084182",
+    "total_execution_time_ms": 0.89,
     "freq_law_compliant": true,
     "events_logged": 9,
     "audit_entries": 4,
     "lattice_nodes_active": 5,
     "governance_status": "APPROVED",
-    "timestamp": "2026-02-07T18:24:35.987025"
+    "timestamp": "2026-02-10T14:12:16.311920"
   }
 }
