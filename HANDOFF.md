@@ -1,448 +1,496 @@
-# HANDOFF.md — Comprehensive Session Continuity Document
+# HANDOFF.md — FREQ AI Session Continuity & Architecture Blueprint
 
-**Project:** FREQ-AI-VERTEX / Sophisticated Operational Lattice (SOL)
+**Project:** FREQ AI Sophisticated Operational Lattice (SOL)
 **Codename:** Antigravity
-**Prepared:** February 11, 2026
-**Branch:** `claude/update-agent-protocol-z5o9X`
+**Version:** 3.0
+**Date:** February 13, 2026
 **Authority:** Chief Dre — Sovereign Intent Originator (Level 0)
-**Primary GitHub:** `https://github.com/dre-achitect/freq-ai-vertex` (fork — active development)
-**Upstream GitHub:** `https://github.com/dre-orchestrator-ai/FREQ-AI-VERTEX` (origin)
+**Primary GitHub:** `https://github.com/dre-orchestrator/freq`
+**Local Path:** `/Users/dre.orchestrator.ai/FREQ-AI-VERTEX/`
+**Classification:** Proprietary / Strategic
 
 ---
 
-## 1. Project Objective & Core Technology
+## DEPRECATED ACCOUNTS — DO NOT USE
 
-### What FREQ AI SOL Is
+| Account | Status | Notes |
+|---------|--------|-------|
+| `dre-orchestrator-ai` | DEPRECATED | Old upstream, PR #8 never merged |
+| `dre-achitect` | DEPRECATED | Fork, never used for production |
+| `dre-architect` | DEPRECATED | Alternate fork reference |
 
-A multi-node AI orchestration system ("lattice") for autonomous maritime barge drafting operations. The system coordinates AI agents across the full operational cycle: IoT sensor ingestion, draft measurement (Simpson's rule), ballast optimization, stability monitoring (metacentric height), regulatory compliance (IMO/USCG), governance enforcement, and cost analysis.
-
-### Strategic Context — Google Cloud Startup Program
-
-Chief Dre has an upcoming engagement with **Sulgi** (Google Cloud Business Development) to secure **$350,000 in Google for Startups Cloud Program credits** ($250K Year 1 at 100% + $100K Year 2 at 20% monthly reimbursement). This is a BD evaluation — the demo, codebase, and pitch must prove:
-- Working technology (visual proof — live dashboard + simulation)
-- GCP spend trajectory ($8K/mo ramping to $100K+/yr)
-- Competitive displacement (Azure → GCP migration story)
-- AI as core technology (multi-agent lattice on Vertex AI)
-- Reference case study potential for Google
-
-### CRITICAL STRATEGIC PIVOT (February 2026)
-
-The project is undergoing a significant architectural evolution:
-
-1. **Moving AWAY from:** Digital Twin / LIDAR system — too complex, too expensive for current phase
-2. **Moving TOWARD:** A lighter, less complex alternative that achieves similar outcomes at lower cost (IoT sensor fusion + AI inference replaces physical surveying)
-3. **Moving AWAY from:** Legacy terminal-based environments — Cloud Run, Vertex Workbench, Colab Enterprise, Firebase
-4. **Moving TOWARD:** A new environment capable of showcasing **3D graph visualization, UI/UX experience** — a modern, visual presentation layer suitable for demonstrating to Google representatives
-5. **Azure Foundry V2.0 Blueprint** exists as the comprehensive architectural target (see Section 4 below) — the GCP implementation should mirror/compete with this architecture
-
-### Core Technology Stack (Current Implementation)
-- **Lattice Architecture:** 8 interconnected nodes (K4 hyper-connected topology)
-- **Governance:** FREQ LAW — Fast (<2000ms), Robust (BFT), Evolutionary, Quantified (0.95 trust)
-- **Consensus:** k=3 quorum for safety-critical operations
-- **GOVEngine:** Priority 0, absolute VETO power over non-compliant operations
-- **Simulation:** Pure Python stdlib, zero dependencies, <1ms execution
-- **Dashboard:** Single-file HTML (`public/index.html`) — needs upgrade to 3D visualization
-- **Target Platform:** Google Cloud Vertex AI Agent Builder
-- **Existing Platform:** Azure AI Foundry (3 agents built, tested, published on GPT-5.2)
-
-### Agent Hierarchy (Operational)
-```
-Level 0: Chief Dre ─── Sovereign Intent Originator (Human)
-Level 1: SSC ───────── Strategic Synthesis Core (Gemini 3 Pro)
-Level 2: CGE ───────── Cognitive Governance Engine (Gemini 3 Pro)
-Level 3: SIL ───────── Specialization Intelligence Lead (Gemini 3 Flash)
-Level 4: SA ────────── Specialization Agent (Gemini 3 Flash)
-Level 5: TOM ───────── Tactical Optimization Module (Gemini 3 Flash)
-```
-
-### Claude Code Agent Roles (AGENT_PROTOCOL.md)
-- **ARCHITECT** (claude-opus-4-5): Strategic orchestrator, full architectural authority
-- **BUILDER** (claude-sonnet-4-5): Implementation specialist, writes code/tests
-- **AUDITOR** (claude-haiku-3-5): Compliance guardian, veto authority via FREQ Law
-- **SENTINEL** (event-driven): Background watcher, monitors state drift
+**Only use:** `https://github.com/dre-orchestrator/freq`
 
 ---
 
-## 2. Phase 2 Retrospective — What Was Built
+# PART ONE: CURRENT STATE
 
-### A. AGENT_PROTOCOL.md (301 lines)
-- Governance document defining agent roles, tools, communication protocol
-- Established as ground truth for workspace operations
-- Committed from GitHub PR commit `6045de25b5`
+## 1.1 Project Identity
 
-### B. Maritime Barge Drafting Simulation (vector_gamma)
+FREQ AI SOL is a multi-node AI orchestration system for autonomous maritime barge drafting operations. The system eliminates manual human labor and drones from barge loading operations by coordinating AI agents across the full operational cycle: draft measurement, crane operations, ballast optimization, stability monitoring, regulatory compliance, and cost analysis.
 
-**Node — `src/sol/nodes/maritime_ops.py` (633 lines)**
-- `MaritimeBargeOps` class extending `LatticeNode`
-- Domain models: `BargeSpec`, `DraftReading`, `DraftSurveyResult`, `BallastPlan`
-- 8 operations: `register_vessel`, `ingest_sensor_data`, `compute_draft_survey`, `optimize_ballast`, `assess_stability`, `check_compliance`, `generate_report`, `get_cost_analysis`
-- UNESCO water density formula, Simpson's rule for mean draft
-- Metacentric height (GM) stability calculations
-- Cost model: $2,113/yr SOL vs $162K/yr manual (98.7% savings) vs $1M/yr drones (99.8% savings)
+**The 4-Hour Problem:** Currently, measuring barge draft requires 2–4 crew members working on deck for ~4 hours per barge. This exposes workers to Man Overboard risk, produces imprecise measurements (+/- several inches), and delays cargo operations.
 
-**Simulation Engine — `src/sol/simulation/maritime_barge.py` (373 lines)**
-- `MaritimeBargeSimulation` class orchestrating 5 lattice nodes
-- Nodes wired: MaritimeBargeOps, StrategicOP, GOVEngine, OptimalIntel, ExecAutomate
-- 10-phase workflow: mission init > vessel registration > sensor scan > draft survey > ballast > stability > governance > report > cost analysis
-- Gulf of Mexico test barge: 60.96m LOA (200ft), 18.29m beam, ID: BARGE-GOM-2026-001
+**The Solution:** FREQ AI reduces this to ~15 minutes using sensor fusion (LiDAR/IoT) + AI inference + governance, with zero human deck exposure. Current simulation achieves ~10.9 minutes.
 
-**Demo Runner — `src/sol/simulation/demo_runner.py` (251 lines)**
-- Presentation-ready terminal output with formatted tables and progress bars
-- Cost comparison visualization bars, $350K credit request section
-- Run: `PYTHONPATH=src python -m sol.simulation.demo_runner`
+## 1.2 Phase Status
 
-**Tests — `tests/test_maritime.py` (487 lines, 31 tests)**
-- TestBargeSpec, TestDraftReading, TestMaritimeBargeOpsNode (15 tests)
-- TestMaritimeBargeSimulation (7 tests), TestBlueprintVectorGamma (4 tests)
-- **All 68 tests passing** (31 maritime + 37 existing)
+| Phase | Status | Description |
+|-------|--------|-------------|
+| Phase 1: Foundation | COMPLETE | Initial PoC, lattice concept validation |
+| Phase 2: Enterprise Lattice | COMPLETE | Lattice Core developed, tested, published. Production-ready. |
+| Phase 3: Digital Twin + Edge AI | ACTIVE | 6-phase simulation built, 3D visualization platform TBD |
 
-### C. Configuration Updates
-- **`src/sol/nodes/base.py`** — Added `MARITIME_BARGE_OPS` to `NodeType` enum
-- **`src/sol/nodes/__init__.py`** — Added `MaritimeBargeOps` import/export
-- **`src/sol/blueprint/freq_blueprint.py`** — Expanded `vector_gamma` with sub_operations, required_nodes, regulatory_standards, gcp_services, target_market
-- **`config/sol_config.yaml`** — Added `maritime_barge_ops` node (priority 1, safety-critical), added to consensus eligible types
-- **`config/vertex_ai_agent.yaml`** — Added maritime playbook (10-step SCAN > PROCESS > REPORT) + 3 tools: draft-survey-calculator, ballast-optimizer, maritime-compliance-checker
+## 1.3 Platform Status
 
-### D. Dashboard — `public/index.html` (548 lines)
-- Professional dark-themed single-page dashboard
-- Sections: Overview metrics, Vessel & Draft Survey, Stability & Ballast (tank viz), Compliance, Cost comparison, Architecture, $350K Credit Request CTA
-- Mobile responsive, zero JS dependencies
-- **NOTE:** This is the CURRENT dashboard. The strategic pivot calls for upgrading to a 3D visualization environment (see Section 4 — Phase 3).
+**Platform selection is PENDING.** Do not commit to any platform.
 
-### E. Deployment Infrastructure (Attempted)
-- `.github/workflows/deploy-pages.yml` — GitHub Pages auto-deploy (replaced Firebase)
-- `firebase.json` + `.firebaserc` — Firebase config (kept but abandoned)
-- **Dashboard is NOT yet deployed to any live URL**
+| Platform | Status |
+|----------|--------|
+| Google Cloud Vertex AI | Under evaluation (Startup Program pending) |
+| Azure AI Foundry | Phase 2 legacy — do not deploy new work here |
+| Firebase | Abandoned — deployment blocker for 24+ hours |
+| Vertex Workbench / Colab | Moving away — not suitable for visual demos |
+
+## 1.4 Team Lanes
+
+| Role | Agent | Directive |
+|------|-------|-----------|
+| Backend Engineer | Claude Code | BUILD — coding, debugging, architecture implementation |
+| Research | Chrome (Coworker) | Research platforms, technologies, market intel |
+| Strategic Planning | Opus | High-level strategy, architecture decisions |
+| Sovereign | Chief Dre (Level 0) | All directives originate here |
 
 ---
 
-## 3. Phase 3 Progress — Deployment Saga
+# PART TWO: V3 ARCHITECTURAL BLUEPRINT
 
-### What Happened (Chronological)
+## 2.1 FREQ Law — Constitutional Framework
 
-1. **Dashboard built** — `public/index.html` committed to feature branch
-2. **freq-vertex.web.app showed placeholder** — Web files only on feature branch, not main. Firebase serving empty content
-3. **Firebase blocked 24+ hours** — Required `FIREBASE_SERVICE_ACCOUNT_FREQ_VERTEX` secret. User couldn't generate JSON key from Firebase Console. **Abandoned.**
-4. **GitHub Pages attempted** — `deploy-pages.yml` created. No secrets needed. But proxy blocked push to main (HTTP 403).
-5. **PR #8 still open** — Feature branch code needs merge to main via GitHub UI on upstream repo
-6. **User forked repo** — New GitHub: `dre-achitect/freq-ai-vertex` (note: `achitect` not `architect` — this is the actual account name, do not "correct" it)
-7. **Netlify selected** — Account created, ready to connect to GitHub
-8. **User expressed willingness to leave GitHub entirely** — Azure is a fallback if GitHub/GCP deployment continues to be a bottleneck
-9. **Dashboard still NOT live** — No public URL exists yet
+FREQ Law is the binding constitutional constraint governing all lattice operations. It cannot be modified by any node. Authority derives solely from the Sovereign Intent of Chief Dre.
 
-### Current Git State
+| Tenet | Requirement | Implementation |
+|-------|-------------|----------------|
+| **Fast** | Operations complete within latency thresholds | Runtime target: <2000ms for sensor processing + report generation. Prohibits unnecessary hops, mandates parallelization. |
+| **Robust** | Redundancy, safety mechanisms, graceful degradation | No Happy Path implementations. Error boundaries on all externals. Pulse Protocol for edge connectivity loss. Human interlocks for safety-critical actions. |
+| **Evolutionary** | Learn from errors, continuous improvement | Reflexion Loop for self-correction. No hard-coded values. Schema versioning. Operational data feeds training pipelines. |
+| **Quantified** | Every action observable and auditable | Comprehensive Cognitive Audit Trail. JSON-LD provenance records. Trust Scores quantify output confidence. Full forensic reconstruction capability. |
+
+**Digital Constitution:** Immutable policy store on Google Cloud Spanner. Append-only — records never modified or deleted. New records supersede old while preserving history. Strong global consistency ensures a VETO is immediately and universally enforceable.
+
+## 2.2 Chain of Command (6-Level Hierarchy)
+
 ```
-Feature branch:  claude/update-agent-protocol-z5o9X
-Local main:      Merged with feature branch (same commit)
-origin/main:     7 commits behind feature branch
-PR #8:           Open on dre-orchestrator-ai/FREQ-AI-VERTEX, not merged
-Fork:            dre-achitect/freq-ai-vertex (needs sync after PR #8 merge)
-```
+Level 0: Sovereign Intent Originator (Chief Dre)
+         └── Natural Language Orchestration, Vibe Coding
+         └── Ultimate human authority, final escalation point
 
----
+Level 1: Strategic Synthesis Core (SSC)
+         └── Substrate: Gemini 3.0 Thinking
+         └── Central Nervous System — Decomposition of intent → DAG of atomic tasks
+         └── Multi-model routing, Reflexion Loop replanning
 
-## 4. Azure Foundry V2.0 — Comprehensive Architectural Blueprint
+Level 2: Cognitive Governance Engine (CGE)
+         └── Substrate: Gemini 3.0 Pro (Temp 0.0, Top-K 1 — deterministic)
+         └── Non-bypassable policy authority, absolute VETO power
+         └── Enforces Digital Constitution, validates all proposed operations
 
-**This is the definitive architectural target.** The GCP/Vertex AI implementation should align with or exceed this architecture. Below is the full blueprint as provided by Chief Dre.
+Level 3: Strategic Intelligence Lead (SIL)
+         └── Substrate: Gemini 3.0 Flash
+         └── Educator/Librarian — manages Knowledge Substrate
+         └── RAG support, historical pattern analysis
 
-### 4.1 Executive Summary
+Level 4: System Architect (SA) / Paradigm Design
+         └── Substrate: Gemini 3.0 Pro
+         └── Strategic plans → technical schemas
+         └── Heritage Code Parsing for legacy integration
 
-The system — conceptually the "Azure Foundry Lattice" — is a secure, governable, dynamically scalable ecosystem of containerized, event-driven AI agents (microservices). It incorporates mandatory Human-in-the-Loop (HITL) Command and Control for responsible autonomy, auditability, and operational safety.
-
-### 4.2 Core Architectural Principles
-
-| Principle | Description |
-|-----------|-------------|
-| **Governability & Oversight** | Mandatory Hierarchical Control: CGE maintains absolute, non-circumventable veto authority over all proposed actions |
-| **Persistence & Scalability** | Cloud-Native Resilience: Migration from non-persistent compute (Colab) to persistent serverless containers (Cloud Run/Anthos) |
-| **Modularity (The "Lattice")** | Decoupled Microservices: Independent containerized agents communicating via async event bus (Pub/Sub) |
-| **Flow-First Development** | Visual Orchestration: Shift from code-first to visual orchestration (Vertex AI Agent Designer) |
-| **Shared Consciousness** | Knowledge Substrate: Blackboard-style tiered memory system for real-time info sharing across agents |
-| **Physical-Digital Integration** | Digital Twin Foundation (Phase 3): Live virtual mirror of physical ops for simulation and command execution |
-| **Dual-Enforcement Governance** | Hybrid Safety: Redundant policy enforcement — both edge (local) and cloud (central) |
-
-### 4.3 Phase 2 Enterprise Architecture (Target State)
-
-#### Execution & Orchestration Layer
-- **Containerization:** All AI/business logic refactored into ADK Python scripts, packaged into immutable Docker containers
-- **Platform:** Google Cloud Run — serverless, auto-managed, persistent "Lattice" implementation
-- **Inter-Agent Comms:** Google Cloud Pub/Sub — event-driven, fully decoupled Orchestrator > Specialist pattern
-- **Lead Agent:** Strategic Synthesis Module (SSM) delegates tasks asynchronously via message bus
-
-#### Hierarchical Governance Model (The Lattice Core)
-```
-Level 0: Sovereign Intent Originator — Human (Chief Dre)
-Level 1: Strategic Synthesis Core (SSC/SSM) — Central cognitive agent, mission planning, task decomposition
-Level 2: Cognitive Governance Engine (CGE) — Non-bypassable supervisor, absolute veto, "Digital Constitution"
-Level 3: Strategic Intelligence Lead — Long-term knowledge (Vector DB), RAG support
-Level 4: System Architect / Paradigm Design — Technical schema translation, legacy integration
-Level 5: Runtime Realization Node — Physical/digital action executor (drone API, DB updates)
+Level 5: Runtime Realization Node (TOM — Tactical Operations Module)
+         └── Substrate: Gemini 3.0 Flash
+         └── SOLE authorized executor — only node with write/API/hardware permissions
+         └── Controls LiDAR drones, processes sensor data, generates reports
 ```
 
-#### SSM: The Core Reasoning Engine
-- **Intent to DAG Conversion:** Translates natural language "Sovereign Intent" into machine-executable Directed Acyclic Graph (DAG)
-- **Multi-Model Intelligence:** Model Router (Gemini 3 Flash) for classification; routes to specialized LLMs (Gemini 3 Deep Think for planning, Claude Opus for technical analysis)
-- **Dynamic Replanning:** "Reflexion Loop" protocol — on task failure, SSM re-engages LLM with error context, generates revised DAG
-- **Governance Enforcement:** CGE enforces immutable "Digital Constitution" stored in Google Cloud Spanner, providing auditable universal veto
+## 2.3 Pure Gemini Mesh Architecture
 
-#### Tiered Blackboard Memory System (Knowledge Substrate)
+The lattice operates as a homogeneous Gemini deployment on Google Cloud Vertex AI. No external LLMs in production.
+
+| Substrate | Capability | Nodes |
+|-----------|-----------|-------|
+| Gemini 3.0 Thinking | Highest reasoning, extended context, deep planning | SSC (Level 1) |
+| Gemini 3.0 Pro | Analytical reasoning, deterministic compliance | CGE (Level 2), SA (Level 4) |
+| Gemini 3.0 Flash | High-speed throughput, low latency | SIL (Level 3), TOM (Level 5) |
+
+**Topology:** K4 hyper-connected — complete graph, network diameter of 1, vertex connectivity of 3 (three simultaneous node failures required to isolate a fourth).
+
+**Communication:** Semantic Bus via Agent-to-Agent Protocol. Typed, schema-validated JSON payloads with request ID, intent vectors, timestamps, source/target node IDs, governance hash.
+
+## 2.4 Byzantine Fault Tolerance
+
+- Critical state changes require 75% majority (k=3 of 4 nodes: SSC, CGE, SIL, SA)
+- CGE VETO supersedes consensus — even 3 approvals blocked if CGE vetoes
+- Protects against hallucination propagation through the lattice
+
+## 2.5 Knowledge Substrate Database (Tiered Memory)
+
 | Tier | Store | Purpose |
 |------|-------|---------|
-| **Tier 1: Short-Term** | Redis | Ephemeral context for active DAG execution, low-latency state variables |
-| **Tier 2: Mid-Term** | Key-Value Store / Datastore | Episodic action log, Cognitive Audit Trail for post-mission analysis |
-| **Tier 3: Long-Term** | Vector DB + BigQuery | Persistent institutional knowledge, RAG via Vertex AI Search, historical ops, forensic reconstruction |
-
-### 4.4 Phase 3: Digital Twin & Edge AI (Future State)
-
-**IMPORTANT PIVOT:** The full Digital Twin / LIDAR system described below is being **descoped/simplified.** Chief Dre is moving away from the complex DTDL + Azure Digital Twins + drone imagery pipeline toward a lighter, less expensive alternative. The 3D visualization capability is still desired, but through a simpler, more presentable environment — NOT the legacy terminal tools.
-
-#### Original Digital Twin Architecture (Reference — Being Simplified)
-- **DTDL Modeling:** Physical assets (Drone, SurveyArea) and logical entities (MissionPlan, ThreeDModel) defined using Digital Twin Definition Language
-- **Reality Capture:** OpenDroneMap (ODM) pipeline — drone imagery > 2D Orthophotos (GeoTIFF) + 3D Textured Models (OBJ)
-- **Sync Workflow:** Azure Blob Storage > Azure Functions > GLB/glTF conversion > Twin Graph update
-- **Visualization:** Azure 3D Scenes Studio — immersive geographically accurate mission control
-- **IoT Integration:** Real-time telemetry via Azure IoT Hub
-
-#### Edge AI CI/CD Pipeline (Reference)
-| Stage | Detail |
-|-------|--------|
-| Model Optimization | Quantization + Pruning for edge viability |
-| Format Conversion | Training format > ONNX or TFLite |
-| Edge Containerization | Model + inference logic + local governance agent > Docker > IoT Edge module |
-| Secure OTA Deployment | Azure IoT Hub, Deployment Manifest, Canary Rollout strategy |
-| Monitoring & Rollback | Azure Monitor telemetry, automated rollback on failure metrics |
-
-#### Dual-Enforcement "Edge-Core" Governance
-- **Edge-Side (Local):** Lightweight policy agent (WebAssembly/micro-container) on device. Enforces geo-fencing, no-fly zones, power limits from cached policy file. Can halt unsafe actions locally.
-- **Core-Side (Central):** Cloud CGE maintains master policy set, audits edge telemetry, ensures fleet-wide policy sync. All decisions logged for audit/traceability.
-
-### 4.5 What Needs to Change for Google Presentation
-
-The Azure Foundry V2.0 blueprint above is the **intellectual architecture**. For the Google Startup Program presentation, the implementation narrative needs to:
-
-1. **Map Azure services to GCP equivalents:**
-   - Azure Digital Twins → (simplified alternative — TBD)
-   - Azure IoT Hub → Google Cloud IoT / Pub/Sub
-   - Azure Blob Storage → Google Cloud Storage
-   - Azure Functions → Google Cloud Functions / Cloud Run
-   - Azure 3D Scenes Studio → **New 3D visualization platform (TBD — this is the active search)**
-   - Azure IoT Edge → Google Distributed Cloud Edge / Vertex AI on Edge
-   - Azure Monitor → Google Cloud Monitoring / Operations Suite
-
-2. **Simplify the Digital Twin to a presentable MVP:**
-   - Drop LIDAR/drone imagery pipeline complexity
-   - Focus on IoT sensor data + AI inference + 3D visualization
-   - Find a web-based 3D environment for demos (Three.js, Cesium, Deck.gl, or similar)
-
-3. **Showcase the lattice on GCP native services:**
-   - Vertex AI Agent Builder for agent orchestration
-   - Cloud Run for containerized agents
-   - Pub/Sub for inter-agent messaging
-   - BigQuery for audit trail
-   - Spanner for governance constitution
+| **Hot (Retrieval)** | Vertex AI Search | Embedded docs for semantic RAG — policies, regulations, procedures, specs |
+| **Cold (Analytical)** | BigQuery | Cognitive Audit Trail — immutable JSON-LD provenance records for forensic reconstruction |
+| **Raw (Archive)** | Cloud Storage ("Iron Vault") | LiDAR point clouds, drone telemetry, imagery, sensor logs. Tiered lifecycle management. |
 
 ---
 
-## 5. Technical Gotchas
+# PART THREE: MARITIME BARGE DRAFTING MISSION
 
-### Proxy / Environment Restrictions
-- **Cannot push to `main`** — Proxy returns HTTP 403 for any branch not prefixed with `claude/`. All pushes must go to `claude/update-agent-protocol-z5o9X`.
-- **`gh` CLI unreliable** — Proxy incompatible with GitHub API calls. Cannot create PRs programmatically. User must manage PRs via GitHub web UI.
-- **Branch naming** — Must start with `claude/` and end with session ID suffix.
+## 3.1 Mission Overview
 
-### Firebase (ABANDONED — Do Not Retry)
-- `freq-vertex.web.app` exists but serves placeholder content
-- Service account JSON key generation was the blocker
-- Firebase config files remain in repo but are unused
-- **User explicitly abandoned this after 24+ hours of wasted time**
+**Primary:** Automate barge draft measurement — 4 hours manual → 15 minutes automated, zero human deck exposure, 99.8% accuracy target.
 
-### Legacy Environments (MOVING AWAY FROM)
-- Cloud Run terminal — not suitable for visual demos
-- Vertex Workbench — too complex for presentation
-- Colab Enterprise — non-persistent, notebook-based
-- Firebase Hosting — deployment complexity blocker
-- **Active search for a modern 3D visualization platform**
+**Secondary:** Validate FREQ AI architecture under real-world maritime conditions (variable connectivity, harsh environment, regulatory complexity, safety criticality).
 
-### Fork Account Name
-- User's GitHub: `dre-achitect` (missing 'r' — NOT `dre-architect`)
-- Fork repo: `dre-achitect/freq-ai-vertex` (lowercase)
-- This is the actual account name — do not "correct" it
+**Tertiary:** Establish patterns for expansion to cargo management, fleet tracking, maintenance prediction.
 
-### Dashboard vs 3D Visualization
-- `public/index.html` (548 lines) — Current metrics dashboard (dark theme, charts, cost comparison)
-- The strategic pivot calls for a **3D graph / UI/UX experience** to replace this static dashboard
-- Potential tech: Three.js, React Three Fiber, Cesium, Deck.gl, or a hosted 3D platform
-- Known issues with Three.js approach:
-  - Recharts requires `prop-types@15.8.1` CDN loaded BEFORE Recharts script tag
-  - Three.js mesh position: use `.position.set(x, y, z)` NOT `Object.assign`
-  - CDN order: React > ReactDOM > Three.js > PropTypes > Recharts > Babel
+## 3.2 Sensor Technology
 
-### Running Tests
+**LiDAR (Primary):** Near-infrared laser pulses (905nm/1550nm), +/-2-5mm precision, millions of points/second. Water absorbs/scatters IR → waterline appears as transition zone between hull returns and absent water returns.
+
+**Drone Platform:** 15-20 min endurance, 2-5kg payload, "lawnmower pattern" scanning (~3 min/barge), GPS+RTK positioning, return-to-home failsafes.
+
+**Sensor Alternatives (V3 Addition):**
+
+| Technology | Application | Notes |
+|------------|-------------|-------|
+| LiDAR (airborne) | Full hull geometry + waterline | Primary approach |
+| Ultrasonic sensors (hull-mounted) | Continuous draft monitoring | Retrofit challenges on existing fleet |
+| Pressure transducers | Water depth at hull | Requires calibration, sensor drift |
+| Camera + CV | Visual draft mark reading | Works with existing infrastructure |
+| Radar (marine) | Surface-level measurement | Supplementary data source |
+
+**For demo purposes:** Physical hardware not required. The Python simulation engine generates realistic sensor data that feeds the digital twin.
+
+## 3.3 The 6-Phase Workflow (V3 — Authoritative)
+
+```
+Phase 1: PRE-SURVEY    — Pre-Load Draft Survey
+Phase 2: BALLAST-ADJ   — Ballast Adjustment
+Phase 3: CRANE-POS     — Crane Positioning
+Phase 4: CARGO-LOAD    — Cargo Loading Operations
+Phase 5: TRIM-CORR     — Trim Correction
+Phase 6: FINAL-SURV    — Final Draft Survey
+```
+
+**Target:** Complete cycle in 15 minutes (900 seconds).
+**Current Performance:** ~10.9 minutes simulated (under target).
+
+## 3.4 Data Processing Pipeline
+
+1. Point cloud registration (align to vessel coordinate system)
+2. Noise filtering (spray, debris, atmospheric)
+3. Surface reconstruction (points → mesh)
+4. Waterline detection (IR + point cloud analysis)
+5. Wave action analysis (extract stable reference)
+6. Displacement calculation (naval architecture algorithms)
+7. Draft derivation (from hydrostatic characteristics)
+8. Stability curve validation
+9. Report generation → Sovereign's tablet
+10. Audit trail → BigQuery
+
+**Processing target:** <30 seconds, 99.8% accuracy vs reference measurements.
+
+## 3.5 Deployment Roadmap
+
+| Phase | Focus | Key Activities |
+|-------|-------|---------------|
+| Phase 1: Foundation | Core lattice + Shadow Mode | Deploy nodes on Vertex AI, load Digital Constitution, validate against historical data, achieve 95% Trust Score |
+| Phase 2: Controlled | Physical drone ops, limited fleet | Platform certification, regulatory approvals (USCG/FAA), parallel human/automated measurement, refine algorithms |
+| Phase 3: Scaled | Full fleet, role transition | Fleet expansion, human transition to oversight/exception, activate training pipeline, Reflexion Loop analysis |
+
+## 3.6 Success Metrics
+
+| Category | Metric | Target |
+|----------|--------|--------|
+| Efficiency | Measurement time | 4 hours → 15 minutes (93.75% reduction) |
+| Safety | Deck exposure hours | >90% reduction |
+| Safety | Measurement-related injuries | Zero |
+| Quality | Measurement accuracy | 99% within +/- 1 inch |
+| Quality | Documentation completeness | 100% with full provenance |
+| Regulatory | Audit on demand | Complete trail for any measurement |
+
+---
+
+# PART FOUR: PHASE III SIMULATION — WHAT EXISTS
+
+## 4.1 Implemented Modules
+
+All modules live in `src/sol/simulation/`. Pure Python, zero external dependencies.
+
+### state_objects.py — Digital Shadow State Models
+- `DraftState`, `CraneState`, `StabilityState` — JSON-serializable dataclasses
+- `WorkflowPhase` enum — 6 phases with `WORKFLOW_PHASE_ORDER`
+- `SimulationState` — composite holding all sub-states + workflow metadata
+- All implement `.to_dict()` / `.to_json()` for Eclipse Ditto-style serialization
+
+### draft_monitor.py — 4-Point Draft Sensor Simulation
+- Simulates ultrasonic sensors at fore, aft, port, starboard
+- Configurable base draft and noise range
+- Per-sensor offsets for load/ballast effects
+- Automatic mean draft computation
+
+### crane_controller.py — Signal Codes, G-Codes, Safety
+- Signal codes: `SIG-000` (IDLE) → `SIG-910` (OVERLOAD)
+- G-codes: `G00` (rapid) → `G99` (emergency stop)
+- Safety: boom angle clamp (15-80 deg), hook height floor (2ft), capacity check
+- State machine: IDLE → POSITIONED → ACTIVE → LOWERING → IDLE, plus OVERLOAD/E_STOP
+
+### stability_analyzer.py — Trim, Heel, Displacement, GM
+- Trim = fore - aft (positive = bow-heavy)
+- Heel = angle from port/starboard draft difference
+- Displacement = volume x water density (long tons)
+- GM = BM - BG approximation
+- Status: STABLE / CAUTION / CRITICAL (configurable thresholds)
+
+### workflow_engine.py — 6-Phase FSM
+- Ordered transitions through 6 phases
+- 15-minute target (900s)
+- Per-phase and total elapsed time tracking
+- `get_summary()` → JSON-serializable report
+
+### watchdog_agent.py — Safety Checks
+- 4 categories: draft limits, crane overload, stability margins, phase timeouts
+- Coded violations: `DFT-001`–`DFT-004`, `CRN-001`–`CRN-003`, `STB-001`–`STB-005`, `WFL-001`
+- Overall: PASS (clean) / ALERT (warnings) / STOP (critical halt)
+
+### demo_runner.py — Full Simulation Orchestrator
+- Orchestrates all 6 phases with realistic cargo loading
+- 4 cargo lifts: 8K, 12K, 15K, 10K lbs with progressive draft increase
+- Ballast adjustments and trim corrections
+- Produces all 5 SOL Event Log prefixes
+- Completes in ~10.9 min simulated
+
+## 4.2 Authoritative Data Structures
+
+**Do NOT modify these keys without Level 0 approval.**
+
+```python
+# Draft Reading
+{"fore": 10.45, "aft": 10.82, "port": 10.58, "starboard": 10.67, "mean": 10.63, "unit": "ft"}
+
+# Crane Signal
+{"load_weight": 1800, "max_capacity": 3200, "boom_angle": 42.3, "slew_bearing": 195.7,
+ "hook_height": 16.2, "status": "LOADING", "signal_code": "SIG-LOAD", "g_code": "G01"}
+
+# Stability
+{"trim": 0.185, "heel": -0.092, "displacement": 3200, "gm": 3.65, "status": "NOMINAL"}
+
+# Workflow
+["PRE-SURVEY", "BALLAST-ADJ", "CRANE-POS", "CARGO-LOAD", "TRIM-CORR", "FINAL-SURV"]
+```
+
+## 4.3 SOL Event Log Format (Strict)
+
+```
+[SOL.DraftMonitor]      draft_readings: fore=X.XXft aft=X.XXft port=X.XXft starboard=X.XXft mean=X.XXft
+[SOL.CraneController]   signal=SIG-XXX boom_angle=XX.X slew=XXX.X hook_height=XX.X load=XXXX.X status=STATUS
+[SOL.StabilityAnalyzer]  trim=X.XXX heel=X.XXX displacement=XXXX.X gm=X.XXX status=STATUS
+[SOL.WorkflowEngine]    phase_active: STEP-ID elapsed=XXs
+[SOL.WatchdogAgent]     safety_check: PASS | ALERT | STOP
+```
+
+## 4.4 Test Status (February 2026)
+
+| Test File | Tests | Status |
+|-----------|-------|--------|
+| test_simulation.py | 56 | PASS |
+| test_sol.py | All | PASS |
+| test_workflow.py | All | PASS |
+| test_sil_advanced.py | All | PASS |
+| test_sil_agent.py | — | 4 pre-existing failures (Phase II, not simulation) |
+
+## 4.5 Commands
+
 ```bash
-cd /home/user/FREQ-AI-VERTEX
-PYTHONPATH=src python -m pytest tests/ -v
-# Expected: 68 tests, all passing
-```
+# Run simulation
+PYTHONPATH=src ./venv/bin/python -m sol.simulation.demo_runner
 
-### Running Demo
-```bash
-PYTHONPATH=src python -m sol.simulation.demo_runner
-# Produces formatted terminal output with phase-by-phase simulation results
-```
+# Test all
+PYTHONPATH=src ./venv/bin/python -m pytest tests/ -v
 
----
+# Test simulation only
+PYTHONPATH=src ./venv/bin/python -m pytest tests/test_simulation.py -v
 
-## 6. Repository Structure
+# Lint
+PYTHONPATH=src ./venv/bin/python -m ruff check src/
 
-```
-FREQ-AI-VERTEX/
-├── AGENT_PROTOCOL.md                          # Ground truth for agent hierarchy
-├── HANDOFF.md                                 # This document
-├── firebase.json                              # Firebase config (unused/abandoned)
-├── .firebaserc                                # Firebase project ref (unused)
-├── config/
-│   ├── sol_config.yaml                        # Lattice node configuration
-│   └── vertex_ai_agent.yaml                   # Vertex AI agent + maritime playbook
-├── public/
-│   └── index.html                             # Dashboard (needs 3D upgrade)
-├── src/
-│   └── sol/
-│       ├── __init__.py
-│       ├── activation/
-│       │   └── lattice_activator.py
-│       ├── audit/
-│       │   └── freq_auditor.py
-│       ├── blueprint/
-│       │   └── freq_blueprint.py              # Mission vectors incl. vector_gamma
-│       ├── consensus/
-│       │   └── quorum.py
-│       ├── governance/
-│       │   └── freq_law.py
-│       ├── nodes/
-│       │   ├── __init__.py
-│       │   ├── base.py                        # NodeType enum (8 types)
-│       │   ├── maritime_ops.py                # MaritimeBargeOps (633 lines)
-│       │   ├── element_design.py
-│       │   ├── exec_automate.py
-│       │   ├── gov_engine.py
-│       │   ├── legacy_architect.py
-│       │   ├── optimal_intel.py
-│       │   ├── spci.py
-│       │   └── strategic_op.py
-│       └── simulation/
-│           ├── __init__.py
-│           ├── demo_output.json               # Raw simulation output
-│           ├── demo_runner.py                  # Presentation-ready runner
-│           └── maritime_barge.py               # Simulation orchestrator
-├── tests/
-│   ├── test_sol.py                            # 37 core tests
-│   └── test_maritime.py                       # 31 maritime tests
-└── .github/
-    ├── agents/
-    │   └── strategic-opus-code.md
-    └── workflows/
-        └── deploy-pages.yml                   # GitHub Pages deployment
+# Format
+./venv/bin/python -m black src/
 ```
 
 ---
 
-## 7. Key Data Points for Pitch
+# PART FIVE: GOOGLE STARTUP PROGRAM
+
+## 5.1 The $350K Ask
+
+| Detail | Value |
+|--------|-------|
+| Program | Google for Startups Cloud Program — AI Tier |
+| Total credits | $350,000 over 2 years |
+| Breakdown | $200K (Scale) + $150K (AI add-on) |
+| Year 1 | $250K at 100% coverage |
+| Year 2 | 20% monthly reimbursement capped at $100K |
+| Additional | $12K Enhanced Support + $10K third-party models via Vertex AI |
+| Pipeline | Spoke with Sylvan (REQ Consultant) → Referred to Sulgi (BD) |
+| Meeting | Scheduled week of Feb 10-14, 2026 |
+
+## 5.2 BD Evaluation Criteria
+
+Sulgi evaluates:
+1. **Visual demo proof** — live, shareable URL showing maritime ops
+2. **GCP spend trajectory** — $8K/mo → $100K+/yr ramp
+3. **Competitive displacement** — Azure → GCP migration story
+4. **AI as core technology** — multi-agent lattice, not just using an API
+5. **Reference case study potential** — showcase for Google marketing
+
+## 5.3 Demonstration Requirements
+
+The Phase 3 demo must showcase:
+- Complete 6-phase maritime barge drafting workflow
+- Real-time 3D visualization (not terminal output)
+- Lattice governance in action (consensus, VETO)
+- Cost savings data (98.7% vs manual, 99.8% vs drones)
+- Audit trail / compliance documentation
+- Must be shareable via URL (not local-only)
+
+## 5.4 Market Position
 
 | Metric | Value |
 |--------|-------|
-| Market size (2024) | $4.3B maritime AI |
-| Market size (2030) | $32.7B (40.6% CAGR) |
-| SOL annual cost | $2,113/year |
-| Manual surveyor cost | $162,000/year |
-| Drone-based cost | $1,000,000/year |
-| Savings vs manual | 98.7% |
-| Savings vs drones | 99.8% |
-| Target accuracy | 99.8% |
-| Governance latency | <2000ms |
-| Consensus quorum | k=3 nodes |
-| Credit request | $350,000 over 2 years |
-| GCP spend Month 1-6 | $8-15K/month |
-| GCP spend Month 6-12 | $12-25K/month |
-| GCP spend Month 12-18 | $30-60K/month |
-| GCP spend Month 18-24+ | $100K+/year paid |
+| Maritime AI market (2024) | $4.3 billion |
+| Maritime AI market (2030) | $32.7 billion |
+| CAGR | 40.6% |
+| FREQ unique position | First platform unifying full barge drafting cycle (Pre-Load → Ballast → Crane → Cargo → Trim → Final Survey) with AI orchestration + digital twin for US inland waterways |
 
-### GCP Service Mapping (for Pitch)
+## 5.5 Cost Analysis
 
-| Azure Service | GCP Equivalent | Purpose |
-|---------------|----------------|---------|
-| Azure AI Foundry | Vertex AI Agent Builder | Multi-agent orchestration |
-| Azure Digital Twins | TBD (simplified) | Asset modeling |
-| Azure IoT Hub | Cloud IoT Core / Pub/Sub | Device telemetry |
-| Azure Blob Storage | Cloud Storage | Asset storage |
-| Azure Functions | Cloud Functions / Cloud Run | Serverless compute |
-| Azure 3D Scenes Studio | TBD (3D viz platform) | Mission control UI |
-| Azure IoT Edge | Distributed Cloud Edge | Edge AI deployment |
-| Azure Monitor | Cloud Monitoring | Ops telemetry |
-| Azure Spanner equivalent | Cloud Spanner | Governance constitution |
-| Azure Key Vault | Secret Manager | Credential management |
+| Method | Annual Cost | vs SOL |
+|--------|-------------|--------|
+| SOL Autonomous | $2,113/year | — |
+| Manual Surveyors | $162,000/year | SOL saves 98.7% |
+| Drone-Based | $1,000,000/year | SOL saves 99.8% |
+
+## 5.6 GCP Spend Trajectory
+
+| Period | Monthly Spend |
+|--------|--------------|
+| Month 1-6 | $8-15K |
+| Month 6-12 | $12-25K |
+| Month 12-18 | $30-60K |
+| Month 18-24+ | $100K+/year (paid, post-credits) |
 
 ---
 
-## 8. Pending Tasks (Priority Order)
+# PART SIX: CONSTRAINTS & DIRECTIVES
 
-### CRITICAL — For Google Presentation
+## 6.1 What NOT To Do
 
-| # | Task | Status | Detail |
-|---|------|--------|--------|
-| 1 | **Find 3D visualization platform** | NOT STARTED | Replace legacy terminal/Firebase. Needs to showcase 3D graph, UI/UX, maritime ops visually. Candidates: Three.js/R3F, Cesium, Deck.gl, Vercel, or hosted platform |
-| 2 | **Deploy dashboard to live URL** | BLOCKED | Connect Netlify (or alternative) to `dre-achitect/freq-ai-vertex`. Current `public/index.html` works but needs 3D upgrade |
-| 3 | **Merge PR #8** | NOT DONE | User must merge on GitHub UI at upstream repo, then sync fork |
-| 4 | **Build pitch deck** | NOT STARTED | Problem > Solution > Demo > Architecture > GCP services > Spend trajectory > The $350K ask |
-| 5 | **Map Azure Foundry V2.0 to GCP** | NOT STARTED | Translate the full blueprint to GCP-native services for presentation narrative |
+- Do NOT use `dre-orchestrator-ai` GitHub account (deprecated)
+- Do NOT use `dre-achitect` or `dre-architect` accounts (deprecated)
+- Do NOT use Vertex AI Agent Designer
+- Do NOT deploy to Azure (Phase 2 legacy)
+- Do NOT refactor Phase 2 Agent Core (SSC, CGE, SIL) unless directed by Level 0
+- Do NOT modify authoritative data structure keys without Level 0 approval
+- Do NOT select a deployment platform — that decision is pending
+- Do NOT build terminal UIs — building for visual/web (React/Three.js/Cesium)
 
-### HIGH — Meeting Preparation
+## 6.2 Architecture Principles
 
-| # | Task | Status | Detail |
-|---|------|--------|--------|
-| 6 | Simplify Digital Twin for MVP | NOT STARTED | Drop LIDAR/drone pipeline, keep IoT sensor + AI inference + 3D viz |
-| 7 | Upgrade `public/index.html` to 3D | NOT STARTED | Add Three.js or equivalent for barge visualization, maritime scene |
-| 8 | Prepare meeting narrative | NOT STARTED | "One AI system running on Google Cloud — visual proof of autonomous maritime operations" |
-| 9 | Anticipate Sulgi's questions | NOT STARTED | Revenue model, timeline to paid usage, team size, funding status, why GCP over Azure |
+1. **State-First:** Hardware is a "Digital Shadow." Code updates JSON State Objects (Eclipse Ditto style), not hardware directly.
+2. **Simulation is Data Layer:** The Python simulation feeds the visualization. It is the source of truth.
+3. **No Terminal UIs:** Building for visual/web interaction once platform is selected.
+4. **Pure Python:** Simulation module has zero external dependencies — only stdlib and dataclasses.
 
-### MEDIUM — Post-Meeting
+## 6.3 Pending Priorities (Ordered)
 
-| # | Task | Status | Detail |
-|---|------|--------|--------|
-| 10 | Implement Knowledge Substrate | NOT STARTED | Tiered memory: Redis (short) + Datastore (mid) + Vector DB/BigQuery (long) |
-| 11 | Implement SSM DAG conversion | NOT STARTED | Natural language intent > executable task graph |
-| 12 | Edge-Core governance prototype | NOT STARTED | Local policy agent + central CGE sync |
-| 13 | Containerize agents for Cloud Run | NOT STARTED | Docker packaging, Pub/Sub integration |
-
----
-
-## 9. Next Prompt — Ready to Use
-
-Copy and paste this into a fresh Claude session:
+| # | Priority | Status | Detail |
+|---|----------|--------|--------|
+| 1 | **3D Visualization Platform** | TBD | Find platform for 3D graph, UI/UX, maritime scene. Candidates: React+Three.js, React Three Fiber, Cesium, Deck.gl |
+| 2 | **Deploy to Shareable URL** | BLOCKED | Need platform selection first. Must be demo-able via link for Google meeting |
+| 3 | **Pitch Materials** | NOT STARTED | Visual proof for Sulgi. Problem → Solution → Demo → Architecture → GCP services → Spend → $350K ask |
+| 4 | **Platform Selection** | PENDING | Chief Dre decides. Not Azure, not Firebase. GCP under evaluation. |
+| 5 | **Edge-Core Governance** | NOT STARTED | Local policy agent + central CGE sync prototype |
+| 6 | **Containerize Agents** | NOT STARTED | Docker packaging for selected platform |
 
 ---
 
-> **Continue FREQ-AI-VERTEX project from HANDOFF.md.**
+# PART SEVEN: REPOSITORY STRUCTURE
+
+```
+FREQ-AI-VERTEX/                              # Local path
+├── src/sol/
+│   ├── __init__.py                          # SOL package (Phase II core)
+│   ├── agents/                              # SSC, SIL agents
+│   ├── audit/                               # BigQuery audit trail
+│   ├── blueprint/                           # FREQ blueprint config
+│   ├── consensus/                           # k=3 quorum consensus
+│   ├── demo.py                              # Phase II lattice demo
+│   ├── governance/                          # FREQ LAW, veto authority
+│   ├── nodes/                               # Lattice nodes (StrategicOP, GOVEngine, etc.)
+│   ├── orchestration/                       # Workflow orchestrator
+│   └── simulation/                          # ★ PHASE III ★
+│       ├── __init__.py
+│       ├── __main__.py                      # python -m entry point
+│       ├── state_objects.py                 # Digital Shadow state models
+│       ├── draft_monitor.py                 # 4-point draft sensor sim
+│       ├── crane_controller.py              # Signal codes, G-codes, safety
+│       ├── stability_analyzer.py            # Trim, heel, displacement, GM
+│       ├── workflow_engine.py               # 6-phase barge drafting workflow
+│       ├── watchdog_agent.py                # Safety checks (PASS/ALERT/STOP)
+│       └── demo_runner.py                   # Full simulation orchestrator
+├── tests/
+│   ├── test_sol.py                          # Phase II tests
+│   ├── test_simulation.py                   # Phase III tests (56)
+│   ├── test_workflow.py
+│   ├── test_sil_advanced.py
+│   └── test_sil_agent.py                   # 4 pre-existing failures
+├── config/
+├── docs/
+├── knowledge/
+├── pyproject.toml
+├── CLAUDE.md                                # System instructions v5.0
+├── HANDOFF.md                               # This document
+└── venv/                                    # Python 3.9+ virtual env
+```
+
+---
+
+# PART EIGHT: NEXT PROMPT
+
+Copy and paste this into a fresh Claude Code session:
+
+---
+
+> **Continue FREQ AI project from HANDOFF.md.**
 >
-> I am Chief Dre, Sovereign Intent Originator. Read `HANDOFF.md` and `AGENT_PROTOCOL.md` at the repo root for full context. Branch is `claude/update-agent-protocol-z5o9X`.
+> I am Chief Dre, Sovereign Intent Originator (Level 0). Read `HANDOFF.md` and `CLAUDE.md` at the repo root for full context.
 >
-> **Key context:** We are preparing for a Google Cloud Startup Program presentation (target: $350K credits). We have a working maritime barge simulation (68 tests passing) but need to pivot the presentation layer.
+> **Repo:** `https://github.com/dre-orchestrator/freq`
 >
-> **Strategic pivot:**
-> - Moving AWAY from Digital Twin / LIDAR (too complex/expensive) toward a lighter IoT sensor + AI alternative
-> - Moving AWAY from legacy terminals (Cloud Run, Vertex Workbench, Colab Enterprise, Firebase) toward a modern 3D visualization environment
-> - The Azure Foundry V2.0 architectural blueprint in HANDOFF.md Section 4 is the intellectual target — map it to GCP services
+> **Current state:**
+> - Phase 2 (Lattice Core): COMPLETE
+> - Phase 3 (Digital Twin + Simulation): ACTIVE — 6-phase simulation built, 56 tests passing, ~10.9 min workflow
+> - Platform: TBD — do not select or deploy to any platform without my directive
 >
-> **Immediate priorities:**
-> 1. Find and implement a 3D visualization platform for the maritime ops demo (must be shareable via URL)
-> 2. Deploy to a live URL — my fork is at `dre-achitect/freq-ai-vertex`, I have a Netlify account ready
-> 3. Map the Azure Foundry V2.0 architecture to GCP equivalents for the pitch narrative
-> 4. Build a pitch deck outline for Sulgi (Google Cloud BD) — the ask is $350K in credits
+> **Your role:** Backend Engineer. You BUILD. Stay in your lane.
 >
-> The simulation works. All 68 tests pass. The backend is solid. I need a visual frontend and deployment now.
+> **Immediate task:** [DESCRIBE WHAT YOU NEED]
+>
+> The simulation works. Tests pass. I need [NEXT OBJECTIVE] now.
 
 ---
 
 *End of HANDOFF.md*
-*Generated: February 11, 2026*
-*Branch: claude/update-agent-protocol-z5o9X*
-*Primary Repo: https://github.com/dre-achitect/freq-ai-vertex*
+*Generated: February 13, 2026*
+*Version: 3.0*
+*Repo: https://github.com/dre-orchestrator/freq*
+*Authority: Chief Dre, Sovereign Intent Originator*
