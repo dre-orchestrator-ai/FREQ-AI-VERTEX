@@ -1,0 +1,244 @@
+{
+  "mission": {
+    "mission_id": "1651959c-07be-4b4a-acf7-bbb6fd23740e",
+    "status": "created"
+  },
+  "vessel": {
+    "vessel_id": "BARGE-GOM-2026-001",
+    "status": "registered",
+    "spec": {
+      "vessel_id": "BARGE-GOM-2026-001",
+      "name": "Gulf Runner 1",
+      "loa_m": 60.96,
+      "beam_m": 18.29,
+      "depth_m": 3.66,
+      "light_draft_m": 0.91,
+      "max_draft_m": 3.05,
+      "displacement_t": 850.0,
+      "deadweight_t": 3200.0,
+      "ballast_tanks": 6,
+      "tank_capacity_m3": 75.0
+    }
+  },
+  "scan": {
+    "vessel_id": "BARGE-GOM-2026-001",
+    "readings_ingested": 6,
+    "total_readings": 6,
+    "status": "scan_complete"
+  },
+  "draft_survey": {
+    "survey_id": "1abb3bf8-ba0f-4f24-917a-57d45a1ef76e",
+    "status": "process_complete",
+    "survey": {
+      "survey_id": "1abb3bf8-ba0f-4f24-917a-57d45a1ef76e",
+      "vessel_id": "BARGE-GOM-2026-001",
+      "fore_draft_m": 2.16,
+      "mid_draft_m": 2.41,
+      "aft_draft_m": 2.69,
+      "mean_draft_m": 2.414,
+      "trim_m": 0.53,
+      "list_deg": 0.0,
+      "displacement_t": 2422.5,
+      "cargo_weight_t": 1572.5,
+      "water_density_kg_m3": 1022.9,
+      "block_coefficient": 0.88,
+      "freeboard_m": 1.246,
+      "under_keel_clearance_m": 6.726,
+      "stability_gm_m": 11.573,
+      "is_compliant": true,
+      "compliance_notes": [
+        "ALL CHECKS PASSED \u2014 Vessel within operational limits"
+      ],
+      "timestamp": "2026-02-07T18:24:35.986574"
+    }
+  },
+  "ballast": {
+    "plan_id": "9449353c-ae70-472b-b454-7e3bb3a0f9f5",
+    "status": "optimized",
+    "plan": {
+      "plan_id": "9449353c-ae70-472b-b454-7e3bb3a0f9f5",
+      "vessel_id": "BARGE-GOM-2026-001",
+      "tank_levels": {
+        "FP_Tank": 0.3,
+        "AP_Tank": 0.7,
+        "PS_Fwd": 0.3,
+        "SB_Fwd": 0.3,
+        "PS_Aft": 0.7,
+        "SB_Aft": 0.7
+      },
+      "target_trim_m": 0.0,
+      "achieved_trim_m": 0.02,
+      "target_list_deg": 0.0,
+      "achieved_list_deg": 0.1,
+      "total_ballast_m3": 225.0,
+      "estimated_cost_usd": 33.75,
+      "timestamp": "2026-02-07T18:24:35.986761"
+    }
+  },
+  "stability": {
+    "survey_id": "1abb3bf8-ba0f-4f24-917a-57d45a1ef76e",
+    "vessel_id": "BARGE-GOM-2026-001",
+    "metacentric_height_m": 11.573,
+    "is_stable": true,
+    "risk_level": "LOW",
+    "gz_at_10_deg": 2.0097,
+    "angle_of_vanishing_stability_deg": 70.0,
+    "freeboard_m": 1.246,
+    "recommendation": "Vessel stability within acceptable range"
+  },
+  "governance": {
+    "consensus": {
+      "round_id": "50fba2ca-bfac-4176-b595-c12c3315fb5b",
+      "votes": {
+        "round_id": "50fba2ca-bfac-4176-b595-c12c3315fb5b",
+        "vote_recorded": true,
+        "current_votes": 3,
+        "approvals": 3,
+        "rejections": 0,
+        "status": "approved"
+      },
+      "has_quorum": true,
+      "required_k": 3,
+      "status": "APPROVED"
+    },
+    "veto": {
+      "vetoed": false,
+      "reason": null,
+      "status": "CLEAR"
+    },
+    "freq_law": {
+      "approvals": 3,
+      "required": 3,
+      "has_quorum": true,
+      "timestamp": "2026-02-07T18:24:35.986875"
+    },
+    "overall_status": "GOVERNANCE APPROVED"
+  },
+  "report": {
+    "report_type": "Maritime Barge Draft Survey Report",
+    "generated_by": "SOL Lattice \u2014 Maritime Barge Ops Node",
+    "vessel": {
+      "vessel_id": "BARGE-GOM-2026-001",
+      "name": "Gulf Runner 1",
+      "loa_m": 60.96,
+      "beam_m": 18.29,
+      "depth_m": 3.66,
+      "light_draft_m": 0.91,
+      "max_draft_m": 3.05,
+      "displacement_t": 850.0,
+      "deadweight_t": 3200.0,
+      "ballast_tanks": 6,
+      "tank_capacity_m3": 75.0
+    },
+    "sensor_summary": {
+      "total_readings": 6,
+      "positions_covered": [
+        "fore",
+        "midship",
+        "aft"
+      ],
+      "avg_water_temp_c": 24.1,
+      "avg_salinity_ppt": 33.5
+    },
+    "draft_survey": {
+      "survey_id": "1abb3bf8-ba0f-4f24-917a-57d45a1ef76e",
+      "vessel_id": "BARGE-GOM-2026-001",
+      "fore_draft_m": 2.16,
+      "mid_draft_m": 2.41,
+      "aft_draft_m": 2.69,
+      "mean_draft_m": 2.414,
+      "trim_m": 0.53,
+      "list_deg": 0.0,
+      "displacement_t": 2422.5,
+      "cargo_weight_t": 1572.5,
+      "water_density_kg_m3": 1022.9,
+      "block_coefficient": 0.88,
+      "freeboard_m": 1.246,
+      "under_keel_clearance_m": 6.726,
+      "stability_gm_m": 11.573,
+      "is_compliant": true,
+      "compliance_notes": [
+        "ALL CHECKS PASSED \u2014 Vessel within operational limits"
+      ],
+      "timestamp": "2026-02-07T18:24:35.986574"
+    },
+    "ballast_plan": {
+      "plan_id": "9449353c-ae70-472b-b454-7e3bb3a0f9f5",
+      "vessel_id": "BARGE-GOM-2026-001",
+      "tank_levels": {
+        "FP_Tank": 0.3,
+        "AP_Tank": 0.7,
+        "PS_Fwd": 0.3,
+        "SB_Fwd": 0.3,
+        "PS_Aft": 0.7,
+        "SB_Aft": 0.7
+      },
+      "target_trim_m": 0.0,
+      "achieved_trim_m": 0.02,
+      "target_list_deg": 0.0,
+      "achieved_list_deg": 0.1,
+      "total_ballast_m3": 225.0,
+      "estimated_cost_usd": 33.75,
+      "timestamp": "2026-02-07T18:24:35.986761"
+    },
+    "surveys_conducted": 1,
+    "timestamp": "2026-02-07T18:24:35.986959"
+  },
+  "cost_analysis": {
+    "analysis_period_months": 12,
+    "surveys_per_month": 30,
+    "total_surveys": 360,
+    "traditional_manual": {
+      "cost_per_survey_usd": 450.0,
+      "annual_cost_usd": 162000.0,
+      "limitations": [
+        "Weather dependent \u2014 cannot operate in high seas",
+        "Requires 2-4 hour mobilization per survey",
+        "Human error rate ~2-5% on draft readings",
+        "No real-time continuous monitoring",
+        "Scheduling bottleneck \u2014 surveyor availability"
+      ]
+    },
+    "drone_survey": {
+      "cost_per_survey_usd": 2800.0,
+      "annual_cost_usd": 1008000.0,
+      "limitations": [
+        "FAA Part 107 waiver required over waterways",
+        "Wind speed limit 25 knots \u2014 frequent cancellations",
+        "Battery life limits to 30-min flight windows",
+        "Post-processing adds 24-48 hours to delivery",
+        "Requires certified remote pilot on-site"
+      ]
+    },
+    "sol_autonomous": {
+      "vertex_ai_per_survey_usd": 0.35,
+      "bigquery_per_survey_usd": 0.02,
+      "cloud_run_monthly_usd": 45.0,
+      "iot_sensors_monthly_usd": 120.0,
+      "annual_cost_usd": 2113.2,
+      "advantages": [
+        "24/7 continuous monitoring \u2014 no weather dependency",
+        "Sub-2-second draft calculations (FREQ LAW compliant)",
+        "0.998 target accuracy via sensor fusion + AI",
+        "Full audit trail in BigQuery \u2014 zero paperwork",
+        "Autonomous ballast optimization reduces fuel costs",
+        "K4 hyper-connected lattice \u2014 Byzantine fault tolerant",
+        "Governance enforcement via GOVEngine VETO authority"
+      ]
+    },
+    "savings_vs_manual_usd": 159886.8,
+    "savings_vs_drone_usd": 1005886.8,
+    "savings_vs_manual_pct": 98.7,
+    "savings_vs_drone_pct": 99.8
+  },
+  "simulation_summary": {
+    "simulation_id": "95da8a1e-c9e9-4698-9eb2-d52addefe65e",
+    "total_execution_time_ms": 1.0,
+    "freq_law_compliant": true,
+    "events_logged": 9,
+    "audit_entries": 4,
+    "lattice_nodes_active": 5,
+    "governance_status": "APPROVED",
+    "timestamp": "2026-02-07T18:24:35.987025"
+  }
+}

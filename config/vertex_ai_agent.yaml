@@ -103,6 +103,32 @@ spec:
     - text: "Validate integration"
 
 ---
+# Maritime Barge Drafting Playbook (vector_gamma)
+
+apiVersion: dialogflow.cloud.google.com/v3
+kind: Playbook
+metadata:
+  name: maritime-barge-ops-playbook
+  displayName: "Maritime Barge Drafting Operations Playbook"
+spec:
+  goal: |
+    Execute autonomous maritime barge draft survey operations.
+    Replace manual surveyors and drone flyovers with IoT sensor fusion
+    and AI-driven analysis. Follow SCAN > PROCESS > REPORT workflow.
+    Target accuracy: 0.998. Enforce USCG/IMO regulatory compliance.
+  steps:
+    - text: "Register vessel with physical specifications (LOA, beam, depth, displacement)"
+    - text: "Ingest IoT sensor data from ultrasonic draft sensors (fore, midship, aft)"
+    - text: "Compute draft survey using Simpson's rule (mean draft, trim, displacement)"
+    - text: "Calculate cargo weight from displacement minus light displacement"
+    - text: "Optimize ballast distribution for even keel and stability"
+    - text: "Assess vessel stability (metacentric height, righting lever)"
+    - text: "Validate against maritime regulations (IMO Load Line, USCG 46 CFR, IMO A.749)"
+    - text: "Request k=3 governance consensus for safety-critical operations"
+    - text: "Generate operational report with cost analysis vs traditional methods"
+    - text: "Log all operations to BigQuery audit trail"
+
+---
 # Tools for SOL Operations
 
 apiVersion: dialogflow.cloud.google.com/v3
@@ -184,3 +210,91 @@ spec:
       required:
         - operation
         - node_id
+
+---
+# Maritime-specific Tools
+
+apiVersion: dialogflow.cloud.google.com/v3
+kind: Tool
+metadata:
+  name: draft-survey-calculator
+  displayName: "Draft Survey Calculator"
+spec:
+  toolType: CUSTOMIZED
+  specification:
+    parameters:
+      type: object
+      properties:
+        vessel_id:
+          type: string
+          description: "Vessel identifier"
+        fore_draft_m:
+          type: number
+          description: "Fore draft reading in meters"
+        mid_draft_m:
+          type: number
+          description: "Midship draft reading in meters"
+        aft_draft_m:
+          type: number
+          description: "Aft draft reading in meters"
+        water_temp_c:
+          type: number
+          description: "Water temperature in Celsius"
+        salinity_ppt:
+          type: number
+          description: "Water salinity in parts per thousand"
+        water_depth_m:
+          type: number
+          description: "Channel water depth in meters"
+      required:
+        - vessel_id
+        - fore_draft_m
+        - mid_draft_m
+        - aft_draft_m
+
+---
+apiVersion: dialogflow.cloud.google.com/v3
+kind: Tool
+metadata:
+  name: ballast-optimizer
+  displayName: "Ballast Optimization Engine"
+spec:
+  toolType: CUSTOMIZED
+  specification:
+    parameters:
+      type: object
+      properties:
+        vessel_id:
+          type: string
+          description: "Vessel identifier"
+        target_trim_m:
+          type: number
+          description: "Target trim in meters (0 = even keel)"
+        target_list_deg:
+          type: number
+          description: "Target list angle in degrees (0 = upright)"
+      required:
+        - vessel_id
+
+---
+apiVersion: dialogflow.cloud.google.com/v3
+kind: Tool
+metadata:
+  name: maritime-compliance-checker
+  displayName: "Maritime Regulatory Compliance Checker"
+spec:
+  toolType: CUSTOMIZED
+  specification:
+    parameters:
+      type: object
+      properties:
+        survey_id:
+          type: string
+          description: "Draft survey ID to validate"
+        regulations:
+          type: array
+          items:
+            type: string
+          description: "Regulatory standards to check against"
+      required:
+        - survey_id

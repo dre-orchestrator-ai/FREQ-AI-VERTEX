@@ -24,6 +24,7 @@ class NodeType(Enum):
     EXEC_AUTOMATE = "exec_automate"        # Workflow execution
     OPTIMAL_INTEL = "optimal_intel"        # Analytics and decision support
     ELEMENT_DESIGN = "element_design"      # Schema and artifact generation
+    MARITIME_BARGE_OPS = "maritime_barge_ops"  # Maritime barge drafting operations
 
 
 @dataclass

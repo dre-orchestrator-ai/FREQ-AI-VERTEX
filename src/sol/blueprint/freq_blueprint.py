@@ -82,7 +82,42 @@ FREQ_BLUEPRINT: Dict[str, Any] = {
         "vector_gamma": {
             "name": "Maritime Barge Drafting",
             "workflow": "SCAN > PROCESS > REPORT",
-            "target_accuracy": 0.998
+            "target_accuracy": 0.998,
+            "description": "Autonomous maritime barge draft survey operations replacing manual surveyors and drone flyovers with IoT sensor fusion and AI-driven analysis",
+            "alternative_to": "manual_surveyor_and_drone",
+            "sensor_type": "ultrasonic_pressure_iot",
+            "sub_operations": [
+                "vessel_registration",
+                "iot_sensor_ingestion",
+                "draft_calculation",
+                "displacement_computation",
+                "ballast_optimization",
+                "stability_assessment",
+                "regulatory_compliance",
+                "cost_analysis",
+                "report_generation"
+            ],
+            "required_nodes": [
+                "maritime_barge_ops",
+                "strategic_op",
+                "gov_engine",
+                "optimal_intel",
+                "exec_automate"
+            ],
+            "regulatory_standards": [
+                "IMO Load Line Convention",
+                "USCG 46 CFR Subchapter S",
+                "IMO Resolution A.749(18)"
+            ],
+            "target_market": "Gulf of Mexico inland barge operators",
+            "gcp_services": [
+                "vertex_ai_agent_builder",
+                "bigquery",
+                "cloud_run",
+                "cloud_logging",
+                "dialogflow_cx",
+                "cloud_iot"
+            ]
         }
     },
     "deployment_phases": {

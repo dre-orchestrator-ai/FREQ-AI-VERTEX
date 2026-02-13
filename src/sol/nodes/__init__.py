@@ -8,6 +8,7 @@ from .gov_engine import GOVEngine
 from .exec_automate import ExecAutomate
 from .optimal_intel import OptimalIntel
 from .element_design import ElementDesign
+from .maritime_ops import MaritimeBargeOps
 
 __all__ = [
     "LatticeNode",
@@ -18,5 +19,6 @@ __all__ = [
     "GOVEngine",
     "ExecAutomate",
     "OptimalIntel",
-    "ElementDesign"
+    "ElementDesign",
+    "MaritimeBargeOps",
 ]
