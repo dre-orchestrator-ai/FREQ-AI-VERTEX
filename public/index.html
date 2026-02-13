@@ -3,546 +3,599 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOL Lattice — Maritime Barge Drafting Operations</title>
+<title>FREQ AI SOL — Maritime Barge Operations</title>
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Cesium.js"></script>
+<link href="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
-  :root {
-    --bg: #0a0e17;
-    --bg-card: #111827;
-    --bg-card-alt: #1a2332;
-    --border: #1e2d3d;
-    --text: #e2e8f0;
-    --text-dim: #8892a4;
-    --accent: #38bdf8;
-    --accent2: #818cf8;
-    --green: #34d399;
-    --red: #f87171;
-    --orange: #fb923c;
-    --gold: #fbbf24;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0e17;color:#e2e8f0}
+:root{--bg:#0a0e17;--panel:#111827;--border:#1e2d3d;--accent:#38bdf8;--green:#34d399;--amber:#fbbf24;--red:#f87171;--text:#e2e8f0;--muted:#8892a4}
+#cesium-container{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0}
+#cesium-container .cesium-viewer-bottom{display:none!important}
+#cesium-container .cesium-viewer-toolbar{display:none!important}
+#react-root{position:absolute;top:0;left:0;right:0;bottom:0;z-index:10;pointer-events:none}
+#react-root>*{pointer-events:auto}
 
-  /* Header */
-  header {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 48px 0 40px;
-    text-align: center;
-  }
-  header .codename {
-    font-size: 11px;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-  header h1 {
-    font-size: 36px;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 6px;
-  }
-  header .subtitle {
-    font-size: 16px;
-    color: var(--text-dim);
-    margin-bottom: 20px;
-  }
-  .badge-row {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .badge-green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
-  .badge-blue { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.25); }
-  .badge-purple { background: rgba(129,140,248,0.12); color: var(--accent2); border: 1px solid rgba(129,140,248,0.25); }
-  .badge-gold { background: rgba(251,191,36,0.12); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); }
+.header{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:linear-gradient(180deg,rgba(10,14,23,0.95) 0%,rgba(10,14,23,0.7) 80%,transparent 100%);z-index:20}
+.header h1{font-size:18px;font-weight:700;letter-spacing:0.5px;color:var(--accent)}
+.header h1 span{color:var(--muted);font-weight:400;font-size:14px;margin-left:8px}
+.badges{display:flex;gap:8px}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px}
+.badge-live{background:rgba(52,211,153,0.15);color:var(--green);border:1px solid rgba(52,211,153,0.3)}
+.badge-phase{background:rgba(56,189,248,0.15);color:var(--accent);border:1px solid rgba(56,189,248,0.3)}
 
-  /* Sections */
-  section { padding: 40px 0; }
-  section + section { border-top: 1px solid var(--border); }
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 6px;
-  }
-  .section-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 24px;
-  }
+.panel{position:absolute;background:rgba(17,24,39,0.92);border:1px solid var(--border);border-radius:12px;padding:14px 16px;min-width:220px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);pointer-events:auto;transition:border-color 0.3s}
+.panel h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.panel h3 .dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+.metric{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px}
+.metric .label{color:var(--muted)}
+.metric .value{font-family:'SF Mono',Consolas,'Courier New',monospace;font-weight:600;color:var(--text)}
+.metric .value.nominal{color:var(--green)}
+.metric .value.caution{color:var(--amber)}
+.metric .value.critical{color:var(--red)}
+.divider{height:1px;background:var(--border);margin:8px 0}
 
-  /* Cards */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
-  .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-  }
-  .card-alt { background: var(--bg-card-alt); }
-  .card h3 {
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-dim);
-    margin-bottom: 6px;
-  }
-  .card .value {
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-  .card .unit { font-size: 14px; color: var(--text-dim); font-weight: 400; }
-  .card .note { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+.panel-draft{top:70px;left:16px}
+.panel-crane{top:280px;left:16px}
+.panel-stability{top:70px;right:260px}
+.panel-alerts{top:280px;right:260px}
 
-  /* KV Table */
-  .kv-table { width: 100%; border-collapse: collapse; }
-  .kv-table td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-  }
-  .kv-table td:first-child { color: var(--text-dim); width: 45%; }
-  .kv-table td:last-child { font-weight: 600; text-align: right; }
-  .kv-table tr:last-child td { border-bottom: none; }
+.gauge-bar{width:100%;height:6px;background:var(--border);border-radius:3px;margin-top:4px;overflow:hidden}
+.gauge-fill{height:100%;border-radius:3px;transition:width 0.3s,background 0.3s}
 
-  /* Progress bars */
-  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-  .bar-label { width: 80px; font-size: 13px; color: var(--text-dim); text-align: right; flex-shrink: 0; }
-  .bar-track { flex: 1; height: 24px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; position: relative; }
-  .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 600; transition: width 1.5s ease; }
-  .bar-value { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--text-dim); }
+.workflow-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(10,14,23,0.95);border-top:1px solid var(--border);padding:10px 20px;display:flex;flex-direction:column;gap:6px;pointer-events:auto}
+.phase-steps{display:flex;gap:4px;justify-content:center}
+.phase-step{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:0.5px;background:rgba(30,45,61,0.6);color:var(--muted);border:1px solid transparent;transition:all 0.3s}
+.phase-step.active{background:rgba(56,189,248,0.2);color:var(--accent);border-color:var(--accent);box-shadow:0 0 12px rgba(56,189,248,0.2)}
+.phase-step.completed{background:rgba(52,211,153,0.1);color:var(--green);border-color:rgba(52,211,153,0.3)}
+.progress-track{width:100%;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:2px;transition:width 0.5s}
+.workflow-time{text-align:center;font-size:11px;color:var(--muted)}
 
-  /* Cost comparison */
-  .cost-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding: 16px; background: var(--bg-card-alt); border-radius: 10px; border: 1px solid var(--border); }
-  .cost-row .cost-label { width: 140px; font-size: 14px; font-weight: 600; flex-shrink: 0; }
-  .cost-row .cost-bar { flex: 1; height: 32px; background: rgba(255,255,255,0.03); border-radius: 6px; overflow: hidden; }
-  .cost-row .cost-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 13px; font-weight: 700; }
-  .cost-row .cost-amount { width: 140px; text-align: right; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+.chaos-btn{position:absolute;top:14px;right:20px;padding:10px 18px;background:linear-gradient(135deg,rgba(248,113,113,0.2),rgba(251,146,60,0.2));color:var(--red);border:1px solid rgba(248,113,113,0.4);border-radius:8px;cursor:pointer;font-weight:700;font-size:12px;letter-spacing:0.5px;transition:all 0.2s;animation:pulse-btn 2s infinite;pointer-events:auto;z-index:30}
+.chaos-btn:hover{background:linear-gradient(135deg,rgba(248,113,113,0.4),rgba(251,146,60,0.4));transform:scale(1.02)}
+.chaos-btn.active{background:rgba(220,38,38,0.8)!important;color:#fff;animation:blink 0.5s infinite;border-color:#dc2626}
 
-  /* Compliance list */
-  .check-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  .check-item:last-child { border-bottom: none; }
-  .check-dot {
-    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-  }
-  .check-dot.pass { background: var(--green); box-shadow: 0 0 8px rgba(52,211,153,0.4); }
-  .check-dot.fail { background: var(--red); box-shadow: 0 0 8px rgba(248,113,113,0.4); }
-  .check-regulation { font-size: 13px; color: var(--text-dim); }
-  .check-detail { font-size: 14px; font-weight: 600; margin-left: auto; }
+.mob-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(220,38,38,0.15);z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center;animation:flash-red 1s infinite}
+.mob-overlay .mob-text{font-size:42px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(220,38,38,0.8);letter-spacing:4px;animation:blink 0.5s infinite}
 
-  /* Tank diagram */
-  .tank-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .tank {
-    background: var(--bg-card-alt);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .tank-name { font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
-  .tank-pct { font-size: 20px; font-weight: 700; }
-  .tank-bg {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: rgba(56,189,248,0.1);
-    border-top: 2px solid rgba(56,189,248,0.3);
-    transition: height 1.5s ease;
-  }
+.panel.alert-active{border-color:var(--red)!important;box-shadow:0 0 20px rgba(248,113,113,0.2)}
 
-  /* CTA Section */
-  .cta-section {
-    text-align: center;
-    padding: 60px 0;
-    background: linear-gradient(135deg, rgba(56,189,248,0.05), rgba(129,140,248,0.05));
-  }
-  .cta-amount {
-    font-size: 56px;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--gold), var(--orange));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .cta-label { font-size: 18px; color: var(--text-dim); margin-top: 4px; }
-  .gcp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; max-width: 700px; margin-left: auto; margin-right: auto; }
-  .gcp-item {
-    padding: 14px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .gcp-item span { display: block; font-weight: 400; font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.signal-code{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace}
+.signal-code.idle{background:rgba(136,146,164,0.2);color:var(--muted)}
+.signal-code.active{background:rgba(56,189,248,0.2);color:var(--accent)}
+.signal-code.emergency{background:rgba(248,113,113,0.3);color:var(--red)}
 
-  /* Run Simulation Button */
-  .run-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 14px 32px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    margin-top: 16px;
-  }
-  .run-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(56,189,248,0.25); }
-  .run-btn:active { transform: translateY(0); }
-  .run-btn.running { opacity: 0.7; cursor: wait; }
+@keyframes pulse-btn{0%,100%{opacity:1}50%{opacity:0.8}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes flash-red{0%,100%{background:rgba(220,38,38,0.1)}50%{background:rgba(220,38,38,0.25)}}
 
-  /* Footer */
-  footer {
-    text-align: center;
-    padding: 40px 0;
-    border-top: 1px solid var(--border);
-    color: var(--text-dim);
-    font-size: 13px;
-  }
-
-  /* Pulse animation for live indicator */
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; margin-right: 6px; }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-    .gcp-grid { grid-template-columns: 1fr 1fr; }
-    header h1 { font-size: 26px; }
-    .cta-amount { font-size: 40px; }
-    .cost-row { flex-direction: column; align-items: stretch; }
-    .cost-row .cost-label, .cost-row .cost-amount { width: auto; text-align: left; }
-    .tank-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+@media(max-width:900px){
+  .panel{min-width:170px;padding:10px 12px;font-size:12px}
+  .panel-stability{right:16px;top:70px}
+  .panel-alerts{right:16px;top:260px}
+  .phase-step{padding:4px 6px;font-size:9px}
+}
 </style>
 </head>
 <body>
+<div id="cesium-container"></div>
+<div id="react-root"></div>
 
-<header>
-  <div class="container">
-    <div class="codename">Codename: Antigravity</div>
-    <h1>SOL Lattice</h1>
-    <div class="subtitle">Sophisticated Operational Lattice — Maritime Barge Drafting Operations</div>
-    <div class="badge-row">
-      <span class="badge badge-green"><span class="live-dot"></span> Simulation Live</span>
-      <span class="badge badge-blue">Google Cloud Vertex AI</span>
-      <span class="badge badge-purple">FREQ LAW Governance</span>
-      <span class="badge badge-gold">vector_gamma</span>
-    </div>
-  </div>
-</header>
+<script>
+// ============================================================
+// CESIUM ION TOKEN — REPLACE WITH YOUR TOKEN
+// Free signup: https://ion.cesium.com/signup
+// ============================================================
+Cesium.Ion.defaultAccessToken = 'YOUR_CESIUM_ION_TOKEN';
 
-<!-- Overview Metrics -->
-<section>
-  <div class="container">
-    <div class="section-label">Overview</div>
-    <div class="section-title">Simulation Results</div>
-    <div class="grid-4" id="overview-metrics">
-      <div class="card">
-        <h3>Execution Time</h3>
-        <div class="value" style="color:var(--green)">< 2 <span class="unit">ms</span></div>
-        <div class="note">FREQ LAW compliant</div>
-      </div>
-      <div class="card">
-        <h3>Cargo Weight</h3>
-        <div class="value">1,572.5 <span class="unit">MT</span></div>
-        <div class="note">Calculated from displacement</div>
-      </div>
-      <div class="card">
-        <h3>Compliance</h3>
-        <div class="value" style="color:var(--green)">PASS</div>
-        <div class="note">USCG / IMO verified</div>
-      </div>
-      <div class="card">
-        <h3>Governance</h3>
-        <div class="value" style="color:var(--green)">APPROVED</div>
-        <div class="note">k=3 consensus quorum</div>
-      </div>
-    </div>
-  </div>
-</section>
+// ============================================================
+// JSON SHADOW STATE — The Digital Shadow (Source of Truth)
+// Python simulation writes to this. CesiumJS reads from it.
+// ============================================================
+var STATE = {
+  timestamp: Date.now() / 1000,
+  barge_id: "BARGE-GOM-2026-001",
+  barge_name: "Gulf Runner 1",
+  location: { lat: 29.31, lon: -94.79 },
+  sensors: {
+    lidar_status: "ACTIVE",
+    draft_fore_port: 10.20,
+    draft_fore_starboard: 10.40,
+    draft_aft_port: 10.30,
+    draft_aft_starboard: 10.30,
+    mean_draft: 10.30,
+    water_temp_f: 75.7,
+    salinity_ppt: 33.5
+  },
+  crane: {
+    load_weight: 0,
+    max_capacity: 3200,
+    boom_angle: 0,
+    slew_bearing: 0,
+    hook_height: 20.0,
+    status: "IDLE",
+    signal_code: "SIG-000"
+  },
+  stability: {
+    trim: 0.0,
+    heel: 0.0,
+    displacement: 1800,
+    gm: 3.65,
+    status: "NOMINAL"
+  },
+  workflow: {
+    current_phase: "PRE-SURVEY",
+    phase_index: 0,
+    elapsed_seconds: 0,
+    target_seconds: 900,
+    phases: ["PRE-SURVEY","BALLAST-ADJ","CRANE-POS","CARGO-LOAD","TRIM-CORR","FINAL-SURV"]
+  },
+  alerts: {
+    man_overboard: false,
+    list_warning: false,
+    overload_warning: false,
+    trim_warning: false
+  },
+  ghost_lidar: {
+    point_count: 6000,
+    scan_pattern: "lawnmower",
+    chaos_mode: false
+  },
+  governance: {
+    freq_law: "COMPLIANT",
+    veto_status: "CLEAR",
+    consensus: "3/3 APPROVED"
+  }
+};
 
-<!-- Vessel Info + Draft Survey -->
-<section>
-  <div class="container">
-    <div class="section-label">Phase 1 — Scan &amp; Process</div>
-    <div class="section-title">Vessel &amp; Draft Survey</div>
-    <div class="grid-2">
-      <div class="card">
-        <h3>Vessel Specifications</h3>
-        <table class="kv-table">
-          <tr><td>Vessel ID</td><td>BARGE-GOM-2026-001</td></tr>
-          <tr><td>Name</td><td>Gulf Runner 1</td></tr>
-          <tr><td>Length Overall (LOA)</td><td>60.96 m (200 ft)</td></tr>
-          <tr><td>Beam</td><td>18.29 m (60 ft)</td></tr>
-          <tr><td>Depth</td><td>3.66 m (12 ft)</td></tr>
-          <tr><td>Max Draft</td><td>3.05 m</td></tr>
-          <tr><td>Deadweight</td><td>3,200 MT</td></tr>
-          <tr><td>IoT Sensors</td><td>6x Ultrasonic</td></tr>
-        </table>
-      </div>
-      <div class="card">
-        <h3>Draft Survey Results</h3>
-        <table class="kv-table">
-          <tr><td>Fore Draft</td><td>2.160 m</td></tr>
-          <tr><td>Midship Draft</td><td>2.410 m</td></tr>
-          <tr><td>Aft Draft</td><td>2.690 m</td></tr>
-          <tr><td>Mean Draft (Simpson)</td><td style="color:var(--accent);font-size:16px">2.414 m</td></tr>
-          <tr><td>Trim</td><td>0.530 m (by stern)</td></tr>
-          <tr><td>Displacement</td><td>2,422.5 MT</td></tr>
-          <tr><td>Water Density</td><td>1,022.90 kg/m3</td></tr>
-          <tr><td>Block Coefficient</td><td>0.8800</td></tr>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
+// ============================================================
+// CESIUMJS INITIALIZATION
+// ============================================================
+var viewer, bargeEntity, craneEntity, lidarPrimitives;
+var PHASE_DUR = 15; // seconds per phase in demo mode
 
-<!-- Stability + Ballast -->
-<section>
-  <div class="container">
-    <div class="section-label">Phase 2 — Stability &amp; Ballast</div>
-    <div class="section-title">Stability Assessment &amp; Ballast Optimization</div>
-    <div class="grid-2">
-      <div class="card">
-        <h3>Stability Metrics</h3>
-        <table class="kv-table">
-          <tr><td>Metacentric Height (GM)</td><td style="color:var(--green)">11.573 m</td></tr>
-          <tr><td>Risk Level</td><td><span class="badge badge-green" style="padding:3px 10px;font-size:11px">LOW</span></td></tr>
-          <tr><td>GZ at 10 deg</td><td>2.0097 m</td></tr>
-          <tr><td>Vanishing Stability</td><td>70.0 deg</td></tr>
-          <tr><td>Freeboard</td><td>1.246 m</td></tr>
-          <tr><td>Under-Keel Clearance</td><td>6.726 m</td></tr>
-        </table>
-        <div style="margin-top:16px;padding:12px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:8px;font-size:13px;color:var(--green)">
-          Vessel stability within acceptable range
-        </div>
-      </div>
-      <div class="card">
-        <h3>Ballast Tank Distribution</h3>
-        <div style="margin-bottom:16px">
-          <table class="kv-table">
-            <tr><td>Target Trim</td><td>0.000 m</td></tr>
-            <tr><td>Achieved Trim</td><td>0.020 m</td></tr>
-            <tr><td>Total Ballast</td><td>225.0 m3</td></tr>
-            <tr><td>Pumping Cost</td><td>$33.75</td></tr>
-          </table>
-        </div>
-        <div class="tank-grid" id="tank-grid">
-          <div class="tank"><div class="tank-bg" style="height:30%"></div><div style="position:relative"><div class="tank-name">FP Tank</div><div class="tank-pct">30%</div></div></div>
-          <div class="tank"><div class="tank-bg" style="height:70%"></div><div style="position:relative"><div class="tank-name">AP Tank</div><div class="tank-pct">70%</div></div></div>
-          <div class="tank"><div class="tank-bg" style="height:30%"></div><div style="position:relative"><div class="tank-name">PS Fwd</div><div class="tank-pct">30%</div></div></div>
-          <div class="tank"><div class="tank-bg" style="height:30%"></div><div style="position:relative"><div class="tank-name">SB Fwd</div><div class="tank-pct">30%</div></div></div>
-          <div class="tank"><div class="tank-bg" style="height:70%"></div><div style="position:relative"><div class="tank-name">PS Aft</div><div class="tank-pct">70%</div></div></div>
-          <div class="tank"><div class="tank-bg" style="height:70%"></div><div style="position:relative"><div class="tank-name">SB Aft</div><div class="tank-pct">70%</div></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+async function initCesium() {
+  try {
+    viewer = new Cesium.Viewer('cesium-container', {
+      terrain: Cesium.Terrain.fromWorldTerrain(),
+      animation: false,
+      timeline: false,
+      baseLayerPicker: false,
+      geocoder: false,
+      homeButton: false,
+      sceneModePicker: false,
+      navigationHelpButton: false,
+      infoBox: false,
+      selectionIndicator: false,
+      shadows: false,
+      shouldAnimate: true
+    });
+  } catch(e) {
+    viewer = new Cesium.Viewer('cesium-container', {
+      animation: false, timeline: false, baseLayerPicker: false,
+      geocoder: false, homeButton: false, sceneModePicker: false,
+      navigationHelpButton: false, infoBox: false, selectionIndicator: false
+    });
+  }
 
-<!-- Compliance -->
-<section>
-  <div class="container">
-    <div class="section-label">Phase 3 — Regulatory</div>
-    <div class="section-title">Maritime Compliance Verification</div>
-    <div class="grid-2">
-      <div class="card">
-        <h3>Regulatory Checks</h3>
-        <div class="check-item">
-          <div class="check-dot pass"></div>
-          <div><div style="font-weight:600;font-size:14px">Draft within load line marks</div><div class="check-regulation">IMO Load Line Convention</div></div>
-          <div class="check-detail" style="color:var(--green)">PASS</div>
-        </div>
-        <div class="check-item">
-          <div class="check-dot pass"></div>
-          <div><div style="font-weight:600;font-size:14px">Minimum freeboard</div><div class="check-regulation">USCG 46 CFR Subchapter S</div></div>
-          <div class="check-detail" style="color:var(--green)">PASS</div>
-        </div>
-        <div class="check-item">
-          <div class="check-dot pass"></div>
-          <div><div style="font-weight:600;font-size:14px">Minimum metacentric height</div><div class="check-regulation">IMO Resolution A.749(18)</div></div>
-          <div class="check-detail" style="color:var(--green)">PASS</div>
-        </div>
-        <div class="check-item">
-          <div class="check-dot pass"></div>
-          <div><div style="font-weight:600;font-size:14px">Trim within operational range</div><div class="check-regulation">Operational Trim Limits</div></div>
-          <div class="check-detail" style="color:var(--green)">PASS</div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Governance Validation</h3>
-        <table class="kv-table">
-          <tr><td>Consensus Quorum (k=3)</td><td><span class="badge badge-green" style="padding:3px 10px;font-size:11px">3/3 APPROVED</span></td></tr>
-          <tr><td>GOVEngine VETO</td><td style="color:var(--green)">CLEAR</td></tr>
-          <tr><td>FREQ LAW</td><td style="color:var(--green)">COMPLIANT</td></tr>
-          <tr><td>Audit Trail</td><td>4 entries (BigQuery)</td></tr>
-          <tr><td>Events Logged</td><td>9</td></tr>
-          <tr><td>Nodes Active</td><td>5 / 8</td></tr>
-        </table>
-        <div style="margin-top:16px;padding:14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:8px;text-align:center;font-size:16px;font-weight:700;color:var(--green)">
-          GOVERNANCE APPROVED
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  viewer.cesiumWidget.creditContainer.style.display = 'none';
 
-<!-- Cost Comparison -->
-<section>
-  <div class="container">
-    <div class="section-label">Phase 4 — Report</div>
-    <div class="section-title">Cost Analysis: SOL vs Traditional Methods</div>
-    <div style="margin-bottom:16px;font-size:14px;color:var(--text-dim)">Annual cost based on 30 surveys/month for 12 months (360 total)</div>
+  viewer.camera.flyTo({
+    destination: Cesium.Cartesian3.fromDegrees(STATE.location.lon, STATE.location.lat, 350),
+    orientation: {
+      heading: Cesium.Math.toRadians(30),
+      pitch: Cesium.Math.toRadians(-35),
+      roll: 0.0
+    },
+    duration: 2.5
+  });
 
-    <div class="cost-row">
-      <div class="cost-label" style="color:var(--red)">Manual Surveyor</div>
-      <div class="cost-bar"><div class="cost-fill" style="width:16.07%;background:linear-gradient(90deg,rgba(248,113,113,0.3),rgba(248,113,113,0.6))"></div></div>
-      <div class="cost-amount" style="color:var(--red)">$162,000</div>
-    </div>
-    <div class="cost-row">
-      <div class="cost-label" style="color:var(--orange)">Drone Survey</div>
-      <div class="cost-bar"><div class="cost-fill" style="width:100%;background:linear-gradient(90deg,rgba(251,146,60,0.3),rgba(251,146,60,0.6))"></div></div>
-      <div class="cost-amount" style="color:var(--orange)">$1,008,000</div>
-    </div>
-    <div class="cost-row">
-      <div class="cost-label" style="color:var(--green)">SOL Autonomous</div>
-      <div class="cost-bar"><div class="cost-fill" style="width:0.5%;background:linear-gradient(90deg,rgba(52,211,153,0.4),rgba(52,211,153,0.7));min-width:4px"></div></div>
-      <div class="cost-amount" style="color:var(--green)">$2,113</div>
-    </div>
+  // Barge — box entity
+  var bargePos = Cesium.Cartesian3.fromDegrees(STATE.location.lon, STATE.location.lat, -1.0);
+  bargeEntity = viewer.entities.add({
+    name: STATE.barge_name,
+    position: bargePos,
+    orientation: Cesium.Transforms.headingPitchRollQuaternion(
+      bargePos, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(45), 0, 0)
+    ),
+    box: {
+      dimensions: new Cesium.Cartesian3(60.96, 18.29, 3.66),
+      material: Cesium.Color.fromCssColorString('#1a2a3a').withAlpha(0.85),
+      outline: true,
+      outlineColor: Cesium.Color.fromCssColorString('#38bdf8').withAlpha(0.8)
+    },
+    label: {
+      text: 'Gulf Runner 1\nBARGE-GOM-2026-001',
+      font: '13px sans-serif',
+      fillColor: Cesium.Color.WHITE,
+      outlineColor: Cesium.Color.BLACK,
+      outlineWidth: 2,
+      style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+      verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+      pixelOffset: new Cesium.Cartesian2(0, -30),
+      scaleByDistance: new Cesium.NearFarScalar(100, 1.0, 2000, 0.3),
+      showBackground: true,
+      backgroundColor: Cesium.Color.fromCssColorString('#0a0e17').withAlpha(0.7),
+      backgroundPadding: new Cesium.Cartesian2(8, 4)
+    }
+  });
 
-    <div class="grid-2" style="margin-top:24px">
-      <div class="card" style="text-align:center;border-color:rgba(52,211,153,0.3)">
-        <h3>Savings vs Manual</h3>
-        <div class="value" style="color:var(--green);font-size:48px">98.7%</div>
-        <div class="note">$159,887 saved annually</div>
+  // Crane tower
+  viewer.entities.add({
+    name: 'Crane',
+    position: Cesium.Cartesian3.fromDegrees(STATE.location.lon + 0.00012, STATE.location.lat + 0.00005, 8),
+    cylinder: {
+      length: 20, topRadius: 0.4, bottomRadius: 1.0,
+      material: Cesium.Color.fromCssColorString('#fbbf24').withAlpha(0.7),
+      outline: true, outlineColor: Cesium.Color.fromCssColorString('#f59e0b')
+    }
+  });
+
+  generateAndRenderLidar();
+}
+
+// ============================================================
+// GHOST LIDAR — Procedural Point Cloud
+// ============================================================
+function generateLidarPoints(count, chaos) {
+  var pts = [];
+  var LOA = 60.96, BEAM = 18.29, DECK = 2.5;
+  var bLon = STATE.location.lon, bLat = STATE.location.lat;
+  var mDegLon = 96000, mDegLat = 111000;
+  var angle = Math.PI / 4;
+  var rows = Math.ceil(Math.sqrt(count));
+
+  for (var i = 0; i < count; i++) {
+    var r = i / count, c = (i % rows) / rows;
+    var x = (r - 0.5) * LOA + (Math.random() - 0.5) * 0.08;
+    var y = (c - 0.5) * BEAM + (Math.random() - 0.5) * 0.08;
+    var z = DECK + (Math.random() - 0.5) * 0.12;
+    var isMOB = false;
+
+    if (chaos) {
+      x += (Math.random() - 0.5) * 6;
+      y += (Math.random() - 0.5) * 6;
+      z += (Math.random() - 0.5) * 2;
+      if (Math.random() < 0.015) {
+        x += 12 + Math.random() * 8;
+        y += (Math.random() - 0.5) * 3;
+        z = -0.3 + Math.random() * 0.4;
+        isMOB = true;
+      }
+    }
+
+    var rx = x * Math.cos(angle) - y * Math.sin(angle);
+    var ry = x * Math.sin(angle) + y * Math.cos(angle);
+    pts.push({ lon: bLon + rx / mDegLon, lat: bLat + ry / mDegLat, z: z, mob: isMOB });
+  }
+  return pts;
+}
+
+function generateAndRenderLidar() {
+  if (lidarPrimitives) viewer.scene.primitives.remove(lidarPrimitives);
+  var pts = generateLidarPoints(STATE.ghost_lidar.point_count, STATE.ghost_lidar.chaos_mode);
+  lidarPrimitives = new Cesium.PointPrimitiveCollection();
+  for (var i = 0; i < pts.length; i++) {
+    var p = pts[i];
+    lidarPrimitives.add({
+      position: Cesium.Cartesian3.fromDegrees(p.lon, p.lat, p.z),
+      color: p.mob
+        ? Cesium.Color.fromCssColorString('#f87171').withAlpha(0.95)
+        : Cesium.Color.fromCssColorString('#38bdf8').withAlpha(0.45 + (p.z / 6) * 0.35),
+      pixelSize: p.mob ? 5 : 2
+    });
+  }
+  viewer.scene.primitives.add(lidarPrimitives);
+}
+
+// ============================================================
+// UPDATE BARGE ORIENTATION
+// ============================================================
+function updateBargeOrientation() {
+  if (!bargeEntity) return;
+  var pos = Cesium.Cartesian3.fromDegrees(STATE.location.lon, STATE.location.lat, -1.0);
+  var trimRad = STATE.stability.trim * 0.012;
+  var heelRad = STATE.stability.heel * (Math.PI / 180) * 0.4;
+  bargeEntity.orientation = Cesium.Transforms.headingPitchRollQuaternion(
+    pos, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(45), trimRad, heelRad)
+  );
+}
+
+// ============================================================
+// SIMULATION ENGINE
+// ============================================================
+var simStart = Date.now(), phaseStart = Date.now(), lidarTick = 0;
+
+function noise(base, range) { return base + (Math.random() - 0.5) * range; }
+
+function tick() {
+  var now = Date.now();
+  var pElapsed = (now - phaseStart) / 1000;
+  STATE.timestamp = now / 1000;
+  STATE.workflow.elapsed_seconds = pElapsed;
+
+  if (pElapsed >= PHASE_DUR) {
+    STATE.workflow.phase_index = (STATE.workflow.phase_index + 1) % 6;
+    STATE.workflow.current_phase = STATE.workflow.phases[STATE.workflow.phase_index];
+    phaseStart = now;
+    if (STATE.workflow.phase_index === 0) simStart = now;
+  }
+
+  var ph = STATE.workflow.current_phase;
+  var t = Math.min(pElapsed / PHASE_DUR, 1);
+  var s = STATE.sensors, c = STATE.crane, st = STATE.stability;
+
+  if (!STATE.alerts.man_overboard) {
+    switch(ph) {
+      case "PRE-SURVEY":
+        s.draft_fore_port = noise(9.80, 0.04); s.draft_fore_starboard = noise(9.82, 0.04);
+        s.draft_aft_port = noise(9.90, 0.04); s.draft_aft_starboard = noise(9.88, 0.04);
+        c.status = "IDLE"; c.signal_code = "SIG-000"; c.load_weight = 0; c.boom_angle = 0;
+        st.trim = noise(0.08, 0.02); st.heel = noise(0, 0.3); st.displacement = noise(1800, 10);
+        s.lidar_status = "SCANNING";
+        break;
+      case "BALLAST-ADJ":
+        s.draft_fore_port = noise(10.00 + t * 0.1, 0.03); s.draft_fore_starboard = noise(10.02 + t * 0.1, 0.03);
+        s.draft_aft_port = noise(10.05 - t * 0.05, 0.03); s.draft_aft_starboard = noise(10.03 - t * 0.05, 0.03);
+        c.status = "IDLE"; c.signal_code = "SIG-000";
+        st.trim = noise(0.08 * (1 - t), 0.02); st.heel = noise(1.5 * (1 - t), 0.2);
+        st.displacement = noise(1850 + t * 50, 10); s.lidar_status = "ACTIVE";
+        break;
+      case "CRANE-POS":
+        c.boom_angle = 15 + t * 27; c.slew_bearing = t * 195.7; c.hook_height = 20 - t * 4;
+        c.status = "POSITIONING"; c.signal_code = "SIG-100";
+        st.trim = noise(0.02, 0.01); st.heel = noise(-0.5 * t, 0.2);
+        break;
+      case "CARGO-LOAD":
+        c.load_weight = Math.round(t * 1800); c.boom_angle = noise(42.3, 1);
+        c.slew_bearing = noise(195.7, 2); c.hook_height = noise(16.2, 0.3);
+        c.status = "LOADING"; c.signal_code = "SIG-LOAD";
+        s.draft_fore_port = noise(10.10 + t * 0.35, 0.03); s.draft_fore_starboard = noise(10.12 + t * 0.35, 0.03);
+        s.draft_aft_port = noise(10.15 + t * 0.50, 0.03); s.draft_aft_starboard = noise(10.13 + t * 0.50, 0.03);
+        st.trim = noise(0.15 + t * 0.35, 0.03); st.heel = noise(-0.5 - t * 1.5, 0.3);
+        st.displacement = noise(1900 + t * 1300, 15); st.gm = noise(3.65 - t * 0.3, 0.05);
+        break;
+      case "TRIM-CORR":
+        c.status = "IDLE"; c.signal_code = "SIG-000"; c.load_weight = 0;
+        st.trim = noise(0.50 * (1 - t), 0.02); st.heel = noise(-2.0 * (1 - t), 0.2);
+        st.displacement = noise(3200, 10); st.gm = noise(3.35 + t * 0.30, 0.03);
+        s.draft_fore_port = noise(10.45 + t * 0.1, 0.02); s.draft_fore_starboard = noise(10.47 + t * 0.1, 0.02);
+        s.draft_aft_port = noise(10.65 - t * 0.1, 0.02); s.draft_aft_starboard = noise(10.63 - t * 0.1, 0.02);
+        break;
+      case "FINAL-SURV":
+        s.draft_fore_port = noise(10.55, 0.01); s.draft_fore_starboard = noise(10.57, 0.01);
+        s.draft_aft_port = noise(10.55, 0.01); s.draft_aft_starboard = noise(10.53, 0.01);
+        c.status = "IDLE"; c.signal_code = "SIG-000";
+        st.trim = noise(0.02, 0.01); st.heel = noise(0, 0.1);
+        st.displacement = noise(3200, 5); st.gm = noise(3.65, 0.02);
+        st.status = "NOMINAL"; s.lidar_status = "SCANNING";
+        STATE.governance.freq_law = "COMPLIANT"; STATE.governance.consensus = "3/3 APPROVED";
+        break;
+    }
+
+    // Simpson's rule mean draft
+    var fM = (s.draft_fore_port + s.draft_fore_starboard) / 2;
+    var aM = (s.draft_aft_port + s.draft_aft_starboard) / 2;
+    s.mean_draft = (fM + 6 * ((fM + aM) / 2) + aM) / 8;
+
+    // Stability status
+    var aH = Math.abs(st.heel), aT = Math.abs(st.trim);
+    st.status = (aH > 5 || st.gm < 0.5) ? "CRITICAL" : (aH > 2 || aT > 0.8 || st.gm < 1.5) ? "CAUTION" : "NOMINAL";
+  }
+
+  // Alert thresholds
+  STATE.alerts.list_warning = Math.abs(st.heel) > 3;
+  STATE.alerts.overload_warning = c.load_weight > c.max_capacity * 0.9;
+  STATE.alerts.trim_warning = Math.abs(st.trim) > 1.0;
+
+  updateBargeOrientation();
+
+  // Regenerate LiDAR every 3 seconds
+  lidarTick++;
+  if (lidarTick % 180 === 0) generateAndRenderLidar();
+
+  if (window.renderUI) window.renderUI();
+}
+
+// ============================================================
+// MAN OVERBOARD — CHAOS MODE
+// ============================================================
+var chaosTimer = null;
+function activateChaosMode() {
+  if (STATE.alerts.man_overboard) return;
+  STATE.alerts.man_overboard = true;
+  STATE.ghost_lidar.chaos_mode = true;
+  STATE.stability.status = "CRITICAL";
+  STATE.governance.veto_status = "SAFETY VETO";
+  STATE.governance.freq_law = "EMERGENCY HALT";
+  generateAndRenderLidar();
+
+  var ci = setInterval(function() {
+    if (!STATE.alerts.man_overboard) { clearInterval(ci); return; }
+    STATE.stability.heel = -8 + Math.random() * 16;
+    STATE.stability.trim = -1 + Math.random() * 2;
+    STATE.crane.boom_angle = Math.random() * 60;
+    STATE.crane.signal_code = "SIG-910";
+    STATE.crane.status = "E_STOP";
+    updateBargeOrientation();
+    generateAndRenderLidar();
+  }, 700);
+
+  chaosTimer = setTimeout(function() {
+    STATE.alerts.man_overboard = false;
+    STATE.ghost_lidar.chaos_mode = false;
+    STATE.stability.heel = 0; STATE.stability.trim = 0.02;
+    STATE.stability.status = "NOMINAL";
+    STATE.governance.veto_status = "CLEAR";
+    STATE.governance.freq_law = "COMPLIANT";
+    STATE.crane.status = "IDLE"; STATE.crane.signal_code = "SIG-000";
+    updateBargeOrientation(); generateAndRenderLidar();
+    clearInterval(ci);
+  }, 10000);
+}
+
+// BOOT
+initCesium();
+setInterval(tick, 16);
+</script>
+
+<script type="text/babel">
+/* ============================================================
+   REACT UI COMPONENTS
+   ============================================================ */
+var PD = 15; // phase duration for display
+
+function Header() {
+  var mob = STATE.alerts.man_overboard;
+  return (
+    <div className="header">
+      <h1>FREQ AI SOL<span>Maritime Barge Operations</span></h1>
+      <div className="badges">
+        <span className={"badge " + (mob ? "" : "badge-live")}
+              style={mob ? {background:'rgba(220,38,38,0.3)',color:'#f87171',border:'1px solid rgba(220,38,38,0.5)'} : {}}>
+          {mob ? "EMERGENCY" : "SIMULATION LIVE"}
+        </span>
+        <span className="badge badge-phase">{STATE.workflow.current_phase}</span>
+        <span className="badge" style={{background:'rgba(52,211,153,0.1)',color:'#34d399',border:'1px solid rgba(52,211,153,0.2)'}}>
+          {STATE.governance.freq_law}
+        </span>
       </div>
-      <div class="card" style="text-align:center;border-color:rgba(52,211,153,0.3)">
-        <h3>Savings vs Drone</h3>
-        <div class="value" style="color:var(--green);font-size:48px">99.8%</div>
-        <div class="note">$1,005,887 saved annually</div>
+    </div>
+  );
+}
+
+function DraftPanel() {
+  var s = STATE.sensors;
+  return (
+    <div className="panel panel-draft">
+      <h3><span className="dot" style={{background:s.lidar_status==='SCANNING'?'#38bdf8':'#34d399'}}></span>Draft Readings (ft)</h3>
+      <div className="metric"><span className="label">Fore Port</span><span className="value">{s.draft_fore_port.toFixed(2)}</span></div>
+      <div className="metric"><span className="label">Fore Stbd</span><span className="value">{s.draft_fore_starboard.toFixed(2)}</span></div>
+      <div className="metric"><span className="label">Aft Port</span><span className="value">{s.draft_aft_port.toFixed(2)}</span></div>
+      <div className="metric"><span className="label">Aft Stbd</span><span className="value">{s.draft_aft_starboard.toFixed(2)}</span></div>
+      <div className="divider"></div>
+      <div className="metric"><span className="label">Mean Draft</span><span className="value nominal">{s.mean_draft.toFixed(2)}</span></div>
+      <div className="metric"><span className="label">LiDAR</span><span className="value" style={{color:'#38bdf8'}}>{s.lidar_status}</span></div>
+      <div className="metric"><span className="label">Water Temp</span><span className="value">{s.water_temp_f}°F</span></div>
+    </div>
+  );
+}
+
+function CranePanel() {
+  var c = STATE.crane;
+  var util = c.max_capacity > 0 ? (c.load_weight / c.max_capacity * 100) : 0;
+  var barColor = util > 90 ? 'var(--red)' : util > 70 ? 'var(--amber)' : 'var(--accent)';
+  var sigClass = c.status === 'E_STOP' ? 'emergency' : (c.status === 'LOADING' || c.status === 'POSITIONING') ? 'active' : 'idle';
+  return (
+    <div className="panel panel-crane">
+      <h3><span className="dot" style={{background:c.status!=='IDLE'?'#fbbf24':'#8892a4'}}></span>Crane Operations</h3>
+      <div className="metric"><span className="label">Signal</span><span className={"signal-code " + sigClass}>{c.signal_code}</span></div>
+      <div className="metric"><span className="label">Load</span><span className="value">{c.load_weight.toLocaleString()} / {c.max_capacity.toLocaleString()} t</span></div>
+      <div className="gauge-bar"><div className="gauge-fill" style={{width:util+'%',background:barColor}}></div></div>
+      <div className="metric"><span className="label">Boom</span><span className="value">{c.boom_angle.toFixed(1)}°</span></div>
+      <div className="metric"><span className="label">Slew</span><span className="value">{c.slew_bearing.toFixed(1)}°</span></div>
+      <div className="metric"><span className="label">Hook Ht</span><span className="value">{c.hook_height.toFixed(1)} m</span></div>
+      <div className="metric"><span className="label">Status</span><span className={"value " + (c.status==='E_STOP'?'critical':'')}>{c.status}</span></div>
+    </div>
+  );
+}
+
+function StabilityPanel() {
+  var st = STATE.stability, a = STATE.alerts, g = STATE.governance;
+  var sc = st.status === 'CRITICAL' ? 'critical' : st.status === 'CAUTION' ? 'caution' : 'nominal';
+  var gmC = st.gm >= 1.5 ? 'var(--green)' : st.gm >= 0.5 ? 'var(--amber)' : 'var(--red)';
+  return (
+    <div className={"panel panel-stability " + (a.man_overboard ? 'alert-active' : '')}>
+      <h3><span className="dot" style={{background:st.status==='NOMINAL'?'#34d399':st.status==='CAUTION'?'#fbbf24':'#f87171'}}></span>Stability</h3>
+      <div className="metric"><span className="label">Status</span><span className={"value " + sc}>{st.status}</span></div>
+      <div className="metric"><span className="label">Trim</span><span className={"value " + (a.trim_warning?'caution':'')}>{st.trim.toFixed(3)} m</span></div>
+      <div className="metric"><span className="label">Heel</span><span className={"value " + (a.list_warning?'critical':'')}>{st.heel.toFixed(2)}°</span></div>
+      <div className="divider"></div>
+      <div className="metric"><span className="label">Displacement</span><span className="value">{st.displacement.toFixed(0)} t</span></div>
+      <div className="metric"><span className="label">GM</span><span className="value" style={{color:gmC}}>{st.gm.toFixed(3)} m</span></div>
+      <div className="divider"></div>
+      <div className="metric"><span className="label">FREQ LAW</span><span className="value" style={{color:g.freq_law==='COMPLIANT'?'var(--green)':'var(--red)',fontSize:'11px'}}>{g.freq_law}</span></div>
+      <div className="metric"><span className="label">Consensus</span><span className="value" style={{fontSize:'11px'}}>{g.consensus}</span></div>
+      <div className="metric"><span className="label">VETO</span><span className="value" style={{color:g.veto_status==='CLEAR'?'var(--green)':'var(--red)',fontSize:'11px'}}>{g.veto_status}</span></div>
+    </div>
+  );
+}
+
+function AlertPanel() {
+  var a = STATE.alerts, gl = STATE.ghost_lidar;
+  var has = a.man_overboard || a.list_warning || a.overload_warning || a.trim_warning;
+  return (
+    <div className={"panel panel-alerts " + (has ? 'alert-active' : '')}>
+      <h3><span className="dot" style={{background:has?'#f87171':'#34d399'}}></span>Safety Watchdog</h3>
+      {a.man_overboard && <div className="metric"><span className="label" style={{color:'var(--red)',fontWeight:700}}>MOB</span><span className="value critical">MAN OVERBOARD</span></div>}
+      {a.list_warning && <div className="metric"><span className="label">LIST</span><span className="value caution">Heel Warning</span></div>}
+      {a.overload_warning && <div className="metric"><span className="label">LOAD</span><span className="value caution">Near Capacity</span></div>}
+      {a.trim_warning && <div className="metric"><span className="label">TRIM</span><span className="value caution">Trim Warning</span></div>}
+      {!has && <div className="metric"><span className="label">All Systems</span><span className="value nominal">PASS</span></div>}
+      <div className="divider"></div>
+      <div className="metric"><span className="label">Ghost LiDAR</span><span className="value" style={{color:'#38bdf8'}}>{gl.point_count.toLocaleString()} pts</span></div>
+      <div className="metric"><span className="label">Pattern</span><span className="value">{gl.scan_pattern}</span></div>
+      <div className="metric"><span className="label">Chaos</span><span className={"value " + (gl.chaos_mode?'critical':'nominal')}>{gl.chaos_mode?'ACTIVE':'OFF'}</span></div>
+    </div>
+  );
+}
+
+function WorkflowBar() {
+  var w = STATE.workflow;
+  var totalProg = ((w.phase_index * PD + w.elapsed_seconds) / (6 * PD)) * 100;
+  var totalSec = Math.round(w.phase_index * PD + w.elapsed_seconds);
+  return (
+    <div className="workflow-bar">
+      <div className="phase-steps">
+        {w.phases.map(function(phase, i) {
+          return <div key={i} className={"phase-step " + (i === w.phase_index ? 'active' : '') + (i < w.phase_index ? ' completed' : '')}>{phase}</div>;
+        })}
+      </div>
+      <div className="progress-track">
+        <div className="progress-fill" style={{width: totalProg + '%'}}></div>
+      </div>
+      <div className="workflow-time">
+        Phase: {Math.round(w.elapsed_seconds)}s / {PD}s &nbsp;|&nbsp; Total: {totalSec}s / {6*PD}s &nbsp;|&nbsp; Target: 15 min (900s)
       </div>
     </div>
+  );
+}
 
-    <div class="grid-2" style="margin-top:20px">
-      <div class="card card-alt">
-        <h3 style="color:var(--red)">Manual Surveyor Limitations</h3>
-        <ul style="list-style:none;padding:0;margin-top:8px;font-size:13px;color:var(--text-dim)">
-          <li style="padding:4px 0">Weather dependent — cannot operate in high seas</li>
-          <li style="padding:4px 0">Requires 2-4 hour mobilization per survey</li>
-          <li style="padding:4px 0">Human error rate ~2-5% on draft readings</li>
-          <li style="padding:4px 0">No real-time continuous monitoring</li>
-          <li style="padding:4px 0">Scheduling bottleneck — surveyor availability</li>
-        </ul>
-      </div>
-      <div class="card card-alt">
-        <h3 style="color:var(--green)">SOL Autonomous Advantages</h3>
-        <ul style="list-style:none;padding:0;margin-top:8px;font-size:13px;color:var(--text-dim)">
-          <li style="padding:4px 0">24/7 continuous monitoring — no weather dependency</li>
-          <li style="padding:4px 0">Sub-2-second draft calculations (FREQ LAW)</li>
-          <li style="padding:4px 0">0.998 target accuracy via sensor fusion + AI</li>
-          <li style="padding:4px 0">Full audit trail in BigQuery — zero paperwork</li>
-          <li style="padding:4px 0">Autonomous ballast optimization reduces fuel</li>
-          <li style="padding:4px 0">Byzantine fault tolerant lattice architecture</li>
-          <li style="padding:4px 0">GOVEngine VETO authority for governance</li>
-        </ul>
-      </div>
+function MOBOverlay() {
+  if (!STATE.alerts.man_overboard) return null;
+  return (
+    <div className="mob-overlay">
+      <div className="mob-text">MAN OVERBOARD — ALL STOP</div>
     </div>
-  </div>
-</section>
+  );
+}
 
-<!-- Architecture -->
-<section>
-  <div class="container">
-    <div class="section-label">Architecture</div>
-    <div class="section-title">SOL Lattice — K4 Hyper-Connected Topology</div>
-    <div class="grid-2">
-      <div class="card">
-        <h3>Active Lattice Nodes</h3>
-        <div style="margin-top:8px">
-          <div class="bar-row"><div class="bar-label">Strategic</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent2)">StrategicOP</div></div></div>
-          <div class="bar-row"><div class="bar-label">Maritime</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent)">MaritimeBargeOps</div></div></div>
-          <div class="bar-row"><div class="bar-label">GOV</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)">GOVEngine</div></div></div>
-          <div class="bar-row"><div class="bar-label">Intel</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--gold)">OptimalIntel</div></div></div>
-          <div class="bar-row"><div class="bar-label">Exec</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--orange)">ExecAutomate</div></div></div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Workflow Pipeline</h3>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-          <div style="padding:12px 16px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);border-radius:8px;font-size:14px"><strong style="color:var(--accent)">SCAN</strong> <span style="color:var(--text-dim)">— IoT sensor ingestion (6 ultrasonic draft sensors)</span></div>
-          <div style="text-align:center;color:var(--text-dim);font-size:18px">&darr;</div>
-          <div style="padding:12px 16px;background:rgba(129,140,248,0.08);border:1px solid rgba(129,140,248,0.2);border-radius:8px;font-size:14px"><strong style="color:var(--accent2)">PROCESS</strong> <span style="color:var(--text-dim)">— Draft survey + Ballast optimization + Stability</span></div>
-          <div style="text-align:center;color:var(--text-dim);font-size:18px">&darr;</div>
-          <div style="padding:12px 16px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:8px;font-size:14px"><strong style="color:var(--green)">GOVERNANCE</strong> <span style="color:var(--text-dim)">— FREQ LAW + k=3 Consensus + VETO check</span></div>
-          <div style="text-align:center;color:var(--text-dim);font-size:18px">&darr;</div>
-          <div style="padding:12px 16px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;font-size:14px"><strong style="color:var(--gold)">REPORT</strong> <span style="color:var(--text-dim)">— Operational report + Cost analysis + Audit trail</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+function App() {
+  return (
+    <React.Fragment>
+      <Header />
+      <DraftPanel />
+      <CranePanel />
+      <StabilityPanel />
+      <AlertPanel />
+      <button className={"chaos-btn " + (STATE.alerts.man_overboard ? 'active' : '')}
+              onClick={activateChaosMode} disabled={STATE.alerts.man_overboard}
+              style={{position:'absolute',top:'70px',right:'16px',zIndex:30}}>
+        {STATE.alerts.man_overboard ? 'EMERGENCY ACTIVE' : 'SIMULATE MAN OVERBOARD'}
+      </button>
+      <WorkflowBar />
+      <MOBOverlay />
+    </React.Fragment>
+  );
+}
 
-<!-- Credit Request CTA -->
-<section class="cta-section">
-  <div class="container">
-    <div class="section-label">Google Cloud Startup Program</div>
-    <div class="cta-amount">$350,000</div>
-    <div class="cta-label">GCP Credit Request — Phase 3: Simulation to Hardware</div>
-    <div class="gcp-grid">
-      <div class="gcp-item">Vertex AI<span>Multi-agent lattice orchestration</span></div>
-      <div class="gcp-item">BigQuery<span>Audit trail + analytics warehouse</span></div>
-      <div class="gcp-item">Cloud Run<span>IoT sensor ingestion service</span></div>
-      <div class="gcp-item">Cloud Logging<span>Real-time JSON observability</span></div>
-      <div class="gcp-item">Dialogflow CX<span>Agent playbook execution</span></div>
-      <div class="gcp-item">Cloud IoT<span>Sensor device management</span></div>
-    </div>
-    <div style="margin-top:32px;font-size:14px;color:var(--text-dim)">
-      Target Market: Gulf of Mexico inland barge operators<br>
-      Unit Economics: <strong style="color:var(--green)">$2,113/yr</strong> vs <strong style="color:var(--red)">$162,000/yr</strong> manual
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    <div style="margin-bottom:8px;font-weight:600;color:var(--text)">SOL Lattice — Sophisticated Operational Lattice</div>
-    <div>Replacing physical surveys with intelligence.</div>
-    <div style="margin-top:8px">Sovereign Intent Originator: Chief Dre | Codename: Antigravity | FREQ-AI-VERTEX</div>
-  </div>
-</footer>
-
+var root = ReactDOM.createRoot(document.getElementById('react-root'));
+window.renderUI = function() { root.render(React.createElement(App)); };
+window.renderUI();
+</script>
 </body>
 </html>
